@@ -1,0 +1,160 @@
+---
+import Icon from './Icon.astro';
+
+const nav = [
+  { label: 'Serviços', href: '#servicos' },
+  { label: 'Processo', href: '#processo' },
+  { label: 'Por que Novra', href: '#diferenciais' },
+  { label: 'Tecnologias', href: '#tecnologias' },
+  { label: 'Contato', href: '#contato' },
+];
+---
+<header class="site-header" id="site-header" data-state="top">
+  <div class="container site-header__inner">
+    <a href="#topo" class="brand" aria-label="Novra Tech — página inicial">
+      <img src="/brand/novra-logo.png" alt="Novra Tech" class="brand__full" width="1486" height="329" />
+      <img src="/brand/novra-icon.png" alt="" class="brand__icon" aria-hidden="true" width="286" height="329" />
+    </a>
+
+    <nav class="site-nav" aria-label="Navegação principal">
+      {nav.map((item) => (
+        <a href={item.href} class="site-nav__link" data-magnetic>{item.label}</a>
+      ))}
+    </nav>
+
+    <div class="site-header__actions">
+      <a href="#contato" class="btn btn-primary btn-sm header-cta" data-magnetic>
+        Falar com especialista
+        <Icon name="arrow-right" />
+      </a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <nav class="mobile-menu__nav" aria-label="Navegação mobile">
+      {nav.map((item, i) => (
+        <a href={item.href} class="mobile-menu__link" style={`--i:${i}`}>
+          <span class="mobile-menu__num">{String(i + 1).padStart(2, '0')}</span>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <a href="#contato" class="btn btn-primary btn-lg btn-block mobile-menu__cta">
+      Iniciar um projeto <Icon name="arrow-right" />
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    transition: background 0.5s var(--ease-out), border-color 0.5s var(--ease-out),
+      backdrop-filter 0.5s var(--ease-out);
+    border-bottom: 1px solid transparent;
+  }
+  .site-header[data-state='scrolled'] {
+    background: rgba(7, 9, 16, 0.72);
+    backdrop-filter: blur(16px) saturate(140%);
+    border-bottom-color: var(--border);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    height: clamp(68px, 8vh, 84px);
+  }
+  .brand { display: inline-flex; align-items: center; }
+  .brand__full { height: clamp(26px, 3.2vw, 34px); width: auto; }
+  .brand__icon { display: none; height: 34px; width: auto; }
+
+  .site-nav { display: none; align-items: center; gap: 0.4rem; }
+  .site-nav__link {
+    position: relative;
+    padding: 0.5rem 0.9rem;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-2);
+    border-radius: var(--r-pill);
+    transition: color 0.3s var(--ease-out);
+  }
+  .site-nav__link::after {
+    content: "";
+    position: absolute;
+    left: 0.9rem; right: 0.9rem; bottom: 0.32rem;
+    height: 1px;
+    background: var(--cyan-400);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease-out);
+  }
+  .site-nav__link:hover { color: var(--text-1); }
+  .site-nav__link:hover::after { transform: scaleX(1); }
+
+  .site-header__actions { display: flex; align-items: center; gap: 0.75rem; }
+  .btn-sm { --btn-pad-y: 0.7rem; --btn-pad-x: 1.2rem; font-size: 0.9rem; }
+  .header-cta { display: none; }
+
+  .nav-toggle {
+    display: inline-flex; flex-direction: column; justify-content: center; gap: 6px;
+    width: 46px; height: 46px; border-radius: 12px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    padding: 0 12px;
+  }
+  .nav-toggle span {
+    display: block; height: 2px; width: 100%;
+    background: var(--text-1); border-radius: 2px;
+    transition: transform 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
+  }
+  .site-header.menu-open .nav-toggle span:first-child { transform: translateY(4px) rotate(45deg); }
+  .site-header.menu-open .nav-toggle span:last-child { transform: translateY(-4px) rotate(-45deg); }
+
+  /* Mobile menu */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    padding: calc(clamp(68px, 8vh, 84px) + 2rem) var(--gutter) 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: rgba(6, 8, 15, 0.94);
+    backdrop-filter: blur(26px);
+    opacity: 0;
+    transform: translateY(-12px);
+    transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+  .mobile-menu.is-open { opacity: 1; transform: none; }
+  .mobile-menu__nav { display: flex; flex-direction: column; }
+  .mobile-menu__link {
+    display: flex; align-items: baseline; gap: 1rem;
+    padding: 1rem 0;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(2rem, 9vw, 3rem);
+    color: var(--text-1);
+    border-bottom: 1px solid var(--border);
+    opacity: 0; transform: translateY(16px);
+  }
+  .mobile-menu.is-open .mobile-menu__link {
+    opacity: 1; transform: none;
+    transition: opacity 0.5s var(--ease-out) calc(var(--i) * 60ms + 100ms),
+      transform 0.5s var(--ease-out) calc(var(--i) * 60ms + 100ms);
+  }
+  .mobile-menu__num { font-family: var(--font-mono); font-size: 0.9rem; color: var(--cyan-400); font-weight: 500; }
+  .mobile-menu__cta { margin-top: 2rem; }
+
+  @media (min-width: 980px) {
+    .site-nav { display: flex; }
+    .header-cta { display: inline-flex; }
+    .nav-toggle { display: none; }
+    .mobile-menu { display: none; }
+  }
+</style>

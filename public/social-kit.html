@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Novra · Social Kit</title>
+<style>
+:root{--blue:#2a5bff;--cyan:#00c2ff;--bg:#05070e;--t1:#f4f7ff;--t2:#b2bbd2;--t3:#828dab;
+--border:rgba(255,255,255,.1);--bs:rgba(255,255,255,.16);--bb:rgba(42,91,255,.4);
+--grad:linear-gradient(180deg,#cdf0ff 0%,#5fd6ff 58%,#2fc4ff 100%);
+--disp:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;--mono:'JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#15171c;font-family:var(--body);display:flex;flex-wrap:wrap;gap:24px;padding:24px;align-items:flex-start}
+.post{position:relative;width:1080px;height:1350px;overflow:hidden;background:var(--bg);color:var(--t1);isolation:isolate;flex:0 0 auto}
+.aC{position:absolute;inset:0;z-index:0;background:radial-gradient(48% 38% at 20% 16%,rgba(42,91,255,.32),transparent 62%),radial-gradient(42% 46% at 84% 84%,rgba(0,194,255,.22),transparent 60%),var(--bg)}
+.aS{position:absolute;inset:0;z-index:0;background:radial-gradient(55% 45% at 24% 18%,rgba(42,91,255,.58),transparent 62%),radial-gradient(50% 55% at 82% 82%,rgba(0,194,255,.42),transparent 60%),radial-gradient(60% 50% at 60% 45%,rgba(20,70,255,.30),transparent 70%),var(--bg)}
+.gr{position:absolute;inset:0;z-index:1;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:90px 90px;-webkit-mask-image:radial-gradient(85% 85% at 50% 40%,#000,transparent 82%);mask-image:radial-gradient(85% 85% at 50% 40%,#000,transparent 82%)}
+.gn{position:absolute;inset:0;z-index:7;opacity:.05;mix-blend-mode:overlay;background:url('/textures/grain.svg');background-size:200px}
+.img{position:absolute;inset:0;z-index:0;object-fit:cover;width:100%;height:100%}
+.scF{position:absolute;inset:0;z-index:1;background:radial-gradient(72% 62% at 50% 46%,rgba(5,7,14,.5),transparent 80%),linear-gradient(180deg,rgba(5,7,14,.62),rgba(5,7,14,.58) 50%,rgba(5,7,14,.9))}
+.scB{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(5,7,14,.5) 0%,rgba(5,7,14,.32) 26%,rgba(5,7,14,.6) 54%,rgba(5,7,14,.9) 80%,rgba(5,7,14,.98) 100%)}
+.scC{position:absolute;inset:0;z-index:1;background:radial-gradient(72% 60% at 50% 46%,rgba(5,7,14,.45),transparent 80%),linear-gradient(180deg,rgba(5,7,14,.66),rgba(5,7,14,.55) 45%,rgba(5,7,14,.96))}
+.in{position:relative;z-index:5;height:100%;display:flex;flex-direction:column;padding:96px}
+.end{justify-content:flex-end}.ctr{justify-content:center;text-align:center;align-items:center}
+.sp{flex:1}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:20px}.hdr .ic{height:54px}.hdr img.lg{height:46px}
+.nm{font-family:var(--mono);font-size:21px;letter-spacing:.16em;text-transform:uppercase;color:var(--t3)}
+.ctrn{font-family:var(--mono);font-size:22px;letter-spacing:.12em;color:var(--cyan)}
+.kick{display:inline-flex;align-items:center;gap:14px;font-family:var(--mono);font-size:23px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
+.kick::before{content:"";width:42px;height:2px;background:linear-gradient(90deg,var(--cyan),transparent)}
+.kick.c::before{display:none}
+h1,h2{font-family:var(--disp);font-weight:600;line-height:1.04;letter-spacing:-.03em;text-shadow:0 2px 30px rgba(0,0,0,.55),0 1px 8px rgba(0,0,0,.4)}
+.ph{font-size:92px}.phb{font-size:104px}.pt{font-size:72px;line-height:1.05}
+.ps{font-size:34px;line-height:1.5;color:var(--t2);max-width:840px;text-shadow:0 1px 16px rgba(0,0,0,.7)}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ftr{display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:22px;color:var(--t3);letter-spacing:.04em}.ftr .d{color:var(--cyan)}
+.arr{display:inline-flex;align-items:center;gap:14px;font-family:var(--disp);font-weight:600;font-size:32px;color:var(--cyan)}
+.idx{font-family:var(--disp);font-weight:700;font-size:210px;line-height:.82;letter-spacing:-.05em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 50px rgba(0,160,255,.25))}
+.chip{display:inline-flex;align-items:center;gap:12px;padding:18px 34px;border:1px solid var(--bs);border-radius:999px;background:rgba(255,255,255,.05);font-family:var(--mono);font-size:26px;color:var(--t1)}
+.dotg{width:14px;height:14px;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px var(--cyan)}
+.tag{display:inline-flex;align-items:center;gap:12px;padding:14px 26px;border-radius:999px;background:rgba(8,11,20,.66);border:1px solid var(--bs);backdrop-filter:blur(8px);font-family:var(--mono);font-size:23px;color:var(--t1);width:max-content}
+.logo{filter:drop-shadow(0 0 44px rgba(42,110,255,.5))}
+.quotemark{font-family:var(--disp);font-weight:700;font-size:160px;line-height:.6;color:var(--cyan);opacity:.85}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--bs),transparent);margin:40px 0}
+/* split */
+.stop{position:absolute;top:0;left:0;width:100%;height:48%;overflow:hidden;z-index:0}
+.stop img{width:100%;height:100%;object-fit:cover}
+.stop .ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,7,14,.25),rgba(5,7,14,.9))}
+.sbot{position:absolute;bottom:0;left:0;width:100%;height:54%;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:0 96px 96px}
+.statbig{font-family:var(--disp);font-weight:700;font-size:230px;line-height:.85;letter-spacing:-.05em;background:linear-gradient(180deg,#fff,#9cd4ff 55%,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 10px 60px rgba(0,160,255,.3))}
+.svcname{font-family:var(--disp);font-weight:600;font-size:84px;line-height:1.02;letter-spacing:-.03em}
+</style></head><body>
+
+<!-- ===== SINGLE 1 · LANÇAMENTO (centered) ===== -->
+<div class="post" id="s1"><div class="aS"></div><div class="gr"></div><div class="gn"></div>
+<div class="in ctr"><div class="sp"></div>
+  <span class="kick c">Novra Tech · 2026</span>
+  <img class="logo" style="height:120px;margin:42px 0 8px" src="/brand/novra-logo.png">
+  <h1 class="phb" style="margin-top:26px">Chegamos.</h1>
+  <p class="ps" style="text-align:center;margin:28px auto 0;max-width:740px">Engenharia de software, IA e cloud para operações que <b style="color:var(--t1);font-weight:600">não podem falhar.</b></p>
+  <div class="sp"></div><div class="ftr" style="width:100%"><span><span class="d">✦</span> novratech.com.br</span><span>@novra.tech</span></div>
+</div></div>
+
+<!-- ===== SINGLE 2 · MANIFESTO (image, text bottom-left) ===== -->
+<div class="post" id="s2"><img class="img" src="/img/social/s-circuit.jpg"><div class="scB"></div><div class="gn"></div>
+<div class="in end">
+  <div class="hdr" style="position:absolute;top:96px;left:96px;right:96px"><img class="lg" src="/brand/novra-logo.png"><span class="nm">Manifesto</span></div>
+  <span class="kick">O que nos move</span>
+  <h1 class="ph" style="margin-top:28px">Transformamos complexidade em <span class="grad">vantagem competitiva.</span></h1>
+  <div class="ftr" style="margin-top:54px"><span>Estratégia · Engenharia · IA</span><span>novratech.com.br</span></div>
+</div></div>
+
+<!-- ===== SINGLE 3 · STAT (split) ===== -->
+<div class="post" id="s3">
+  <div class="stop"><img src="/img/social/s-network.jpg"><div class="ov"></div></div>
+  <div class="in" style="height:46%;padding:96px"><div class="hdr"><img class="lg" src="/brand/novra-logo.png"><span class="nm">Prova</span></div>
+    <div class="sp"></div><span class="kick">Em produção</span></div>
+  <div class="sbot"><div class="statbig">99,99%</div>
+    <p class="ps" style="margin-top:18px">de disponibilidade nos sistemas que operamos. Porque cada minuto fora do ar tem custo real.</p>
+    <div class="ftr" style="margin-top:46px"><span><span class="d">✦</span> @novra.tech</span><span>novratech.com.br</span></div>
+  </div>
+  <div class="gn"></div>
+</div>
+
+<!-- ===== SINGLE 4 · QUOTE (image dark, centered) ===== -->
+<div class="post" id="s4"><img class="img" src="/img/social/s-cyber.jpg"><div class="scF"></div><div class="gn"></div>
+<div class="in ctr"><div class="hdr" style="position:absolute;top:96px;left:96px;right:96px"><img class="ic" src="/brand/novra-icon.png"><span class="nm">#PensamentoNovra</span></div>
+  <div class="sp"></div><span class="quotemark">“</span>
+  <h1 class="ph" style="margin-top:-10px;max-width:880px">Em missão crítica, não existe <span class="grad">“quase”.</span></h1>
+  <p class="ps" style="text-align:center;margin:34px auto 0;max-width:680px">Ou o sistema entrega sob pressão, ou ele falha quando mais importa.</p>
+  <div class="sp"></div><div class="ftr" style="width:100%"><span>— Novra Tech</span><span>novratech.com.br</span></div>
+</div></div>
+
+<!-- ===== SINGLE 5 · CULTURA (image, text bottom) ===== -->
+<div class="post" id="s5"><img class="img" src="/img/social/s-team.jpg"><div class="scB"></div><div class="gn"></div>
+<div class="in end"><div class="hdr" style="position:absolute;top:96px;left:96px;right:96px"><img class="lg" src="/brand/novra-logo.png"><span class="nm">Bastidores</span></div>
+  <span class="kick">Como pensamos</span>
+  <h1 class="ph" style="margin-top:28px">Gente sênior, <span class="grad">obcecada por resultado.</span></h1>
+  <p class="ps" style="margin-top:26px">Sem júnior aprendendo no seu projeto. Squads experientes, donos do problema do início ao fim.</p>
+  <div class="ftr" style="margin-top:50px"><span>@novra.tech</span><span>novratech.com.br</span></div>
+</div></div>
+
+<!-- ===== SINGLE 6 · CTA (image hardware, centered) ===== -->
+<div class="post" id="s6"><img class="img" src="/img/social/s-hardware.jpg"><div class="scF"></div><div class="gn"></div>
+<div class="in ctr"><div class="sp"></div><span class="kick c">Vamos construir</span>
+  <h1 class="ph" style="margin-top:28px">Pronto para a próxima fase do seu <span class="grad">negócio?</span></h1>
+  <p class="ps" style="text-align:center;margin:28px auto 0;max-width:720px">Conte seu desafio. Em até 1 dia útil, um especialista retorna com os próximos passos.</p>
+  <span class="chip" style="margin-top:44px"><span class="dotg"></span>contato@novratech.com.br</span>
+  <div class="sp"></div><div class="ftr" style="width:100%"><span>novratech.com.br</span><span>@novra.tech</span></div>
+</div></div>
+
+<!-- ============ CARROSSEL A · 5 SINAIS (type-led) ============ -->
+<div class="post" id="a0"><div class="aS"></div><div class="gr"></div><div class="gn"></div>
+<div class="in"><div class="hdr"><img class="ic" src="/brand/novra-icon.png"><span class="nm">Guia rápido</span></div>
+  <div class="sp"></div><span class="kick">Sistemas legados</span>
+  <h1 class="phb" style="margin-top:28px">5 sinais de que seu sistema está <span class="grad">custando caro.</span></h1>
+  <div class="sp"></div><span class="arr">Arraste para ver →</span>
+  <div class="ftr" style="margin-top:46px"><span><span class="d">✦</span> @novra.tech</span><span>novratech.com.br</span></div>
+</div></div>
+
+<div class="post" id="a1"><div class="aC"></div><div class="gr"></div><div class="gn"></div>
+<div class="in"><div class="hdr"><img class="ic" src="/brand/novra-icon.png"><span class="ctrn">01 / 05</span></div>
+  <div class="sp"></div><div class="idx">01</div><h2 class="pt" style="margin-top:24px">Cada mudança simples leva semanas.</h2>
+  <p class="ps" style="margin-top:24px">Todo deploy vira um evento de risco que paralisa o time — e o medo de mexer trava a evolução.</p>
+  <div class="sp"></div><div class="ftr"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="a2"><div class="aC"></div><div class="gr"></div><div class="gn"></div>
+<div class="in"><div class="hdr"><img class="ic" src="/brand/novra-icon.png"><span class="ctrn">02 / 05</span></div>
+  <div class="sp"></div><div class="idx">02</div><h2 class="pt" style="margin-top:24px">A conta de manutenção só cresce.</h2>
+  <p class="ps" style="margin-top:24px">Manter o sistema de pé consome o orçamento que deveria ir para inovação e crescimento.</p>
+  <div class="sp"></div><div class="ftr"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="a3"><div class="aC"></div><div class="gr"></div><div class="gn"></div>
+<div class="in"><div class="hdr"><img class="ic" src="/brand/novra-icon.png"><span class="ctrn">03 / 05</span></div>
+  <div class="sp"></div><div class="idx">03</div><h2 class="pt" style="margin-top:24px">Quedas viraram rotina.</h2>
+  <p class="ps" style="margin-top:24px">Cada hora fora do ar é receita, produtividade e confiança do cliente indo embora.</p>
+  <div class="sp"></div><div class="ftr"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="a4"><div class="aC"></div><div class="gr"></div><div class="gn"></div>
+<div class="in"><div class="hdr"><img class="ic" src="/brand/novra-icon.png"><span class="ctrn">04 / 05</span></div>
+  <div class="sp"></div><div class="idx">04</div><h2 class="pt" style="margin-top:24px">Integrar algo novo é sempre “impossível”.</h2>
+  <p class="ps" style="margin-top:24px">O sistema não conversa com nada. Cada nova ferramenta vira um projeto caro — ou não acontece.</p>
+  <div class="sp"></div><div class="ftr"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="a5"><div class="aC"></div><div class="gr"></div><div class="gn"></div>
+<div class="in"><div class="hdr"><img class="ic" src="/brand/novra-icon.png"><span class="ctrn">05 / 05</span></div>
+  <div class="sp"></div><div class="idx">05</div><h2 class="pt" style="margin-top:24px">Tudo depende de 2 ou 3 pessoas.</h2>
+  <p class="ps" style="margin-top:24px">Quando elas saem de férias — ou da empresa — o conhecimento vai junto. Risco existencial.</p>
+  <div class="sp"></div><div class="ftr"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="acta"><img class="img" src="/img/social/s-infra.jpg"><div class="scC"></div><div class="gn"></div>
+<div class="in ctr"><div class="sp"></div><span class="kick c">Novra Tech</span>
+  <h1 class="ph" style="margin-top:26px">A modernização <span class="grad">paga a si mesma.</span></h1>
+  <p class="ps" style="text-align:center;margin:26px auto 0">Vamos calcular o seu caso? O diagnóstico inicial é gratuito.</p>
+  <span class="chip" style="margin-top:42px"><span class="dotg"></span>contato@novratech.com.br</span>
+  <div class="sp"></div><div class="ftr" style="width:100%"><span>novratech.com.br</span><span>@novra.tech</span></div></div></div>
+
+<!-- ============ CARROSSEL B · SERVIÇOS (image-led) ============ -->
+<div class="post" id="b0"><img class="img" src="/img/social/s-cables.jpg"><div class="scC"></div><div class="gn"></div>
+<div class="in"><div class="hdr"><img class="lg" src="/brand/novra-logo.png"><span class="nm">Capacidades</span></div>
+  <div class="sp"></div><span class="kick">O que fazemos</span>
+  <h1 class="phb" style="margin-top:28px">Tudo o que a Novra faz pela sua <span class="grad">tecnologia.</span></h1>
+  <div class="sp"></div><span class="arr">Arraste para ver →</span>
+  <div class="ftr" style="margin-top:46px"><span><span class="d">✦</span> Salve este post</span><span>novratech.com.br</span></div>
+</div></div>
+
+<div class="post" id="b1"><img class="img" src="/img/social/s-code.jpg"><div class="scB"></div><div class="gn"></div>
+<div class="in end"><span class="tag" style="position:absolute;top:96px;left:96px">01 · Engenharia</span>
+  <h2 class="svcname">Desenvolvimento<br>de Software</h2><p class="ps" style="margin-top:22px">Produtos robustos, escaláveis e seguros — do discovery à operação.</p>
+  <div class="ftr" style="margin-top:46px"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="b2"><img class="img" src="/img/social/s-codecolor.jpg"><div class="scB"></div><div class="gn"></div>
+<div class="in end"><span class="tag" style="position:absolute;top:96px;left:96px">02 · Inteligência</span>
+  <h2 class="svcname">IA &amp; Automação</h2><p class="ps" style="margin-top:22px">Inteligência artificial em produção, com governança e ROI comprovado.</p>
+  <div class="ftr" style="margin-top:46px"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="b3"><img class="img" src="/img/social/s-drive.jpg"><div class="scB"></div><div class="gn"></div>
+<div class="in end"><span class="tag" style="position:absolute;top:96px;left:96px">03 · Infra</span>
+  <h2 class="svcname">Cloud &amp;<br>Modernização</h2><p class="ps" style="margin-top:22px">Do legado à nuvem, sem interromper a operação. Mais performance, menos custo.</p>
+  <div class="ftr" style="margin-top:46px"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="b4"><img class="img" src="/img/social/s-dashboard.jpg"><div class="scB"></div><div class="gn"></div>
+<div class="in end"><span class="tag" style="position:absolute;top:96px;left:96px">04 · Dados</span>
+  <h2 class="svcname">Dados &amp;<br>Analytics</h2><p class="ps" style="margin-top:22px">Da ingestão à decisão: inteligência acionável a partir dos seus dados, em tempo real.</p>
+  <div class="ftr" style="margin-top:46px"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="b5"><img class="img" src="/img/social/s-cyber2.jpg"><div class="scB"></div><div class="gn"></div>
+<div class="in end"><span class="tag" style="position:absolute;top:96px;left:96px">05 · Segurança</span>
+  <h2 class="svcname">Cibersegurança</h2><p class="ps" style="margin-top:22px">Segurança por design e conformidade — LGPD, SOC 2 e ISO 27001.</p>
+  <div class="ftr" style="margin-top:46px"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="b6"><img class="img" src="/img/social/s-blueprint.jpg"><div class="scB"></div><div class="gn"></div>
+<div class="in end"><span class="tag" style="position:absolute;top:96px;left:96px">06 · Estratégia</span>
+  <h2 class="svcname">Consultoria<br>em TI</h2><p class="ps" style="margin-top:22px">Alinhamos tecnologia a resultado: roadmap, arquitetura e due diligence.</p>
+  <div class="ftr" style="margin-top:46px"><span>@novra.tech</span><span>novratech.com.br</span></div></div></div>
+
+<div class="post" id="bcta"><div class="aS"></div><div class="gr"></div><div class="gn"></div>
+<div class="in ctr"><div class="sp"></div><span class="kick c">Vamos construir</span>
+  <h1 class="ph" style="margin-top:26px">Um parceiro para toda a <span class="grad">jornada digital.</span></h1>
+  <p class="ps" style="text-align:center;margin:26px auto 0">Conte o seu desafio. Em até 1 dia útil um especialista retorna com os próximos passos.</p>
+  <span class="chip" style="margin-top:42px"><span class="dotg"></span>contato@novratech.com.br</span>
+  <div class="sp"></div><div class="ftr" style="width:100%"><span>novratech.com.br</span><span>@novra.tech</span></div></div></div>
+
+</body></html>

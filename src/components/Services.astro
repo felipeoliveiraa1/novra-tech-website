@@ -1,0 +1,157 @@
+---
+import Icon from './Icon.astro';
+
+const services = [
+  {
+    icon: 'strategy',
+    title: 'Consultoria Estratégica em TI',
+    desc: 'Alinhamos tecnologia a resultados de negócio. Mapeamos riscos, identificamos alavancas de crescimento e desenhamos o roadmap que conecta cada investimento em TI a ROI mensurável.',
+    tags: ['Roadmap', 'Arquitetura', 'Due diligence'],
+  },
+  {
+    icon: 'code',
+    title: 'Desenvolvimento de Software Sob Medida',
+    desc: 'Engenharia de produtos digitais robustos, escaláveis e seguros. Do discovery à operação, construímos plataformas que sustentam milhões de transações sem comprometer a experiência.',
+    tags: ['Discovery', 'Full-stack', 'APIs'],
+  },
+  {
+    icon: 'modernize',
+    title: 'Modernização de Sistemas',
+    desc: 'Transformamos infraestruturas legadas em arquiteturas ágeis na nuvem — sem interromper a operação. Mais performance, menos custo e preparo para a próxima década.',
+    tags: ['Cloud migration', 'Microsserviços', 'Refactor'],
+  },
+  {
+    icon: 'ai',
+    title: 'Inteligência Artificial & Automação',
+    desc: 'Colocamos IA em produção com governança. De copilotos a automações de processos, geramos eficiência operacional e novas fontes de receita a partir dos seus dados.',
+    tags: ['LLMs', 'RAG', 'MLOps', 'Agentes'],
+  },
+  {
+    icon: 'cloud',
+    title: 'Cloud & DevOps',
+    desc: 'Infraestrutura como código, CI/CD e observabilidade de ponta a ponta. Entregas mais rápidas, ambientes resilientes e custos de nuvem sob controle.',
+    tags: ['AWS', 'Kubernetes', 'Terraform'],
+  },
+  {
+    icon: 'data',
+    title: 'Dados & Analytics',
+    desc: 'Da ingestão à decisão. Construímos plataformas de dados confiáveis e dashboards que transformam informação dispersa em inteligência acionável em tempo real.',
+    tags: ['Data Lake', 'BI', 'Streaming'],
+  },
+  {
+    icon: 'security',
+    title: 'Cibersegurança',
+    desc: 'Segurança por design em cada camada. Pentests, hardening, conformidade (LGPD, SOC 2, ISO 27001) e resposta a incidentes para proteger o que é crítico.',
+    tags: ['Pentest', 'LGPD', 'SOC 2'],
+  },
+  {
+    icon: 'devices',
+    title: 'Aplicações Web & Mobile',
+    desc: 'Experiências digitais de alta performance. Interfaces rápidas, acessíveis e impecáveis para web e mobile que elevam engajamento, retenção e conversão.',
+    tags: ['React', 'Next.js', 'Flutter'],
+  },
+];
+---
+<section class="section services" id="servicos">
+  <span class="glow-orb services__orb" aria-hidden="true"></span>
+  <div class="container">
+    <div class="services__head">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">Capacidades</span>
+        <h2 class="h2 balance">Engenharia sob medida para os desafios que <span class="text-gradient">definem o seu negócio</span></h2>
+      </div>
+      <p class="lead pretty services__intro" data-reveal style="--reveal-delay: 120ms">
+        Um único parceiro para toda a jornada digital — da estratégia à operação.
+        Combinamos profundidade técnica e disciplina de entrega para resolver os
+        problemas que realmente movem o seu negócio.
+      </p>
+    </div>
+
+    <div class="services__grid">
+      {services.map((s, i) => (
+        <article class="service card card-accent" data-reveal style={`--reveal-delay: ${(i % 4) * 80}ms`}>
+          <span class="service__index">{String(i + 1).padStart(2, '0')}</span>
+          <span class="service__icon"><Icon name={s.icon} size={26} /></span>
+          <h3 class="service__title">{s.title}</h3>
+          <p class="service__desc">{s.desc}</p>
+          <ul class="service__tags">
+            {s.tags.map((t) => <li>{t}</li>)}
+          </ul>
+          <span class="service__arrow"><Icon name="arrow-up-right" size={18} /></span>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .services { position: relative; z-index: 2; overflow: hidden; }
+  .services__orb {
+    top: -6%; left: 30%;
+    width: 46vw; height: 46vw; max-width: 680px; max-height: 680px;
+    background: radial-gradient(circle, rgba(42, 91, 255, 0.14), transparent 66%);
+  }
+  .services__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  }
+  .services__intro { max-width: 480px; }
+
+  .services__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.3rem;
+  }
+  .service {
+    padding: clamp(1.6rem, 1.2rem + 1.2vw, 2.2rem);
+    display: flex;
+    flex-direction: column;
+    min-height: 270px;
+  }
+  .service__index {
+    position: absolute; top: 1.4rem; right: 1.5rem;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-3);
+    letter-spacing: 0.05em;
+  }
+  .service__icon {
+    display: grid; place-items: center;
+    width: 54px; height: 54px;
+    border-radius: 14px;
+    background: linear-gradient(160deg, rgba(42, 91, 255, 0.22), rgba(0, 194, 255, 0.08));
+    border: 1px solid var(--border-brand);
+    color: var(--cyan-300);
+    margin-bottom: 1.4rem;
+    transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+  }
+  .service:hover .service__icon { transform: translateY(-3px); box-shadow: var(--glow-cyan); }
+  .service__title { font-size: 1.18rem; line-height: 1.2; margin-bottom: 0.7rem; }
+  .service__desc { font-size: 0.95rem; color: var(--text-2); line-height: 1.6; }
+  .service__tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: auto; padding-top: 1.3rem; }
+  .service__tags li {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.02em;
+    color: var(--text-3);
+    padding: 0.3em 0.65em;
+    border: 1px solid var(--border); border-radius: var(--r-pill);
+    background: var(--surface);
+  }
+  .service__arrow {
+    position: absolute; bottom: 1.5rem; right: 1.5rem;
+    color: var(--text-3);
+    opacity: 0; transform: translate(-4px, 4px);
+    transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out), color 0.5s var(--ease-out);
+  }
+  .service:hover .service__arrow { opacity: 1; transform: none; color: var(--cyan-400); }
+
+  @media (min-width: 640px) {
+    .services__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 900px) {
+    .services__head { grid-template-columns: 1.4fr 1fr; }
+  }
+  @media (min-width: 1100px) {
+    .services__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>

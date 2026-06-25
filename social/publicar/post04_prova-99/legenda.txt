@@ -1,0 +1,5 @@
+99,99% de disponibilidade. ⚡
+
+Disponibilidade não é detalhe técnico — é o que separa quem opera de quem para. Cada minuto fora do ar tem custo real.
+
+#uptime #cloud #devops #engenhariadesoftware #SRE #missaocritica

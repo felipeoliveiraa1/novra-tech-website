@@ -1,0 +1,14 @@
+NOVRA TECH — KIT DE INSTAGRAM (ordem de publicacao)
+================================================
+
+post01_lancamento  —  POST UNICO
+post02_manifesto  —  POST UNICO
+post03_carrossel-5sinais  —  CARROSSEL (7 slides)
+post04_prova-99  —  POST UNICO
+post05_carrossel-servicos  —  CARROSSEL (8 slides)
+post06_frase  —  POST UNICO
+post07_cultura  —  POST UNICO
+post08_cta  —  POST UNICO
+
+Cada pasta tem a(s) imagem(ns) + legenda.txt pronto pra colar.
+Nos carrosseis, suba os arquivos na ordem do nome (01, 02, 03...).

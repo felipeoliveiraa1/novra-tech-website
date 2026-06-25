@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Novra · Kit Instagram</title>
+<style>
+  :root{--bg:#0b0d12;--card:#13161e;--cy:#39c8ff;--t1:#eef3ff;--t2:#9aa3bd;--bd:rgba(255,255,255,.08)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--t1);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;padding:32px clamp(16px,4vw,48px) 80px}
+  header{max-width:1100px;margin:0 auto 8px}
+  h1{font-size:clamp(24px,4vw,34px);letter-spacing:-.02em}
+  h1 span{color:var(--cy)}
+  .sub{color:var(--t2);margin-top:6px;font-size:15px}
+  h2{font-size:18px;letter-spacing:.04em;text-transform:uppercase;color:var(--t2);margin:46px auto 4px;max-width:1100px;display:flex;align-items:center;gap:12px}
+  h2::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--cy);box-shadow:0 0 12px var(--cy)}
+  .hint{max-width:1100px;margin:0 auto 16px;color:var(--t2);font-size:14px}
+  .grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+  .grid figure{background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden}
+  .grid img{width:100%;display:block;aspect-ratio:1080/1350;object-fit:cover}
+  .grid figcaption{padding:10px 12px;font-size:13px;color:var(--t2)}
+  /* carousel row */
+  .row{max-width:1100px;margin:0 auto;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 0 18px;scrollbar-color:var(--cy) transparent}
+  .row::-webkit-scrollbar{height:10px}
+  .row::-webkit-scrollbar-thumb{background:var(--cy);border-radius:8px}
+  .slide{position:relative;flex:0 0 auto;scroll-snap-align:center;border-radius:16px;overflow:hidden;border:1px solid var(--bd);background:var(--card)}
+  .slide img{height:560px;width:auto;display:block;aspect-ratio:1080/1350}
+  .num{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);border:1px solid var(--bd);border-radius:999px;padding:5px 12px;font-size:12px;letter-spacing:.1em;color:var(--cy)}
+  .swipe{max-width:1100px;margin:0 auto 8px;color:var(--cy);font-size:13px;letter-spacing:.05em}
+  @media(max-width:600px){.slide img{height:62vh}}
+</style></head>
+<body>
+<header>
+  <h1>Novra · <span>Kit de lançamento do Instagram</span></h1>
+  <p class="sub">6 posts únicos + 2 carrosséis · 1080×1350 · arquivos em <code>/social/kit/</code></p>
+</header>
+
+<h2>Posts únicos</h2>
+<p class="hint">Cada um é um post avulso (formato e imagem diferentes).</p>
+<div class="grid">
+  <figure><img src="./kit/single-1-lancamento.png"><figcaption>1 · Lançamento</figcaption></figure>
+  <figure><img src="./kit/single-2-manifesto.png"><figcaption>2 · Manifesto</figcaption></figure>
+  <figure><img src="./kit/single-3-stat.png"><figcaption>3 · Prova (99,99%)</figcaption></figure>
+  <figure><img src="./kit/single-4-frase.png"><figcaption>4 · Frase de impacto</figcaption></figure>
+  <figure><img src="./kit/single-5-cultura.png"><figcaption>5 · Cultura / bastidores</figcaption></figure>
+  <figure><img src="./kit/single-6-cta.png"><figcaption>6 · CTA</figcaption></figure>
+</div>
+
+<h2>Carrossel A · “5 sinais”</h2>
+<p class="swipe">← deslize para o lado para ver os 7 slides →</p>
+<div class="row">
+  <div class="slide"><span class="num">CAPA</span><img src="./kit/carrosselA-0-capa.png"></div>
+  <div class="slide"><span class="num">01</span><img src="./kit/carrosselA-1.png"></div>
+  <div class="slide"><span class="num">02</span><img src="./kit/carrosselA-2.png"></div>
+  <div class="slide"><span class="num">03</span><img src="./kit/carrosselA-3.png"></div>
+  <div class="slide"><span class="num">04</span><img src="./kit/carrosselA-4.png"></div>
+  <div class="slide"><span class="num">05</span><img src="./kit/carrosselA-5.png"></div>
+  <div class="slide"><span class="num">CTA</span><img src="./kit/carrosselA-6-cta.png"></div>
+</div>
+
+<h2>Carrossel B · “Serviços”</h2>
+<p class="swipe">← deslize para o lado para ver os 8 slides →</p>
+<div class="row">
+  <div class="slide"><span class="num">CAPA</span><img src="./kit/carrosselB-0-capa.png"></div>
+  <div class="slide"><span class="num">01</span><img src="./kit/carrosselB-1-dev.png"></div>
+  <div class="slide"><span class="num">02</span><img src="./kit/carrosselB-2-ia.png"></div>
+  <div class="slide"><span class="num">03</span><img src="./kit/carrosselB-3-cloud.png"></div>
+  <div class="slide"><span class="num">04</span><img src="./kit/carrosselB-4-dados.png"></div>
+  <div class="slide"><span class="num">05</span><img src="./kit/carrosselB-5-cyber.png"></div>
+  <div class="slide"><span class="num">06</span><img src="./kit/carrosselB-6-consultoria.png"></div>
+  <div class="slide"><span class="num">CTA</span><img src="./kit/carrosselB-7-cta.png"></div>
+</div>
+
+</body></html>

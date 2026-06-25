@@ -1,0 +1,172 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Novra Tech — Engenharia de software e IA para empresas que não podem falhar',
+  description = 'Novra Tech projeta, constrói e escala sistemas de missão crítica. Consultoria estratégica, engenharia de software, IA, cloud e cibersegurança para empresas que não podem falhar.',
+} = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#05070e" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- No-JS fallback: never hide content if scripts fail/are disabled -->
+    <noscript>
+      <style>
+        [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
+        .hw { animation: none !important; opacity: 1 !important; }
+        .hero__canvas { opacity: 1 !important; }
+        .cursor, .scroll-progress { display: none !important; }
+      </style>
+    </noscript>
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/brand/novra-icon-512.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Novra Tech" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/brand/novra-icon-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Novra Tech',
+      description,
+      url: 'https://novratech.com.br',
+      logo: 'https://novratech.com.br/brand/novra-icon-512.png',
+      sameAs: [],
+    })} />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+    <!-- Ambient background -->
+    <div class="bg-canvas" aria-hidden="true">
+      <div class="bg-grid"></div>
+      <div class="glow-orb orb-a"></div>
+      <div class="glow-orb orb-b"></div>
+      <div class="glow-orb orb-c"></div>
+    </div>
+
+    <!-- Scroll progress -->
+    <div class="scroll-progress" aria-hidden="true"><span id="scroll-bar"></span></div>
+
+    <!-- Custom cursor -->
+    <div class="cursor" id="cursor" aria-hidden="true">
+      <div class="cursor__dot"></div>
+      <div class="cursor__ring"></div>
+    </div>
+
+    <slot />
+
+    <div class="grain" aria-hidden="true"></div>
+
+    <script src="../scripts/main.js"></script>
+
+    <style>
+      .bg-canvas {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+        background:
+          radial-gradient(120% 80% at 50% -10%, rgba(13, 22, 55, 0.85), transparent 60%),
+          var(--bg-0);
+      }
+      .bg-grid {
+        position: absolute;
+        inset: -2px;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+        background-size: 64px 64px;
+        -webkit-mask-image: linear-gradient(180deg, #000, rgba(0,0,0,0.4) 45%, rgba(0,0,0,0.55) 75%, transparent);
+        mask-image: linear-gradient(180deg, #000, rgba(0,0,0,0.4) 45%, rgba(0,0,0,0.55) 75%, transparent);
+      }
+      .orb-a {
+        top: -12vh; left: 50%;
+        width: 60vw; height: 60vw;
+        max-width: 900px; max-height: 900px;
+        transform: translateX(-50%);
+        background: radial-gradient(circle, rgba(20, 70, 255, 0.5), transparent 65%);
+        animation: pulse-glow 9s var(--ease-in-out) infinite;
+      }
+      .orb-b {
+        bottom: -16vh; right: -10vw;
+        width: 48vw; height: 48vw;
+        max-width: 720px; max-height: 720px;
+        background: radial-gradient(circle, rgba(0, 180, 255, 0.26), transparent 65%);
+        animation: float-orb 14s var(--ease-in-out) infinite;
+      }
+      .orb-c {
+        top: 38%; left: -12vw;
+        width: 42vw; height: 42vw;
+        max-width: 620px; max-height: 620px;
+        background: radial-gradient(circle, rgba(42, 91, 255, 0.18), transparent 66%);
+        opacity: 0.4;
+        animation: float-orb 18s var(--ease-in-out) infinite reverse;
+      }
+      .scroll-progress {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        z-index: 120;
+        background: transparent;
+      }
+      #scroll-bar {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: var(--grad-brand);
+        box-shadow: 0 0 12px rgba(0, 194, 255, 0.6);
+        transition: width 0.1s linear;
+      }
+      /* Custom cursor */
+      .cursor { position: fixed; top: 0; left: 0; z-index: 300; pointer-events: none; mix-blend-mode: difference; opacity: 0; transition: opacity 0.3s; }
+      .cursor__dot {
+        position: absolute; top: 0; left: 0;
+        width: 6px; height: 6px; border-radius: 50%; background: #fff;
+        transform: translate(-50%, -50%);
+      }
+      .cursor__ring {
+        position: absolute; top: 0; left: 0;
+        width: 38px; height: 38px; border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transform: translate(-50%, -50%);
+        transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out), border-color 0.3s;
+      }
+      .cursor.is-hover .cursor__ring { width: 56px; height: 56px; border-color: #fff; }
+      @media (hover: hover) and (pointer: fine) {
+        body.has-cursor { cursor: none; }
+        body.has-cursor a, body.has-cursor button { cursor: none; }
+      }
+      @media (max-width: 768px) { .cursor { display: none; } }
+      @media (prefers-reduced-motion: reduce) {
+        .orb-a, .orb-b { animation: none; }
+      }
+    </style>
+  </body>
+</html>
