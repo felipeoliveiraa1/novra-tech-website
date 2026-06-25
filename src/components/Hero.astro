@@ -1,7 +1,6 @@
 ---
 import Icon from './Icon.astro';
 
-// Headline cinético (reveal por palavra). Acento em azul = tecnologia viva.
 const words = [
   { t: 'Sistemas' }, { t: 'inteligentes' }, { t: 'para' },
   { t: 'a' }, { t: 'próxima', a: true }, { t: 'era.', a: true },
@@ -9,18 +8,17 @@ const words = [
 const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
 ---
 <section class="hero" id="topo">
-  <div class="hero__bg" aria-hidden="true">
-    <div class="hero__grid"></div>
-    <div class="hero__glow"></div>
+  <!-- Rosto tecnológico sangrando do canto direito, dissolvido no preto -->
+  <div class="hero__face-layer" aria-hidden="true">
+    <span class="hero__rim"></span>
+    <img class="hero__face" src="/img/hero-face.png" alt="" width="769" height="941" fetchpriority="high" />
+    <span class="hero__veil"></span>
   </div>
 
   <div class="container hero__inner">
     <div class="hero__content">
       <div class="hero__eyebrow" data-reveal>
-        <span class="chip">
-          <span class="dot"></span>
-          Tecnologia premium · IA · Cloud · Sistemas
-        </span>
+        <span class="chip"><span class="dot"></span> Tecnologia premium · Sistemas inteligentes</span>
       </div>
 
       <h1 class="hero__title">
@@ -50,12 +48,11 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
         {caps.map((c) => <li>{c}</li>)}
       </ul>
     </div>
-
-    <div class="hero__visual" data-reveal style="--reveal-delay: 300ms" aria-hidden="true">
-      <img class="hero__face" src="/img/hero-face.png" alt="" width="769" height="941" fetchpriority="high" />
-      <span class="hero__face-fade"></span>
-    </div>
   </div>
+
+  <a class="hero__scroll" href="#solucoes" data-reveal style="--reveal-delay: 980ms" aria-label="Rolar">
+    <span class="hero__scroll-line"><i></i></span>
+  </a>
 </section>
 
 <style>
@@ -66,46 +63,53 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
     display: flex;
     align-items: center;
     padding-top: clamp(6rem, 12vh, 8.5rem);
-    padding-bottom: clamp(4rem, 8vh, 6rem);
+    padding-bottom: clamp(5rem, 9vh, 7rem);
     overflow: hidden;
+    background: var(--bg-0);
   }
-  /* Refined ambient — preto + grid sutil + um brilho azul suave (sem excesso) */
-  .hero__bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-  .hero__grid {
+
+  /* ---- Rosto no canto ---- */
+  .hero__face-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .hero__face {
+    position: absolute;
+    top: 50%; right: -4%;
+    height: 122%; width: auto; max-width: none;
+    transform: translateY(-50%);
+    object-fit: contain;
+    /* dissolve as bordas no preto — sem retângulo */
+    -webkit-mask-image: radial-gradient(68% 64% at 66% 42%, #000 42%, transparent 76%);
+    mask-image: radial-gradient(68% 64% at 66% 42%, #000 42%, transparent 76%);
+    filter: contrast(1.06) brightness(1.0);
+  }
+  /* brilho de borda sutil (rim light) — azul frio, baixo */
+  .hero__rim {
+    position: absolute;
+    top: 42%; right: 6%; transform: translateY(-50%);
+    width: 44vw; height: 70vh; max-width: 720px;
+    background: radial-gradient(closest-side, rgba(46,107,255,0.16), rgba(0,168,255,0.05) 50%, transparent 72%);
+    filter: blur(10px);
+  }
+  /* véu preto da esquerda → integra o rosto e protege o texto */
+  .hero__veil {
     position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(241,242,245,0.028) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(241,242,245,0.028) 1px, transparent 1px);
-    background-size: 72px 72px;
-    -webkit-mask-image: radial-gradient(110% 90% at 20% 30%, #000 35%, transparent 78%);
-    mask-image: radial-gradient(110% 90% at 20% 30%, #000 35%, transparent 78%);
-  }
-  .hero__glow {
-    position: absolute; top: 38%; left: 62%; transform: translate(-50%, -50%);
-    width: min(760px, 70vw); height: min(680px, 72vh);
-    background: radial-gradient(closest-side, rgba(46,107,255,0.20), rgba(0,168,255,0.06) 55%, transparent 76%);
+    background:
+      linear-gradient(90deg, var(--bg-0) 30%, rgba(10,10,12,0.55) 52%, transparent 78%),
+      linear-gradient(180deg, var(--bg-0) 2%, transparent 18%, transparent 82%, var(--bg-0) 100%);
   }
 
-  .hero__inner {
-    position: relative; z-index: 2;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(2.5rem, 5vw, 4rem);
-    align-items: center;
-    width: 100%;
-  }
-  .hero__content { display: flex; flex-direction: column; align-items: flex-start; max-width: 640px; }
+  .hero__inner { position: relative; z-index: 2; width: 100%; }
+  .hero__content { display: flex; flex-direction: column; align-items: flex-start; max-width: 600px; }
 
-  /* Headline cinético */
   .hero__title {
     margin-top: 1.5rem;
-    font-size: clamp(2.5rem, 1.3rem + 4.2vw, 4.6rem);
-    line-height: 1.04;
-    letter-spacing: -0.035em;
+    font-size: clamp(2.6rem, 1.3rem + 4.6vw, 5rem);
+    line-height: 1.03;
+    letter-spacing: -0.038em;
     font-weight: 600;
     color: var(--text-1);
-    display: flex; flex-wrap: wrap; gap: 0 0.26em;
-    max-width: 13ch;
+    display: flex; flex-wrap: wrap; gap: 0 0.24em;
+    max-width: 12ch;
+    text-shadow: 0 2px 40px rgba(0,0,0,0.6);
   }
   .hw { display: inline-block; animation: word-rise 0.85s var(--ease-out) backwards; animation-delay: var(--d, 0ms); }
   .hw--accent {
@@ -117,48 +121,36 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
     to { opacity: 1; transform: none; filter: none; }
   }
 
-  .hero__sig { margin: 1.7rem 0 0; width: 132px; }
-  .hero__lead { margin-top: 1.5rem; max-width: 540px; color: var(--text-2); }
-  .hero__lead strong { color: var(--text-1); font-weight: 600; }
-  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2rem; }
-
-  .hero__caps {
-    display: flex; flex-wrap: wrap; gap: 0.6rem 0.5rem;
-    margin-top: 2.2rem;
+  .hero__sig { margin: 1.8rem 0 0; width: 128px; }
+  .hero__lead {
+    margin-top: 1.6rem; max-width: 480px; color: var(--text-2);
+    text-shadow: 0 1px 18px rgba(0,0,0,0.6);
   }
+  .hero__lead strong { color: var(--text-1); font-weight: 600; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2.1rem; }
+  .hero__caps { display: flex; flex-wrap: wrap; gap: 0.6rem 0.5rem; margin-top: 2.3rem; }
   .hero__caps li {
-    font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.04em;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.05em;
     color: var(--text-2);
     padding: 0.4em 0.85em; border: 1px solid var(--border); border-radius: var(--r-pill);
-    background: var(--surface);
+    background: rgba(255,255,255,0.015);
   }
 
-  /* Tech face */
-  .hero__visual { position: relative; justify-self: center; width: 100%; max-width: 560px; }
-  .hero__face {
-    width: 100%; height: auto; display: block;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 100%),
-      linear-gradient(180deg, #000 70%, transparent);
-    -webkit-mask-composite: source-in; mask-composite: intersect;
-    mask-image: linear-gradient(90deg, transparent, #000 22%, #000 100%),
-      linear-gradient(180deg, #000 70%, transparent);
-    filter: contrast(1.05) brightness(1.02);
-  }
-  .hero__face-fade {
-    position: absolute; inset: 0;
-    background: linear-gradient(90deg, var(--bg-0) 2%, transparent 30%);
-    pointer-events: none;
-  }
+  .hero__scroll { position: absolute; bottom: clamp(3.5rem, 6vh, 4.5rem); left: var(--gutter); z-index: 2; }
+  .hero__scroll-line { display: block; width: 1px; height: 46px; background: var(--border-strong); position: relative; overflow: hidden; }
+  .hero__scroll-line i { position: absolute; top: 0; left: 0; width: 100%; height: 45%; background: var(--blue-energy); animation: scroll-hint 2s var(--ease-in-out) infinite; }
 
-  @media (min-width: 1000px) {
-    .hero__inner { grid-template-columns: 1.05fr 0.95fr; }
-    .hero__visual { justify-self: end; max-width: none; }
-    .hero__face { max-height: 84vh; width: auto; margin-inline: auto; }
-  }
+  /* tablet/mobile: rosto recua para o fundo, mais sutil */
   @media (max-width: 999px) {
-    .hero__visual { order: -1; max-width: 360px; opacity: 0.9; }
+    .hero__face { right: -22%; height: 100%; opacity: 0.5; }
+    .hero__veil { background:
+      linear-gradient(90deg, var(--bg-0) 35%, rgba(10,10,12,0.6) 60%, rgba(10,10,12,0.3) 100%),
+      linear-gradient(180deg, var(--bg-0), transparent 22%, transparent 80%, var(--bg-0)); }
+    .hero__content { max-width: 100%; }
+    .hero__scroll { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .hw { animation: none; }
+    .hero__scroll-line i { animation: none; }
   }
 </style>
