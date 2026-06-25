@@ -480,3 +480,73 @@ if (!prefersReduced) {
     draw(); window.addEventListener('resize', draw);
   }
 })();
+
+/* ------------------------------------------------------------------ */
+/* Hero cinemagraph — luzes vivas SOBRE a imagem estática             */
+/* (a foto nunca muda; só as partículas de luz se movem)              */
+/* ------------------------------------------------------------------ */
+(() => {
+  const canvas = document.getElementById('hero-fx');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let w = 0, h = 0, parts = [];
+  const GOLD = [244, 227, 166], GOLD2 = [201, 162, 75], BLUE = [110, 150, 255], BLUE2 = [0, 168, 255];
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const alphaByX = (x) => { const t = x / w; return t < 0.40 ? 0 : (t > 0.66 ? 1 : (t - 0.40) / 0.26); };
+
+  function make() {
+    const n = Math.min(90, Math.max(26, Math.floor((w * h) / 15000)));
+    parts = Array.from({ length: n }, () => {
+      const x = w * 0.45 + Math.sqrt(Math.random()) * w * 0.58;
+      const c = Math.random();
+      const col = c < 0.5 ? GOLD : (c < 0.6 ? GOLD2 : (c < 0.85 ? BLUE2 : BLUE));
+      return {
+        x, y: Math.random() * h,
+        vx: rand(-0.05, 0.05), vy: rand(-0.16, -0.03),
+        r: rand(0.6, 2.0), col, ph: Math.random() * 6.283, sp: rand(0.006, 0.018),
+        big: Math.random() < 0.12,
+      };
+    });
+  }
+  function resize() {
+    const r = canvas.getBoundingClientRect();
+    w = r.width; h = r.height;
+    canvas.width = Math.max(1, Math.floor(w * dpr));
+    canvas.height = Math.max(1, Math.floor(h * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    make();
+  }
+  function frame() {
+    ctx.clearRect(0, 0, w, h);
+    for (const p of parts) {
+      p.x += p.vx; p.y += p.vy; p.ph += p.sp;
+      if (p.y < -12) { p.y = h + 12; }
+      if (p.x < w * 0.30) p.x = w + 8; else if (p.x > w + 12) p.x = w * 0.34;
+      const tw = 0.42 + 0.58 * Math.sin(p.ph);
+      const a = alphaByX(p.x) * tw * (p.big ? 0.95 : 0.6);
+      if (a <= 0.012) continue;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * (p.big ? 1.7 : 1), 0, 6.2832);
+      ctx.fillStyle = `rgba(${p.col[0]},${p.col[1]},${p.col[2]},${a})`;
+      ctx.shadowColor = `rgba(${p.col[0]},${p.col[1]},${p.col[2]},${a})`;
+      ctx.shadowBlur = p.big ? 15 : 7;
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+  }
+  let run = false, raf = null;
+  const tick = () => { if (!run) return; frame(); raf = requestAnimationFrame(tick); };
+  const start = () => { if (!run) { run = true; tick(); } };
+  const stop = () => { run = false; if (raf) cancelAnimationFrame(raf); };
+
+  resize();
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(resize, 200); });
+  requestAnimationFrame(() => canvas.classList.add('is-ready'));
+
+  if (prefersReduced) { frame(); }
+  else if ('IntersectionObserver' in window) {
+    new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? start() : stop())), { threshold: 0 }).observe(canvas);
+  } else { start(); }
+})();
