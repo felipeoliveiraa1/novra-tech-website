@@ -1,43 +1,56 @@
 /* ============================================================
-   NOVRA TECH — Design System
-   Dark, cinematic, enterprise-grade. Brand: electric blue → cyan.
+   NOVRA — Design System (brandbook oficial)
+   Dark premium: preto fosco · prata/cromo · azul tech · ouro pontual.
+   Proporção: preto 65% · prata/branco 20% · azul 10% · ouro 5%.
    ============================================================ */
 
 /* ---------- Design Tokens ---------- */
 :root {
-  /* Brand — derived from the Novra logo gradient */
-  --blue-700: #0026d6;
-  --blue-600: #0a3bff;
-  --blue-500: #2a5bff;
-  --cyan-500: #00c2ff;
-  --cyan-400: #45d6ff;
-  --cyan-300: #8be6ff;
+  /* Brand accents — blue = tecnologia viva, gold = prestígio (uso escasso) */
+  --blue: #2e6bff;          /* Azul Tech */
+  --blue-energy: #00a8ff;   /* Azul Energia */
+  --gold: #c9a24b;          /* Ouro Premium */
+  --gold-light: #f4e3a6;    /* Ouro Claro */
 
-  --grad-brand: linear-gradient(120deg, #2a5bff 0%, #00c2ff 100%);
-  --grad-brand-soft: linear-gradient(120deg, #2a5bff 0%, #19c8ff 60%, #8be6ff 100%);
-  --grad-text: linear-gradient(180deg, #ffffff 0%, #c9d6ff 100%);
+  /* Legacy aliases remapped to the new palette (so var() refs recolor) */
+  --blue-700: #1b3fae;
+  --blue-600: #2e6bff;
+  --blue-500: #2e6bff;
+  --cyan-500: #00a8ff;
+  --cyan-400: #4d8dff;
+  --cyan-300: #8fb6ff;
+
+  /* Gradients */
+  --grad-brand: linear-gradient(120deg, #2e6bff 0%, #00a8ff 100%);        /* botão azul */
+  --grad-brand-soft: linear-gradient(180deg, #cfe0ff 0%, #5b93ff 58%, #2e6bff 100%); /* palavra-chave azul */
+  --grad-gold: linear-gradient(120deg, #f4e3a6 0%, #c9a24b 100%);          /* palavra-chave ouro */
+  --grad-silver: linear-gradient(135deg, #ffffff 0%, #cfd3da 45%, #8a909c 100%); /* cromo */
+  --grad-text: linear-gradient(180deg, #ffffff 0%, #c2c7d0 100%);          /* números prata */
+  --grad-signature: linear-gradient(90deg, #2e6bff 0%, #c9a24b 50%, #00a8ff 100%); /* assinatura azul→ouro→azul */
 
   /* Surfaces */
-  --bg-0: #05070e;
-  --bg-1: #080b14;
-  --bg-2: #0b0f1c;
-  --bg-3: #0f1424;
-  --surface: rgba(255, 255, 255, 0.025);
-  --surface-2: rgba(255, 255, 255, 0.04);
+  --bg-0: #0a0a0c;
+  --bg-1: #101016;
+  --bg-2: #15151d;
+  --bg-3: #1b1b24;
+  --surface: rgba(255, 255, 255, 0.022);
+  --surface-2: rgba(255, 255, 255, 0.038);
   --surface-hover: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --border-brand: rgba(42, 91, 255, 0.4);
+  --border: rgba(241, 242, 245, 0.09);
+  --border-strong: rgba(241, 242, 245, 0.16);
+  --border-brand: rgba(46, 107, 255, 0.42);
+  --border-gold: rgba(201, 162, 75, 0.4);
 
   /* Text */
-  --text-1: #f4f7ff;
-  --text-2: #b2bbd2;
-  --text-3: #828dab;
+  --text-1: #f1f2f5;
+  --text-2: #9aa0ac;
+  --text-3: #6e7480;
   --text-on-brand: #ffffff;
 
   /* Glow */
-  --glow-blue: 0 0 80px rgba(42, 91, 255, 0.35);
-  --glow-cyan: 0 0 60px rgba(0, 194, 255, 0.3);
+  --glow-blue: 0 0 70px rgba(46, 107, 255, 0.3);
+  --glow-cyan: 0 0 55px rgba(0, 168, 255, 0.28);
+  --glow-gold: 0 0 48px rgba(201, 162, 75, 0.24);
 
   /* Typography */
   --font-display: 'Space Grotesk Variable', system-ui, sans-serif;
@@ -110,7 +123,7 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 ul, ol { list-style: none; }
 input, textarea, select { font: inherit; color: inherit; }
-::selection { background: rgba(42, 91, 255, 0.4); color: #fff; }
+::selection { background: rgba(46, 107, 255, 0.4); color: #fff; }
 
 h1, h2, h3, h4, h5 {
   font-family: var(--font-display);
@@ -167,10 +180,29 @@ h1, h2, h3, h4, h5 {
   background-clip: text;
   color: transparent;
 }
+.text-gold {
+  background: var(--grad-gold);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.text-silver {
+  background: var(--grad-silver);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 .text-bright { color: var(--text-1); }
 .text-dim { color: var(--text-3); }
 .balance { text-wrap: balance; }
 .pretty { text-wrap: pretty; }
+
+/* Assinatura da marca: linha azul → ouro → azul */
+.signature-line {
+  height: 2px; width: 100%; border: 0; border-radius: 2px;
+  background: var(--grad-signature);
+  box-shadow: 0 0 18px rgba(46, 107, 255, 0.35);
+}
+.signature-line--sm { height: 1px; }
+.head-sig { display: block; width: 84px; margin: 1rem 0 0; }
+.footer__sig { width: 120px; margin: 1.1rem 0 1.2rem; border: 0; }
+.section-head.is-centered .head-sig { margin-inline: auto; }
 
 .section-head { max-width: 760px; }
 .section-head.is-centered { margin-inline: auto; text-align: center; }
@@ -202,10 +234,10 @@ h1, h2, h3, h4, h5 {
 .btn-primary {
   background: var(--grad-brand);
   color: var(--text-on-brand);
-  box-shadow: 0 8px 30px rgba(10, 59, 255, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 30px rgba(46, 107, 255, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
 }
 .btn-primary:hover {
-  box-shadow: 0 12px 44px rgba(10, 90, 255, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 44px rgba(46, 107, 255, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.22);
   transform: translateY(-2px);
 }
 .btn-primary:hover svg { transform: translateX(4px); }

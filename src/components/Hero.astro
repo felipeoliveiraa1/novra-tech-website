@@ -1,61 +1,59 @@
 ---
 import Icon from './Icon.astro';
 
-// Kinetic headline — words rise + sharpen, staggered (CSS-only, accent-safe).
+// Headline cinético (reveal por palavra). Acento em azul = tecnologia viva.
 const words = [
-  { t: 'Transformamos' }, { t: 'complexidade' }, { t: 'em' },
-  { t: 'vantagem', a: true }, { t: 'competitiva.', a: true },
+  { t: 'Sistemas' }, { t: 'inteligentes' }, { t: 'para' },
+  { t: 'a' }, { t: 'próxima', a: true }, { t: 'era.', a: true },
 ];
-const ticker = [
-  'Engenharia de Software', 'Inteligência Artificial', 'Cloud & DevOps',
-  'Dados & Analytics', 'Cibersegurança', 'Modernização de Sistemas',
-];
+const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
 ---
 <section class="hero" id="topo">
-  <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
-  <div class="hero__halo" aria-hidden="true"></div>
-  <div class="hero__scrim" aria-hidden="true"></div>
-
-  <div class="container hero__inner">
-    <div class="hero__chip" data-reveal>
-      <span class="chip">
-        <span class="dot"></span>
-        Engenharia de software &amp; IA · Operações críticas
-      </span>
-    </div>
-
-    <h1 class="hero__title">
-      {words.map((w, i) => (
-        <span class={w.a ? 'hw hw--accent' : 'hw'} style={`--d:${i * 50 + 140}ms`}>{w.t}</span>
-      ))}
-    </h1>
-
-    <p class="hero__lead lead pretty" data-reveal style="--reveal-delay: 680ms">
-      Projetamos, construímos e escalamos os sistemas que sustentam operações de alto
-      risco — com engenharia de ponta, inteligência artificial e visão estratégica
-      para gerar resultado real e mensurável.
-    </p>
-
-    <div class="hero__actions" data-reveal style="--reveal-delay: 780ms">
-      <a href="#contato" class="btn btn-primary btn-lg" data-magnetic>
-        Iniciar um projeto
-        <Icon name="arrow-right" />
-      </a>
-      <a href="#servicos" class="btn btn-ghost btn-lg" data-magnetic>
-        Explorar capacidades
-      </a>
-    </div>
+  <div class="hero__bg" aria-hidden="true">
+    <div class="hero__grid"></div>
+    <div class="hero__glow"></div>
   </div>
 
-  <!-- Capability ticker -->
-  <div class="hero__ticker" aria-hidden="true">
-    <div class="marquee" style="--marquee-dur: 38s; --marquee-gap: 2.4rem">
-      <div class="marquee__track">
-        {ticker.map((t) => (<span class="hero__ticker-item"><span class="hero__ticker-star">✦</span>{t}</span>))}
+  <div class="container hero__inner">
+    <div class="hero__content">
+      <div class="hero__eyebrow" data-reveal>
+        <span class="chip">
+          <span class="dot"></span>
+          Tecnologia premium · IA · Cloud · Sistemas
+        </span>
       </div>
-      <div class="marquee__track" aria-hidden="true">
-        {ticker.map((t) => (<span class="hero__ticker-item"><span class="hero__ticker-star">✦</span>{t}</span>))}
+
+      <h1 class="hero__title">
+        {words.map((w, i) => (
+          <span class={w.a ? 'hw hw--accent' : 'hw'} style={`--d:${i * 55 + 140}ms`}>{w.t}</span>
+        ))}
+      </h1>
+
+      <span class="hero__sig signature-line" data-reveal style="--reveal-delay: 560ms" aria-hidden="true"></span>
+
+      <p class="hero__lead lead pretty" data-reveal style="--reveal-delay: 640ms">
+        Desenvolvemos soluções em tecnologia, IA, automação e sistemas digitais para
+        empresas que buscam <strong>performance, segurança e escala.</strong>
+      </p>
+
+      <div class="hero__actions" data-reveal style="--reveal-delay: 740ms">
+        <a href="#contato" class="btn btn-primary btn-lg" data-magnetic>
+          Fale com um especialista
+          <Icon name="arrow-right" />
+        </a>
+        <a href="#solucoes" class="btn btn-ghost btn-lg" data-magnetic>
+          Conheça nossas soluções
+        </a>
       </div>
+
+      <ul class="hero__caps" data-reveal style="--reveal-delay: 840ms">
+        {caps.map((c) => <li>{c}</li>)}
+      </ul>
+    </div>
+
+    <div class="hero__visual" data-reveal style="--reveal-delay: 300ms" aria-hidden="true">
+      <img class="hero__face" src="/img/hero-face.png" alt="" width="769" height="941" fetchpriority="high" />
+      <span class="hero__face-fade"></span>
     </div>
   </div>
 </section>
@@ -67,127 +65,100 @@ const ticker = [
     min-height: 100svh;
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
     padding-top: clamp(6rem, 12vh, 8.5rem);
-    padding-bottom: clamp(6rem, 11vh, 8.5rem);
+    padding-bottom: clamp(4rem, 8vh, 6rem);
     overflow: hidden;
   }
-  .hero__canvas {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    z-index: 0; pointer-events: none;
-    opacity: 0; transition: opacity 1.4s ease;
+  /* Refined ambient — preto + grid sutil + um brilho azul suave (sem excesso) */
+  .hero__bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .hero__grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(241,242,245,0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(241,242,245,0.028) 1px, transparent 1px);
+    background-size: 72px 72px;
+    -webkit-mask-image: radial-gradient(110% 90% at 20% 30%, #000 35%, transparent 78%);
+    mask-image: radial-gradient(110% 90% at 20% 30%, #000 35%, transparent 78%);
   }
-  .hero__canvas.is-ready { opacity: 1; }
-
-  /* Soft brand halo behind the headline */
-  .hero__halo {
-    position: absolute; top: 44%; left: 50%; z-index: 0;
-    width: min(900px, 92vw); height: min(620px, 70vh);
-    transform: translate(-50%, -50%);
-    background: radial-gradient(closest-side, rgba(20, 80, 255, 0.28), rgba(0, 170, 255, 0.08) 55%, transparent 78%);
-    pointer-events: none;
-    animation: pulse-glow 8s var(--ease-in-out) infinite;
-  }
-  /* Readability scrim — darkens the center where the text sits, keeps aurora at the edges */
-  .hero__scrim {
-    position: absolute; inset: 0; z-index: 1; pointer-events: none;
-    background:
-      radial-gradient(58% 52% at 50% 45%, rgba(5,7,14,0.82) 0%, rgba(5,7,14,0.5) 52%, transparent 82%),
-      linear-gradient(180deg, rgba(5,7,14,0.55) 0%, transparent 22%, transparent 60%, var(--bg-0) 99%);
+  .hero__glow {
+    position: absolute; top: 38%; left: 62%; transform: translate(-50%, -50%);
+    width: min(760px, 70vw); height: min(680px, 72vh);
+    background: radial-gradient(closest-side, rgba(46,107,255,0.20), rgba(0,168,255,0.06) 55%, transparent 76%);
   }
 
   .hero__inner {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
+    position: relative; z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 5vw, 4rem);
     align-items: center;
-    max-width: 880px;
+    width: 100%;
   }
+  .hero__content { display: flex; flex-direction: column; align-items: flex-start; max-width: 640px; }
 
-  /* Kinetic headline — CSS-only, accent-safe */
+  /* Headline cinético */
   .hero__title {
     margin-top: 1.5rem;
-    font-size: clamp(2.4rem, 1.3rem + 4.1vw, 4.6rem);
-    line-height: 1.05;
-    letter-spacing: -0.034em;
+    font-size: clamp(2.5rem, 1.3rem + 4.2vw, 4.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
     font-weight: 600;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0 0.26em;
-    max-width: 15ch;
-    text-shadow: 0 2px 44px rgba(0, 0, 0, 0.6), 0 1px 14px rgba(0, 0, 0, 0.5);
+    color: var(--text-1);
+    display: flex; flex-wrap: wrap; gap: 0 0.26em;
+    max-width: 13ch;
   }
-  .hw {
-    display: inline-block;
-    animation: word-rise 0.85s var(--ease-out) backwards;
-    animation-delay: var(--d, 0ms);
-  }
+  .hw { display: inline-block; animation: word-rise 0.85s var(--ease-out) backwards; animation-delay: var(--d, 0ms); }
   .hw--accent {
-    background: linear-gradient(180deg, #cdf0ff 0%, #5fd6ff 58%, #2fc4ff 100%);
+    background: var(--grad-brand-soft);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   @keyframes word-rise {
-    from { opacity: 0; transform: translateY(0.5em); filter: blur(12px); }
+    from { opacity: 0; transform: translateY(0.5em); filter: blur(10px); }
     to { opacity: 1; transform: none; filter: none; }
   }
 
-  .hero__lead {
-    margin-top: 1.5rem;
-    max-width: 600px;
-    font-size: clamp(1.02rem, 0.96rem + 0.4vw, 1.22rem);
-    color: var(--text-1);
-    text-shadow: 0 1px 24px rgba(0, 0, 0, 0.65);
-  }
-  .hero__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.9rem; margin-top: 2.1rem; }
-  .hero__proof {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem 1.8rem;
+  .hero__sig { margin: 1.7rem 0 0; width: 132px; }
+  .hero__lead { margin-top: 1.5rem; max-width: 540px; color: var(--text-2); }
+  .hero__lead strong { color: var(--text-1); font-weight: 600; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2rem; }
+
+  .hero__caps {
+    display: flex; flex-wrap: wrap; gap: 0.6rem 0.5rem;
     margin-top: 2.2rem;
-    font-size: 0.88rem; color: var(--text-2);
   }
-  .hero__proof li { display: inline-flex; align-items: center; gap: 0.5em; }
-  .hero__proof :global(svg) { color: var(--cyan-400); }
-
-  /* Scroll cue */
-  .hero__scroll {
-    position: absolute;
-    bottom: clamp(4.2rem, 7vh, 5.5rem); left: 50%; transform: translateX(-50%);
-    z-index: 2;
-  }
-  .hero__scroll-line { display: block; width: 1px; height: 46px; background: var(--border-strong); position: relative; overflow: hidden; }
-  .hero__scroll-line i { position: absolute; top: 0; left: 0; width: 100%; height: 45%; background: var(--cyan-400); animation: scroll-hint 2s var(--ease-in-out) infinite; }
-
-  /* Capability ticker */
-  .hero__ticker {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    z-index: 2;
-    padding: 1rem 0;
-    border-top: 1px solid var(--border);
-    background: linear-gradient(180deg, transparent, rgba(8, 11, 20, 0.6));
-    backdrop-filter: blur(4px);
-  }
-  .hero__ticker-item {
-    display: inline-flex; align-items: center; gap: 1.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+  .hero__caps li {
+    font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.04em;
     color: var(--text-2);
-    white-space: nowrap;
-    padding-right: 2.4rem;
+    padding: 0.4em 0.85em; border: 1px solid var(--border); border-radius: var(--r-pill);
+    background: var(--surface);
   }
-  .hero__ticker-star { color: var(--cyan-400); font-size: 0.7rem; }
 
-  @media (max-width: 600px) {
-    .hero__scroll { display: none; }
+  /* Tech face */
+  .hero__visual { position: relative; justify-self: center; width: 100%; max-width: 560px; }
+  .hero__face {
+    width: 100%; height: auto; display: block;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 100%),
+      linear-gradient(180deg, #000 70%, transparent);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+    mask-image: linear-gradient(90deg, transparent, #000 22%, #000 100%),
+      linear-gradient(180deg, #000 70%, transparent);
+    filter: contrast(1.05) brightness(1.02);
+  }
+  .hero__face-fade {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, var(--bg-0) 2%, transparent 30%);
+    pointer-events: none;
+  }
+
+  @media (min-width: 1000px) {
+    .hero__inner { grid-template-columns: 1.05fr 0.95fr; }
+    .hero__visual { justify-self: end; max-width: none; }
+    .hero__face { max-height: 84vh; width: auto; margin-inline: auto; }
+  }
+  @media (max-width: 999px) {
+    .hero__visual { order: -1; max-width: 360px; opacity: 0.9; }
   }
   @media (prefers-reduced-motion: reduce) {
     .hw { animation: none; }
-    .hero__canvas { opacity: 1; }
-    .hero__halo, .hero__scroll-line i { animation: none; }
-    .marquee__track { animation: none; }
   }
 </style>

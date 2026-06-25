@@ -3,24 +3,34 @@ import Icon from './Icon.astro';
 
 const pillars = [
   {
-    icon: 'spark',
-    title: 'Inovação Contínua',
-    desc: 'Mantemos o seu negócio à frente da curva, aplicando as tecnologias mais recentes e eficazes — sempre com propósito, governança e resultado.',
+    icon: 'pulse',
+    title: 'Performance',
+    desc: 'Sistemas rápidos e eficientes, otimizados para suportar volume e pressão sem perder estabilidade.',
   },
   {
-    icon: 'handshake',
-    title: 'Parceria Estratégica',
-    desc: 'Trabalhamos como uma extensão do seu time. Entendemos suas dores, antecipamos riscos e construímos as soluções que realmente importam.',
+    icon: 'security',
+    title: 'Segurança',
+    desc: 'Proteção em cada camada: segurança por design, conformidade e resposta a incidentes.',
+  },
+  {
+    icon: 'layers',
+    title: 'Escalabilidade',
+    desc: 'Arquiteturas preparadas para crescer com o seu negócio — sem reescrever tudo a cada salto.',
   },
   {
     icon: 'target',
-    title: 'Excelência de Engenharia',
-    desc: 'Compromisso com entregas de alto padrão: código limpo, performance impecável, segurança por design e suporte contínuo.',
+    title: 'Precisão',
+    desc: 'Engenharia de alto padrão: código limpo, decisões fundamentadas e zero achismo.',
   },
   {
-    icon: 'pulse',
-    title: 'Resultados Mensuráveis',
-    desc: 'Definimos métricas claras desde o início e entregamos impacto positivo com retorno sobre o investimento comprovado.',
+    icon: 'handshake',
+    title: 'Integração',
+    desc: 'Sistemas, dados e ferramentas conversando entre si. Tudo conectado, sem ilhas.',
+  },
+  {
+    icon: 'infinity',
+    title: 'Visão de futuro',
+    desc: 'Construímos pensando na próxima década, não apenas no próximo trimestre.',
   },
 ];
 ---
@@ -29,16 +39,16 @@ const pillars = [
   <div class="container why__inner">
     <div class="why__intro">
       <div class="section-head" data-reveal>
-        <span class="eyebrow">Por que Novra</span>
-        <h2 class="h2 balance">Não somos fornecedores. Somos <span class="text-gradient">arquitetos</span> do seu futuro digital.</h2>
+        <span class="eyebrow">Diferenciais</span>
+        <span class="signature-line signature-line--sm head-sig" aria-hidden="true"></span>
+        <h2 class="h2 balance">Tecnologia confiável para <span class="text-gradient">negócios sérios.</span></h2>
         <p class="lead pretty">
-          Trabalhamos lado a lado com líderes que não aceitam mediocridade. Cada decisão
-          de engenharia é guiada por um único objetivo: gerar impacto real e duradouro
-          no seu negócio.
+          A NOVRA cria soluções digitais inteligentes para transformar complexidade em clareza —
+          na interseção entre software, IA, automação, cloud e sistemas de missão crítica.
         </p>
       </div>
       <a href="#contato" class="link-arrow why__link" data-reveal data-magnetic>
-        Conversar com a Novra <Icon name="arrow-right" size={18} />
+        Fale com a NOVRA <Icon name="arrow-right" size={18} />
       </a>
     </div>
 
@@ -59,7 +69,7 @@ const pillars = [
   .why__orb {
     top: 30%; left: -10%;
     width: 40vw; height: 40vw; max-width: 560px; max-height: 560px;
-    background: radial-gradient(circle, rgba(42, 91, 255, 0.22), transparent 65%);
+    background: radial-gradient(circle, rgba(46, 107, 255, 0.22), transparent 65%);
   }
   .why__inner {
     position: relative;
@@ -89,7 +99,7 @@ const pillars = [
     display: grid; place-items: center;
     width: 50px; height: 50px;
     border-radius: 13px;
-    background: linear-gradient(160deg, rgba(42, 91, 255, 0.2), rgba(0, 194, 255, 0.06));
+    background: linear-gradient(160deg, rgba(46, 107, 255, 0.2), rgba(0, 168, 255, 0.06));
     border: 1px solid var(--border-brand);
     color: var(--cyan-300);
     margin-bottom: 1.2rem;

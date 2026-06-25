@@ -6,20 +6,20 @@ const EMAIL = 'contato@novratech.com.br'; // EDITE
 
 const cols = [
   {
-    title: 'Serviços',
+    title: 'Soluções',
     links: [
-      { label: 'Consultoria em TI', href: '#servicos' },
-      { label: 'Desenvolvimento', href: '#servicos' },
-      { label: 'IA & Automação', href: '#servicos' },
-      { label: 'Cloud & DevOps', href: '#servicos' },
-      { label: 'Cibersegurança', href: '#servicos' },
+      { label: 'Inteligência Artificial', href: '#solucoes' },
+      { label: 'Desenvolvimento de Sistemas', href: '#solucoes' },
+      { label: 'Automações', href: '#solucoes' },
+      { label: 'Cloud & Infraestrutura', href: '#solucoes' },
+      { label: 'Segurança Digital', href: '#solucoes' },
     ],
   },
   {
     title: 'Empresa',
     links: [
-      { label: 'Como trabalhamos', href: '#processo' },
-      { label: 'Por que Novra', href: '#diferenciais' },
+      { label: 'Diferenciais', href: '#diferenciais' },
+      { label: 'Processo', href: '#processo' },
       { label: 'Tecnologias', href: '#tecnologias' },
       { label: 'Contato', href: '#contato' },
     ],
@@ -30,10 +30,11 @@ const cols = [
   <div class="container">
     <div class="footer__top">
       <div class="footer__brand">
-        <img src="/brand/novra-logo.png" alt="Novra Tech" class="footer__logo" width="1486" height="329" />
+        <img src="/brand/novra-logo.png" alt="NOVRA" class="footer__logo" width="1492" height="383" />
+        <hr class="signature-line signature-line--sm footer__sig" aria-hidden="true" />
         <p class="footer__tagline pretty">
-          Engenharia de software, inteligência artificial e cloud para operações
-          de alto risco. Tecnologia que acelera o seu negócio.
+          Sistemas inteligentes para a próxima era. Software, IA, automação e cloud
+          com performance, segurança e escala.
         </p>
         <div class="footer__social">
           <a href="#" aria-label="LinkedIn" class="footer__social-link" data-magnetic>
@@ -72,7 +73,7 @@ const cols = [
     <div class="footer__watermark" aria-hidden="true">NOVRA</div>
 
     <div class="footer__bottom">
-      <p>© {year} Novra Tech. Todos os direitos reservados.</p>
+      <p>© {year} NOVRA. Todos os direitos reservados.</p>
       <div class="footer__legal">
         <a href="#">Privacidade</a>
         <a href="#">Termos</a>
@@ -98,7 +99,7 @@ const cols = [
     border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--text-2);
     transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out), background 0.3s var(--ease-out), transform 0.3s var(--ease-out);
   }
-  .footer__social-link:hover { color: var(--cyan-300); border-color: var(--border-brand); background: rgba(42, 91, 255, 0.12); transform: translateY(-2px); }
+  .footer__social-link:hover { color: var(--cyan-300); border-color: var(--border-brand); background: rgba(46, 107, 255, 0.12); transform: translateY(-2px); }
 
   .footer__cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
   .footer__col-title { font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 1.1rem; font-weight: 500; }

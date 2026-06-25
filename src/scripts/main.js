@@ -474,7 +474,7 @@ if (!prefersReduced) {
       const rect = cv.getBoundingClientRect();
       cv.width = rect.width; cv.height = rect.height;
       const g = ctx.createRadialGradient(rect.width*0.5, rect.height*0.4, 0, rect.width*0.5, rect.height*0.4, rect.width*0.7);
-      g.addColorStop(0, 'rgba(20,70,255,0.35)'); g.addColorStop(0.5, 'rgba(0,120,220,0.12)'); g.addColorStop(1, 'rgba(5,7,14,0)');
+      g.addColorStop(0, 'rgba(46, 107, 255,0.35)'); g.addColorStop(0.5, 'rgba(0,120,220,0.12)'); g.addColorStop(1, 'rgba(5,7,14,0)');
       ctx.fillStyle = g; ctx.fillRect(0,0,rect.width,rect.height);
     };
     draw(); window.addEventListener('resize', draw);

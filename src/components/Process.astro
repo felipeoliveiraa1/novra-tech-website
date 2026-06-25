@@ -4,23 +4,28 @@ import Icon from './Icon.astro';
 const steps = [
   {
     icon: 'search',
-    title: 'Diagnóstico & Estratégia',
-    desc: 'Imersão no seu negócio. Mapeamos objetivos, restrições e riscos para definir o caminho de maior impacto — antes de escrever uma linha de código.',
+    title: 'Diagnóstico',
+    desc: 'Imersão no seu negócio. Mapeamos objetivos, restrições e riscos para definir o caminho de maior impacto.',
   },
   {
     icon: 'blueprint',
-    title: 'Arquitetura & Blueprint',
-    desc: 'Desenhamos a arquitetura, o plano de entrega e os critérios de sucesso. Você sabe exatamente o que será construído, quando e por quê.',
+    title: 'Arquitetura',
+    desc: 'Desenhamos a arquitetura, o plano de entrega e os critérios de sucesso. Clareza total do que será construído.',
   },
   {
-    icon: 'rocket',
-    title: 'Engenharia & Entrega',
-    desc: 'Squads sênior em ciclos curtos, com qualidade, testes e segurança desde o primeiro commit. Entregas contínuas e visibilidade total do progresso.',
+    icon: 'code',
+    title: 'Desenvolvimento',
+    desc: 'Squads sênior em ciclos curtos, com qualidade, testes e segurança desde o primeiro commit.',
+  },
+  {
+    icon: 'layers',
+    title: 'Integração',
+    desc: 'Conectamos sistemas, dados e ferramentas. Tudo conversando, sem ilhas e sem retrabalho.',
   },
   {
     icon: 'infinity',
-    title: 'Evolução & Operação',
-    desc: 'Monitoramento, otimização e evolução contínua. Operamos lado a lado com o seu time para garantir performance e ROI no longo prazo.',
+    title: 'Otimização',
+    desc: 'Monitoramento e evolução contínua para garantir performance, segurança e ROI no longo prazo.',
   },
 ];
 ---
@@ -28,10 +33,11 @@ const steps = [
   <span class="glow-orb process__orb" aria-hidden="true"></span>
   <div class="container">
     <div class="section-head" data-reveal>
-      <span class="eyebrow">Como trabalhamos</span>
-      <h2 class="h2 balance">Um processo desenhado para reduzir risco e <span class="text-gradient">acelerar resultado</span></h2>
+      <span class="eyebrow">Processo</span>
+      <span class="signature-line signature-line--sm head-sig" aria-hidden="true"></span>
+      <h2 class="h2 balance">Menos risco. <span class="text-gradient">Mais resultado.</span></h2>
       <p class="lead pretty">
-        Metodologia transparente, do primeiro diagnóstico à operação contínua.
+        Metodologia transparente, do diagnóstico à operação contínua.
         Sem caixas-pretas — você acompanha cada decisão e cada métrica.
       </p>
     </div>
@@ -59,7 +65,7 @@ const steps = [
   .process__orb {
     top: 18%; right: -8%;
     width: 38vw; height: 38vw; max-width: 540px; max-height: 540px;
-    background: radial-gradient(circle, rgba(0, 160, 255, 0.16), transparent 66%);
+    background: radial-gradient(circle, rgba(0, 168, 255, 0.16), transparent 66%);
   }
   .process .section-head { margin-bottom: clamp(2.8rem, 2rem + 3vw, 4.5rem); }
   .process__grid {
@@ -92,7 +98,7 @@ const steps = [
     display: grid; place-items: center;
     width: 50px; height: 50px;
     border-radius: 13px;
-    background: linear-gradient(160deg, rgba(42, 91, 255, 0.22), rgba(0, 194, 255, 0.08));
+    background: linear-gradient(160deg, rgba(46, 107, 255, 0.22), rgba(0, 168, 255, 0.08));
     border: 1px solid var(--border-brand);
     color: var(--cyan-300);
     transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
@@ -105,7 +111,7 @@ const steps = [
     .process__grid { grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
   }
   @media (min-width: 1040px) {
-    .process__grid { grid-template-columns: repeat(4, 1fr); gap: 1.1rem; }
+    .process__grid { grid-template-columns: repeat(5, 1fr); gap: 1rem; }
     .process__line {
       display: block;
       position: absolute;

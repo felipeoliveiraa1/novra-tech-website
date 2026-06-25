@@ -9,8 +9,8 @@ interface Props {
   description?: string;
 }
 const {
-  title = 'Novra Tech — Engenharia de software e IA para empresas que não podem falhar',
-  description = 'Novra Tech projeta, constrói e escala sistemas de missão crítica. Consultoria estratégica, engenharia de software, IA, cloud e cibersegurança para empresas que não podem falhar.',
+  title = 'NOVRA — Sistemas inteligentes para a próxima era',
+  description = 'A NOVRA desenvolve soluções em tecnologia, IA, automação, cloud e sistemas digitais para empresas que buscam performance, segurança e escala.',
 } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
 ---
@@ -22,7 +22,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#05070e" />
+    <meta name="theme-color" content="#0a0a0c" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- No-JS fallback: never hide content if scripts fail/are disabled -->
@@ -43,7 +43,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
-    <meta property="og:site_name" content="Novra Tech" />
+    <meta property="og:site_name" content="NOVRA" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content="/brand/novra-icon-512.png" />
@@ -52,7 +52,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'Novra Tech',
+      name: 'NOVRA',
       description,
       url: 'https://novratech.com.br',
       logo: 'https://novratech.com.br/brand/novra-icon-512.png',
@@ -111,7 +111,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
         width: 60vw; height: 60vw;
         max-width: 900px; max-height: 900px;
         transform: translateX(-50%);
-        background: radial-gradient(circle, rgba(20, 70, 255, 0.5), transparent 65%);
+        background: radial-gradient(circle, rgba(46, 107, 255, 0.5), transparent 65%);
         animation: pulse-glow 9s var(--ease-in-out) infinite;
       }
       .orb-b {
@@ -125,7 +125,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
         top: 38%; left: -12vw;
         width: 42vw; height: 42vw;
         max-width: 620px; max-height: 620px;
-        background: radial-gradient(circle, rgba(42, 91, 255, 0.18), transparent 66%);
+        background: radial-gradient(circle, rgba(46, 107, 255, 0.18), transparent 66%);
         opacity: 0.4;
         animation: float-orb 18s var(--ease-in-out) infinite reverse;
       }
@@ -141,7 +141,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
         height: 100%;
         width: 0%;
         background: var(--grad-brand);
-        box-shadow: 0 0 12px rgba(0, 194, 255, 0.6);
+        box-shadow: 0 0 12px rgba(0, 168, 255, 0.6);
         transition: width 0.1s linear;
       }
       /* Custom cursor */
