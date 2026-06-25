@@ -11,8 +11,9 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
   <!-- Rosto tecnológico sangrando do canto direito, dissolvido no preto -->
   <div class="hero__face-layer" aria-hidden="true">
     <span class="hero__rim"></span>
-    <img class="hero__face" src="/img/hero-face.png" alt="" width="769" height="941" fetchpriority="high" />
+    <img class="hero__face" src="/img/hero-face.jpg" alt="" width="1501" height="1800" fetchpriority="high" />
     <canvas class="hero__fx" id="hero-fx"></canvas>
+    <span class="hero__sweep"></span>
     <span class="hero__veil"></span>
   </div>
 
@@ -87,8 +88,27 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
     position: absolute;
     top: 42%; right: 6%; transform: translateY(-50%);
     width: 44vw; height: 70vh; max-width: 720px;
-    background: radial-gradient(closest-side, rgba(46,107,255,0.16), rgba(0,168,255,0.05) 50%, transparent 72%);
+    background: radial-gradient(closest-side, rgba(46,107,255,0.18), rgba(0,168,255,0.06) 50%, transparent 72%);
     filter: blur(10px);
+    animation: rim-breathe 7s var(--ease-in-out) infinite;
+  }
+  @keyframes rim-breathe { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+
+  /* brilho metálico que varre o rosto (chrome shine) */
+  .hero__sweep {
+    position: absolute; top: 0; right: 0; width: 72%; height: 100%; z-index: 1;
+    pointer-events: none; mix-blend-mode: screen;
+    background: linear-gradient(115deg, transparent 36%, rgba(205,214,238,0.10) 47%, rgba(255,255,255,0.18) 50%, rgba(205,214,238,0.10) 53%, transparent 64%);
+    background-size: 250% 100%;
+    -webkit-mask-image: radial-gradient(58% 60% at 70% 42%, #000 28%, transparent 72%);
+    mask-image: radial-gradient(58% 60% at 70% 42%, #000 28%, transparent 72%);
+    animation: face-sweep 8s var(--ease-in-out) infinite;
+  }
+  @keyframes face-sweep {
+    0% { background-position: 130% 0; opacity: 0; }
+    25% { opacity: 1; }
+    60% { opacity: 1; }
+    100% { background-position: -30% 0; opacity: 0; }
   }
   /* véu preto da esquerda → integra o rosto e protege o texto */
   /* cinemagraph: só os pontos de luz se movem — a imagem fica parada */
@@ -160,6 +180,7 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
   }
   @media (prefers-reduced-motion: reduce) {
     .hw { animation: none; }
-    .hero__scroll-line i { animation: none; }
+    .hero__scroll-line i, .hero__rim, .hero__sweep { animation: none; }
+    .hero__sweep { opacity: 0; }
   }
 </style>

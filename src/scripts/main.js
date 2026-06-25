@@ -482,8 +482,8 @@ if (!prefersReduced) {
 })();
 
 /* ------------------------------------------------------------------ */
-/* Hero cinemagraph — luzes vivas SOBRE a imagem estática             */
-/* (a foto nunca muda; só as partículas de luz se movem)              */
+/* Hero cinemagraph — rede de luz viva SOBRE a imagem estática        */
+/* (a foto nunca muda; só as luzes se movem)                          */
 /* ------------------------------------------------------------------ */
 (() => {
   const canvas = document.getElementById('hero-fx');
@@ -492,21 +492,24 @@ if (!prefersReduced) {
   if (!ctx) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   let w = 0, h = 0, parts = [];
-  const GOLD = [244, 227, 166], GOLD2 = [201, 162, 75], BLUE = [110, 150, 255], BLUE2 = [0, 168, 255];
+  const GOLD = [248, 232, 175], GOLD2 = [201, 162, 75], BLUE = [120, 158, 255], BLUE2 = [0, 168, 255];
   const rand = (a, b) => a + Math.random() * (b - a);
-  const alphaByX = (x) => { const t = x / w; return t < 0.40 ? 0 : (t > 0.66 ? 1 : (t - 0.40) / 0.26); };
+  const alphaByX = (x) => { const t = x / w; return t < 0.38 ? 0 : (t > 0.64 ? 1 : (t - 0.38) / 0.26); };
 
   function make() {
-    const n = Math.min(90, Math.max(26, Math.floor((w * h) / 15000)));
+    const n = Math.min(120, Math.max(34, Math.floor((w * h) / 12000)));
     parts = Array.from({ length: n }, () => {
-      const x = w * 0.45 + Math.sqrt(Math.random()) * w * 0.58;
+      const x = w * 0.42 + Math.sqrt(Math.random()) * w * 0.62;
       const c = Math.random();
-      const col = c < 0.5 ? GOLD : (c < 0.6 ? GOLD2 : (c < 0.85 ? BLUE2 : BLUE));
+      const col = c < 0.52 ? GOLD : (c < 0.62 ? GOLD2 : (c < 0.86 ? BLUE2 : BLUE));
+      const comet = Math.random() < 0.05;
       return {
         x, y: Math.random() * h,
-        vx: rand(-0.05, 0.05), vy: rand(-0.16, -0.03),
-        r: rand(0.6, 2.0), col, ph: Math.random() * 6.283, sp: rand(0.006, 0.018),
-        big: Math.random() < 0.12,
+        vx: comet ? rand(-0.5, -0.2) : rand(-0.05, 0.05),
+        vy: comet ? rand(-0.7, -0.35) : rand(-0.16, -0.03),
+        r: comet ? rand(1.1, 1.8) : rand(0.6, 2.1), col,
+        ph: Math.random() * 6.283, sp: rand(0.006, 0.02),
+        big: Math.random() < 0.14, comet,
       };
     });
   }
@@ -518,20 +521,45 @@ if (!prefersReduced) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     make();
   }
+  const LINK = 96;
   function frame() {
     ctx.clearRect(0, 0, w, h);
+    // rede de linhas (constelação viva)
+    ctx.lineWidth = 1;
+    for (let i = 0; i < parts.length; i++) {
+      const a = parts[i]; if (a.comet) continue;
+      const ax = alphaByX(a.x); if (ax <= 0) continue;
+      for (let j = i + 1; j < parts.length; j++) {
+        const b = parts[j]; if (b.comet) continue;
+        const dx = a.x - b.x, dy = a.y - b.y; const d = Math.hypot(dx, dy);
+        if (d < LINK) {
+          const al = (1 - d / LINK) * 0.10 * Math.min(ax, alphaByX(b.x));
+          if (al <= 0.004) continue;
+          ctx.strokeStyle = `rgba(201,170,110,${al})`;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      }
+    }
+    // pontos + cometas
     for (const p of parts) {
       p.x += p.vx; p.y += p.vy; p.ph += p.sp;
-      if (p.y < -12) { p.y = h + 12; }
-      if (p.x < w * 0.30) p.x = w + 8; else if (p.x > w + 12) p.x = w * 0.34;
+      if (p.y < -16) { p.y = h + 16; p.x = w * 0.42 + Math.sqrt(Math.random()) * w * 0.62; }
+      if (p.x < w * 0.28) p.x = w + 10; else if (p.x > w + 14) p.x = w * 0.34;
       const tw = 0.42 + 0.58 * Math.sin(p.ph);
-      const a = alphaByX(p.x) * tw * (p.big ? 0.95 : 0.6);
+      const a = alphaByX(p.x) * tw * (p.big ? 1.0 : 0.62);
       if (a <= 0.012) continue;
+      const cc = `${p.col[0]},${p.col[1]},${p.col[2]}`;
+      if (p.comet) {
+        const tl = 26; const g = ctx.createLinearGradient(p.x, p.y, p.x - p.vx * tl, p.y - p.vy * tl);
+        g.addColorStop(0, `rgba(${cc},${a})`); g.addColorStop(1, `rgba(${cc},0)`);
+        ctx.strokeStyle = g; ctx.lineWidth = p.r; ctx.beginPath();
+        ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * tl, p.y - p.vy * tl); ctx.stroke();
+      }
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r * (p.big ? 1.7 : 1), 0, 6.2832);
-      ctx.fillStyle = `rgba(${p.col[0]},${p.col[1]},${p.col[2]},${a})`;
-      ctx.shadowColor = `rgba(${p.col[0]},${p.col[1]},${p.col[2]},${a})`;
-      ctx.shadowBlur = p.big ? 15 : 7;
+      ctx.fillStyle = `rgba(${cc},${a})`;
+      ctx.shadowColor = `rgba(${cc},${a})`;
+      ctx.shadowBlur = p.big ? 16 : 7;
       ctx.fill();
     }
     ctx.shadowBlur = 0;
