@@ -107,14 +107,14 @@ const revealEls = gsap.utils.toArray('[data-reveal]');
 if (prefersReduced || !lenis) {
   revealEls.forEach((el) => el.classList.add('is-visible'));
 } else {
-  gsap.set(revealEls, { opacity: 0, y: 34, filter: 'blur(8px)' });
+  gsap.set(revealEls, { opacity: 0, y: 42, scale: 0.965, filter: 'blur(9px)' });
   ScrollTrigger.batch('[data-reveal]', {
-    start: 'top 88%',
+    start: 'top 86%',
     onEnter: (els) =>
       gsap.to(els, {
-        opacity: 1, y: 0, filter: 'blur(0px)',
-        duration: 1.0, ease: 'power3.out', stagger: 0.09, overwrite: true,
-        onComplete: () => els.forEach((el) => el.classList.add('is-visible')),
+        opacity: 1, y: 0, scale: 1, filter: 'blur(0px)',
+        duration: 1.05, ease: 'power3.out', stagger: 0.1, overwrite: true,
+        onComplete: () => els.forEach((el) => { el.classList.add('is-visible'); el.style.filter = ''; }),
       }),
   });
   // safety: never leave content hidden if something goes wrong
@@ -166,15 +166,24 @@ if ('IntersectionObserver' in window) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Card spotlight (follow cursor)                                     */
+/* Cards: tilt 3D + spotlight seguindo o cursor (premium/interativo)  */
 /* ------------------------------------------------------------------ */
 if (isFinePointer) {
-  document.querySelectorAll('.card').forEach((card) => {
+  const cards = document.querySelectorAll('.card, .service, .case, .tech__card');
+  cards.forEach((card) => {
+    const tilt = !prefersReduced;
     card.addEventListener('pointermove', (e) => {
       const r = card.getBoundingClientRect();
       card.style.setProperty('--mx', `${e.clientX - r.left}px`);
       card.style.setProperty('--my', `${e.clientY - r.top}px`);
+      if (tilt) {
+        const px = (e.clientX - (r.left + r.width / 2)) / r.width;
+        const py = (e.clientY - (r.top + r.height / 2)) / r.height;
+        card.style.transform =
+          `perspective(900px) rotateX(${(-py * 3).toFixed(2)}deg) rotateY(${(px * 3).toFixed(2)}deg) translateY(-5px)`;
+      }
     });
+    if (tilt) card.addEventListener('pointerleave', () => { card.style.transform = ''; });
   });
 }
 
@@ -357,6 +366,24 @@ if (lenis) {
       scrollTrigger: { trigger: el, start: 'top 93%' },
     });
   });
+
+  // Processo: a linha do pipeline "desenha" conforme você rola
+  const pline = document.querySelector('.process__line');
+  if (pline) {
+    gsap.fromTo(pline, { scaleX: 0, transformOrigin: 'left center' }, {
+      scaleX: 1, opacity: 0.9, ease: 'none',
+      scrollTrigger: { trigger: '.process__grid', start: 'top 78%', end: 'bottom 72%', scrub: 0.5 },
+    });
+  }
+
+  // Números grandes (stats / process) com leve respiro de profundidade
+  gsap.utils.toArray('.stat__value, .process__num').forEach((el) => {
+    gsap.fromTo(el, { y: 16 }, {
+      y: -10, ease: 'none',
+      scrollTrigger: { trigger: el.closest('section') || el, start: 'top bottom', end: 'bottom top', scrub: true },
+    });
+  });
+
 }
 
 /* ------------------------------------------------------------------ */
