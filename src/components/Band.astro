@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 ---
 <section class="band" aria-label="Engenharia para escala global">
   <div class="band__media" aria-hidden="true">
-    <img src="/img/band-earth.jpg" alt="" loading="lazy" decoding="async" width="1920" height="1000" data-band-parallax />
+    <img src="/img/band-earth.jpg" alt="" loading="lazy" decoding="async" width="1920" height="1000" data-parallax-img />
     <span class="band__overlay"></span>
     <span class="band__grid"></span>
   </div>
@@ -37,13 +37,13 @@ import Icon from './Icon.astro';
     overflow: hidden;
     border-block: 1px solid var(--border);
   }
-  .band__media { position: absolute; inset: 0; z-index: 0; }
+  .band__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
   .band__media img {
+    position: absolute; left: 0; top: -14%;
     width: 100%; height: 128%;
     object-fit: cover;
-    object-position: center 55%;
+    object-position: center 50%;
     will-change: transform;
-    transform: translateY(-11%);
   }
   .band__overlay {
     position: absolute; inset: 0;
@@ -78,6 +78,6 @@ import Icon from './Icon.astro';
   .band__cta { margin-top: 2.2rem; }
 
   @media (prefers-reduced-motion: reduce) {
-    .band__media img { transform: translateY(-12%) !important; }
+    .band__media img { transform: none !important; }
   }
 </style>

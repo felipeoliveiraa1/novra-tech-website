@@ -361,6 +361,8 @@ h1, h2, h3, h4, h5 {
   transform: none;
   filter: none;
 }
+/* GSAP assume o controle dos reveals (sem transição CSS conflitante) */
+html.gsap [data-reveal] { transition: none; }
 
 /* ---------- Marquee ---------- */
 .marquee { display: flex; overflow: hidden; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }

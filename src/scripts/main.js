@@ -1,10 +1,13 @@
 import Lenis from 'lenis';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
 
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /* ------------------------------------------------------------------ */
-/* Smooth scroll (Lenis)                                              */
+/* Smooth scroll (Lenis) + GSAP ScrollTrigger sync                    */
 /* ------------------------------------------------------------------ */
 let lenis = null;
 if (!prefersReduced) {
@@ -14,11 +17,10 @@ if (!prefersReduced) {
     smoothWheel: true,
     touchMultiplier: 1.6,
   });
-  const raf = (time) => {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  };
-  requestAnimationFrame(raf);
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((time) => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+  document.documentElement.classList.add('gsap');
 }
 
 const HEADER_OFFSET = 84; // clear the fixed header so section tops aren't hidden
@@ -99,24 +101,33 @@ toggle?.addEventListener('click', () => (menuOpen ? closeMenu() : openMenu()));
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
 
 /* ------------------------------------------------------------------ */
-/* Reveal on scroll                                                   */
+/* Reveal on scroll — GSAP batch (suave, com profundidade)            */
 /* ------------------------------------------------------------------ */
-const revealEls = document.querySelectorAll('[data-reveal]');
-if (prefersReduced || !('IntersectionObserver' in window)) {
+const revealEls = gsap.utils.toArray('[data-reveal]');
+if (prefersReduced || !lenis) {
   revealEls.forEach((el) => el.classList.add('is-visible'));
 } else {
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          io.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+  gsap.set(revealEls, { opacity: 0, y: 34, filter: 'blur(8px)' });
+  ScrollTrigger.batch('[data-reveal]', {
+    start: 'top 88%',
+    onEnter: (els) =>
+      gsap.to(els, {
+        opacity: 1, y: 0, filter: 'blur(0px)',
+        duration: 1.0, ease: 'power3.out', stagger: 0.09, overwrite: true,
+        onComplete: () => els.forEach((el) => el.classList.add('is-visible')),
+      }),
+  });
+  // safety: never leave content hidden if something goes wrong
+  window.addEventListener('load', () =>
+    setTimeout(() => ScrollTrigger.refresh(), 200)
   );
-  revealEls.forEach((el) => io.observe(el));
+  setTimeout(() => {
+    revealEls.forEach((el) => {
+      if (getComputedStyle(el).opacity === '0' && el.getBoundingClientRect().top < window.innerHeight) {
+        gsap.to(el, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6 });
+      }
+    });
+  }, 2500);
 }
 
 /* ------------------------------------------------------------------ */
@@ -308,54 +319,44 @@ if (isFinePointer && !prefersReduced) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Scroll-velocity skew (kinetic statement)                           */
+/* GSAP ScrollTrigger — profundidade ao rolar (premium, futurista)    */
 /* ------------------------------------------------------------------ */
-(() => {
-  const els = document.querySelectorAll('[data-velocity]');
-  if (!els.length || prefersReduced) return;
-  let target = 0, current = 0;
-  const apply = (v) => { target = Math.max(-7, Math.min(7, v * 0.5)); };
-  if (lenis) {
-    lenis.on('scroll', ({ velocity }) => apply(velocity || 0));
-  } else {
-    let last = window.scrollY, lt = performance.now();
-    window.addEventListener('scroll', () => {
-      const n = window.scrollY, t = performance.now();
-      apply(((n - last) / Math.max(1, t - lt)) * 16);
-      last = n; lt = t;
-    }, { passive: true });
+if (lenis) {
+  // Hero: profundidade cinematográfica ao sair — o rosto recua e desfoca,
+  // as luzes ficam para trás e o texto sobe mais rápido (camadas).
+  const hero = document.getElementById('topo');
+  if (hero) {
+    gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 } })
+      .to('.hero__face', { yPercent: -9, scale: 1.07, filter: 'blur(3px)', opacity: 0.5, ease: 'none' }, 0)
+      .to('.hero__fx', { yPercent: -16, opacity: 0.35, ease: 'none' }, 0)
+      .to('.hero__rim', { yPercent: -8, opacity: 0.25, ease: 'none' }, 0)
+      .to('.hero__content', { yPercent: -14, opacity: 0.3, ease: 'none' }, 0)
+      .to('.hero__scroll', { opacity: 0, ease: 'none' }, 0);
   }
-  const loop = () => {
-    current += (target - current) * 0.1;
-    target *= 0.9;
-    const v = current.toFixed(2) + 'deg';
-    els.forEach((el) => el.style.setProperty('--skew', v));
-    requestAnimationFrame(loop);
-  };
-  requestAnimationFrame(loop);
-})();
 
-/* ------------------------------------------------------------------ */
-/* Full-bleed band parallax                                           */
-/* ------------------------------------------------------------------ */
-if (!prefersReduced) {
-  const bands = document.querySelectorAll('[data-band-parallax]');
-  if (bands.length) {
-    const update = () => {
-      bands.forEach((img) => {
-        const sec = img.closest('section');
-        if (!sec) return;
-        const r = sec.getBoundingClientRect();
-        if (r.bottom < -100 || r.top > window.innerHeight + 100) return;
-        const progress = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
-        img.style.transform = `translateY(${-12 + progress * -10}%)`;
-      });
-    };
-    if (lenis) lenis.on('scroll', update);
-    else window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-  }
+  // Brilhos das seções em parallax (camadas em velocidades diferentes = ambiente vivo)
+  gsap.utils.toArray('.glow-orb').forEach((orb, i) => {
+    gsap.to(orb, {
+      yPercent: i % 2 ? 24 : -24, ease: 'none',
+      scrollTrigger: { trigger: orb.closest('section') || orb, start: 'top bottom', end: 'bottom top', scrub: true },
+    });
+  });
+
+  // Imagens com parallax interno (profundidade dentro do quadro)
+  gsap.utils.toArray('[data-parallax-img]').forEach((img) => {
+    gsap.fromTo(img, { yPercent: -7 }, {
+      yPercent: 7, ease: 'none',
+      scrollTrigger: { trigger: img.closest('section') || img, start: 'top bottom', end: 'bottom top', scrub: true },
+    });
+  });
+
+  // Linhas-assinatura "desenhando" ao entrar na tela
+  gsap.utils.toArray('.signature-line').forEach((el) => {
+    gsap.fromTo(el, { scaleX: 0, transformOrigin: 'left center' }, {
+      scaleX: 1, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 93%' },
+    });
+  });
 }
 
 /* ------------------------------------------------------------------ */
