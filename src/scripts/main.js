@@ -23,6 +23,16 @@ if (!prefersReduced) {
   document.documentElement.classList.add('gsap');
 }
 
+/* Hero video — fade-in suave + pausa em prefers-reduced-motion */
+(() => {
+  const v = document.querySelector('.hero__video');
+  if (!v) return;
+  const show = () => v.classList.add('is-ready');
+  if (v.readyState >= 2) show();
+  else v.addEventListener('loadeddata', show, { once: true });
+  if (prefersReduced) { v.removeAttribute('autoplay'); try { v.pause(); } catch (e) {} }
+})();
+
 const HEADER_OFFSET = 84; // clear the fixed header so section tops aren't hidden
 const scrollTo = (target) => {
   const el = typeof target === 'string' ? document.querySelector(target) : target;
@@ -336,9 +346,7 @@ if (lenis) {
   const hero = document.getElementById('topo');
   if (hero) {
     gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 } })
-      .to('.hero__face', { yPercent: -9, scale: 1.07, filter: 'blur(3px)', opacity: 0.5, ease: 'none' }, 0)
-      .to('.hero__fx', { yPercent: -16, opacity: 0.35, ease: 'none' }, 0)
-      .to('.hero__rim', { yPercent: -8, opacity: 0.25, ease: 'none' }, 0)
+      .to('.hero__video', { yPercent: -8, scale: 1.08, filter: 'blur(4px)', ease: 'none' }, 0)
       .to('.hero__content', { yPercent: -14, opacity: 0.3, ease: 'none' }, 0)
       .to('.hero__scroll', { opacity: 0, ease: 'none' }, 0);
   }

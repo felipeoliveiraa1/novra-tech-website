@@ -10,10 +10,10 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
 <section class="hero" id="topo">
   <!-- Rosto tecnológico sangrando do canto direito, dissolvido no preto -->
   <div class="hero__face-layer" aria-hidden="true">
-    <span class="hero__rim"></span>
-    <img class="hero__face" src="/img/hero-face.jpg" alt="" width="1501" height="1800" fetchpriority="high" />
-    <canvas class="hero__fx" id="hero-fx"></canvas>
-    <span class="hero__sweep"></span>
+    <video class="hero__video" autoplay muted loop playsinline preload="auto" poster="/img/hero-poster.jpg">
+      <source src="/hero.webm" type="video/webm" />
+      <source src="/hero.mp4" type="video/mp4" />
+    </video>
     <span class="hero__veil"></span>
   </div>
 
@@ -72,58 +72,20 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
 
   /* ---- Rosto no canto ---- */
   .hero__face-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-  .hero__face {
-    position: absolute;
-    top: 50%; right: -4%;
-    height: 122%; width: auto; max-width: none;
-    transform: translateY(-50%);
-    object-fit: contain;
-    /* dissolve as bordas no preto — sem retângulo */
-    -webkit-mask-image: radial-gradient(68% 64% at 66% 42%, #000 42%, transparent 76%);
-    mask-image: radial-gradient(68% 64% at 66% 42%, #000 42%, transparent 76%);
-    filter: contrast(1.06) brightness(1.0);
-  }
-  /* brilho de borda sutil (rim light) — azul frio, baixo */
-  .hero__rim {
-    position: absolute;
-    top: 42%; right: 6%; transform: translateY(-50%);
-    width: 44vw; height: 70vh; max-width: 720px;
-    background: radial-gradient(closest-side, rgba(46,107,255,0.18), rgba(0,168,255,0.06) 50%, transparent 72%);
-    filter: blur(10px);
-    animation: rim-breathe 7s var(--ease-in-out) infinite;
-  }
-  @keyframes rim-breathe { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
-
-  /* brilho metálico que varre o rosto (chrome shine) */
-  .hero__sweep {
-    position: absolute; top: 0; right: 0; width: 72%; height: 100%; z-index: 1;
-    pointer-events: none; mix-blend-mode: screen;
-    background: linear-gradient(115deg, transparent 36%, rgba(205,214,238,0.10) 47%, rgba(255,255,255,0.18) 50%, rgba(205,214,238,0.10) 53%, transparent 64%);
-    background-size: 250% 100%;
-    -webkit-mask-image: radial-gradient(58% 60% at 70% 42%, #000 28%, transparent 72%);
-    mask-image: radial-gradient(58% 60% at 70% 42%, #000 28%, transparent 72%);
-    animation: face-sweep 8s var(--ease-in-out) infinite;
-  }
-  @keyframes face-sweep {
-    0% { background-position: 130% 0; opacity: 0; }
-    25% { opacity: 1; }
-    60% { opacity: 1; }
-    100% { background-position: -30% 0; opacity: 0; }
-  }
-  /* véu preto da esquerda → integra o rosto e protege o texto */
-  /* cinemagraph: só os pontos de luz se movem — a imagem fica parada */
-  .hero__fx {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    z-index: 1; pointer-events: none;
-    mix-blend-mode: screen;
+  /* vídeo de fundo (rosto à direita, preto à esquerda) */
+  .hero__video {
+    position: absolute; inset: 0; z-index: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: right center;
     opacity: 0; transition: opacity 1.2s ease;
   }
-  .hero__fx.is-ready { opacity: 1; }
+  .hero__video.is-ready { opacity: 1; }
+  /* véu: garante leitura do texto à esquerda + integra topo/base no preto */
   .hero__veil {
     position: absolute; inset: 0; z-index: 2;
     background:
-      linear-gradient(90deg, var(--bg-0) 30%, rgba(10,10,12,0.55) 52%, transparent 78%),
-      linear-gradient(180deg, var(--bg-0) 2%, transparent 18%, transparent 82%, var(--bg-0) 100%);
+      linear-gradient(90deg, var(--bg-0) 26%, rgba(10,10,12,0.55) 50%, transparent 78%),
+      linear-gradient(180deg, var(--bg-0) 1%, transparent 16%, transparent 84%, var(--bg-0) 100%);
   }
 
   .hero__inner { position: relative; z-index: 2; width: 100%; }
@@ -169,18 +131,18 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
   .hero__scroll-line { display: block; width: 1px; height: 46px; background: var(--border-strong); position: relative; overflow: hidden; }
   .hero__scroll-line i { position: absolute; top: 0; left: 0; width: 100%; height: 45%; background: var(--blue-energy); animation: scroll-hint 2s var(--ease-in-out) infinite; }
 
-  /* tablet/mobile: rosto recua para o fundo, mais sutil */
+  /* tablet/mobile: vídeo recua para o fundo, mais sutil (texto manda) */
   @media (max-width: 999px) {
-    .hero__face { right: -22%; height: 100%; opacity: 0.5; }
+    .hero__video { object-position: 72% center; opacity: 0.5; }
+    .hero__video.is-ready { opacity: 0.5; }
     .hero__veil { background:
-      linear-gradient(90deg, var(--bg-0) 35%, rgba(10,10,12,0.6) 60%, rgba(10,10,12,0.3) 100%),
+      linear-gradient(90deg, var(--bg-0) 36%, rgba(10,10,12,0.7) 62%, rgba(10,10,12,0.35) 100%),
       linear-gradient(180deg, var(--bg-0), transparent 22%, transparent 80%, var(--bg-0)); }
     .hero__content { max-width: 100%; }
     .hero__scroll { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .hw { animation: none; }
-    .hero__scroll-line i, .hero__rim, .hero__sweep { animation: none; }
-    .hero__sweep { opacity: 0; }
+    .hero__scroll-line i { animation: none; }
   }
 </style>
