@@ -1,0 +1,525 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+
+// EDITE: endpoint do formulário (Formspree, etc.)
+const FORM_ENDPOINT = 'https://formspree.io/f/SEU_ID_AQUI';
+
+// Perguntas estratégicas — capturam perfil, dor, faturamento, investimento, urgência e decisão.
+const steps = [
+  {
+    type: 'single', key: 'desafio', eyebrow: 'Etapa 01',
+    q: 'Qual o principal desafio que trava o crescimento da sua empresa hoje?',
+    help: 'Escolha o que mais pesa na sua operação agora.',
+    options: [
+      'Processos manuais e retrabalho',
+      'Sistemas legados, lentos ou instáveis',
+      'Falta de dados confiáveis para decidir',
+      'Não consigo escalar a operação',
+      'Atendimento / vendas sobrecarregados',
+      'Segurança e conformidade (LGPD)',
+      'Quero usar IA, mas não sei por onde',
+      'Outro',
+    ],
+  },
+  {
+    type: 'single', key: 'impacto', eyebrow: 'Etapa 02',
+    q: 'E qual o maior impacto desse problema no seu negócio?',
+    help: 'Onde dói mais hoje.',
+    options: [
+      'Perda de receita / vendas',
+      'Tempo e produtividade da equipe',
+      'Trava o crescimento e a escala',
+      'Custos operacionais altos',
+      'Risco (falhas, segurança, multas)',
+      'Experiência do cliente piora',
+      'Outro',
+    ],
+  },
+  {
+    type: 'multi', key: 'solucoes', eyebrow: 'Etapa 03',
+    q: 'O que você procura na NOVRA?',
+    help: 'Pode escolher mais de uma.',
+    options: [
+      'Inteligência Artificial',
+      'Automação de processos',
+      'Desenvolvimento de sistemas',
+      'Cloud & Infraestrutura',
+      'Dados & Dashboards',
+      'Segurança Digital',
+      'Não sei ainda — quero orientação',
+      'Outro',
+    ],
+  },
+  {
+    type: 'single', key: 'faturamento', eyebrow: 'Etapa 04',
+    q: 'Qual o faturamento atual da sua empresa?',
+    help: 'Ajuda a dimensionar a solução certa. Fica entre nós. 🔒',
+    options: [
+      'Até R$ 50 mil / mês',
+      'R$ 50 mil a R$ 200 mil / mês',
+      'R$ 200 mil a R$ 500 mil / mês',
+      'R$ 500 mil a R$ 1 milhão / mês',
+      'R$ 1 milhão a R$ 5 milhões / mês',
+      'Acima de R$ 5 milhões / mês',
+      'Prefiro não informar',
+    ],
+  },
+  {
+    type: 'single', key: 'investimento', eyebrow: 'Etapa 05',
+    q: 'Que nível de investimento você considera viável para resolver isso?',
+    help: 'Uma estimativa já nos ajuda a desenhar o melhor caminho.',
+    options: [
+      'Até R$ 10 mil',
+      'R$ 10 mil a R$ 30 mil',
+      'R$ 30 mil a R$ 80 mil',
+      'R$ 80 mil a R$ 200 mil',
+      'Acima de R$ 200 mil',
+      'Preciso de orientação',
+    ],
+  },
+  {
+    type: 'single', key: 'urgencia', eyebrow: 'Etapa 06',
+    q: 'Quando você quer ver isso resolvido?',
+    help: '',
+    options: [
+      'O quanto antes — é urgente',
+      'Nos próximos 1 a 3 meses',
+      'Em 3 a 6 meses',
+      'Ainda estou pesquisando',
+      'Outro',
+    ],
+  },
+  {
+    type: 'single', key: 'decisao', eyebrow: 'Etapa 07',
+    q: 'Como funciona a decisão sobre esse projeto?',
+    help: '',
+    options: [
+      'Eu decido (sou dono / responsável)',
+      'Decido junto com sócios',
+      'Aprovo com a diretoria / comitê',
+      'Eu pesquiso, outra pessoa decide',
+      'Outro',
+    ],
+  },
+  {
+    type: 'fields', key: 'perfil', eyebrow: 'Etapa 08',
+    q: 'Conta um pouco sobre você e a empresa.',
+    help: '',
+    fields: [
+      { name: 'nome', label: 'Seu nome', type: 'text', ac: 'name', required: true, ph: 'Nome completo' },
+      { name: 'empresa', label: 'Empresa', type: 'text', ac: 'organization', required: true, ph: 'Nome da empresa' },
+      { name: 'cargo', label: 'Seu cargo', type: 'text', ac: 'organization-title', required: false, ph: 'Ex.: CEO, Diretor, Sócio' },
+      { name: 'segmento', label: 'Segmento', type: 'text', required: false, ph: 'Ex.: varejo, saúde, indústria' },
+      {
+        name: 'funcionarios', label: 'Nº de funcionários', type: 'select', required: false,
+        opts: ['1 a 10', '11 a 50', '51 a 200', '201 a 500', 'Mais de 500'],
+      },
+    ],
+  },
+  {
+    type: 'contact', key: 'contato', eyebrow: 'Quase lá',
+    q: 'Para onde enviamos o seu diagnóstico?',
+    help: 'Em até 1 dia útil um especialista entra em contato. Sem compromisso.',
+    fields: [
+      { name: 'email', label: 'E-mail corporativo', type: 'email', ac: 'email', required: true, ph: 'voce@empresa.com' },
+      { name: 'whatsapp', label: 'WhatsApp', type: 'tel', ac: 'tel', required: true, ph: '(11) 99999-9999' },
+    ],
+  },
+];
+const totalQ = steps.length;
+---
+<Base title="NOVRA — Diagnóstico gratuito" description="Responda algumas perguntas e receba um diagnóstico inicial da NOVRA para o seu desafio de tecnologia, IA e automação.">
+  <div class="fpage">
+    <!-- barra de progresso -->
+    <div class="fprogress" aria-hidden="true"><span id="fbar"></span></div>
+
+    <!-- topo minimalista -->
+    <header class="ftop">
+      <a href="/" class="fbrand" aria-label="NOVRA — início">
+        <img src="/brand/novra-logo-ui.png" alt="NOVRA" width="1041" height="308" />
+      </a>
+      <a href="/" class="fback-site link-arrow"><Icon name="arrow-right" size={16} /> Voltar ao site</a>
+    </header>
+
+    <main class="fmain" id="fmain">
+      <!-- INTRO -->
+      <section class="fstep is-active" data-type="intro">
+        <span class="eyebrow is-centered">Diagnóstico gratuito</span>
+        <span class="signature-line head-sig" aria-hidden="true" style="margin-inline:auto"></span>
+        <h1 class="fstep__q balance">Vamos entender o seu <span class="text-gradient">desafio.</span></h1>
+        <p class="fstep__help">Responda algumas perguntas rápidas — menos de 2 minutos. Com base nelas, um
+          especialista da NOVRA prepara um diagnóstico inicial e os próximos passos, sem compromisso.</p>
+        <div class="fstep__nav fstep__nav--center">
+          <button class="btn btn-primary btn-lg" data-action="start" data-magnetic>Começar <Icon name="arrow-right" /></button>
+        </div>
+        <p class="fmeta"><Icon name="clock" size={14} /> ~2 min · <Icon name="security" size={14} /> dados confidenciais</p>
+      </section>
+
+      <!-- PERGUNTAS -->
+      {steps.map((s, i) => (
+        <section class="fstep" data-type={s.type} data-key={s.key} data-index={i + 1}>
+          <div class="fstep__head">
+            <span class="eyebrow">{s.eyebrow} · <span class="fstep__count">{i + 1}/{totalQ}</span></span>
+            <h2 class="fstep__q balance">{s.q}</h2>
+            {s.help && <p class="fstep__help">{s.help}</p>}
+          </div>
+
+          {(s.type === 'single' || s.type === 'multi') && (
+            <div class="fopts" role={s.type === 'single' ? 'radiogroup' : 'group'} aria-label={s.q}>
+              {s.options.map((opt) => (
+                <button type="button" class="fopt" data-value={opt} data-other={opt === 'Outro' ? 'true' : null} role={s.type === 'single' ? 'radio' : 'checkbox'} aria-checked="false">
+                  <span class="fopt__label">{opt === 'Outro' ? 'Outro (escrever)' : opt}</span>
+                  <span class="fopt__mark" aria-hidden="true"></span>
+                </button>
+              ))}
+            </div>
+          )}
+          {(s.type === 'single' || s.type === 'multi') && s.options.includes('Outro') && (
+            <div class="fother" hidden>
+              <input type="text" class="fother__input" placeholder="Escreva aqui a sua resposta…" aria-label="Sua resposta" maxlength="160" />
+            </div>
+          )}
+
+          {(s.type === 'fields' || s.type === 'contact') && (
+            <div class="ffields">
+              {s.fields.map((f) => (
+                <div class={`ffield ${f.type === 'select' ? 'ffield--full' : ''}`}>
+                  <label for={`f-${f.name}`}>{f.label}{f.required && <i> *</i>}</label>
+                  {f.type === 'select' ? (
+                    <div class="fselect">
+                      <select id={`f-${f.name}`} name={f.name} data-required={f.required ? 'true' : 'false'}>
+                        <option value="">Selecione</option>
+                        {f.opts.map((o) => <option>{o}</option>)}
+                      </select>
+                      <Icon name="arrow-down" size={16} />
+                    </div>
+                  ) : (
+                    <input id={`f-${f.name}`} name={f.name} type={f.type} autocomplete={f.ac} placeholder={f.ph} data-required={f.required ? 'true' : 'false'} />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div class="fstep__nav">
+            <button class="btn btn-ghost" data-action="back" data-magnetic><Icon name="arrow-right" class="flip" /> Voltar</button>
+            {s.type === 'contact' ? (
+              <button class="btn btn-primary btn-lg" data-action="submit" data-magnetic>
+                <span class="fsubmit-label">Receber meu diagnóstico</span> <Icon name="arrow-right" />
+              </button>
+            ) : (
+              <button class="btn btn-primary" data-action="next" data-magnetic>Continuar <Icon name="arrow-right" /></button>
+            )}
+          </div>
+          {s.type === 'contact' && (
+            <p class="fconsent" id="fstatus" role="status" aria-live="polite">Ao enviar, você concorda em ser contatado pela NOVRA sobre o seu projeto.</p>
+          )}
+        </section>
+      ))}
+
+      <!-- SUCESSO -->
+      <section class="fstep fstep--success" data-type="success">
+        <span class="fsuccess__icon"><Icon name="check" size={40} /></span>
+        <h2 class="fstep__q balance">Recebemos tudo. <span class="text-gradient">Obrigado!</span></h2>
+        <p class="fstep__help">Em até <strong>1 dia útil</strong> um especialista da NOVRA entra em contato com o seu
+          diagnóstico inicial e os próximos passos.</p>
+        <div class="fstep__nav fstep__nav--center">
+          <a href="/" class="btn btn-ghost btn-lg" data-magnetic>Voltar ao site</a>
+        </div>
+      </section>
+
+      <!-- hidden form (envio) -->
+      <form id="fform" action={FORM_ENDPOINT} method="POST" hidden></form>
+    </main>
+  </div>
+
+  <style>
+    .fpage { position: relative; z-index: 2; min-height: 100svh; display: flex; flex-direction: column; }
+    .fprogress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 120; background: rgba(255,255,255,0.05); }
+    #fbar { display: block; height: 100%; width: 0%; background: var(--grad-signature); box-shadow: 0 0 14px rgba(46,107,255,0.5); transition: width 0.5s var(--ease-out); }
+
+    .ftop { display: flex; align-items: center; justify-content: space-between; padding: clamp(1.2rem, 3vw, 2rem) var(--gutter); }
+    .fbrand img { height: clamp(30px, 3.6vw, 40px); width: auto; }
+    .fback-site { font-size: 0.9rem; color: var(--text-2); }
+    .fback-site :global(svg) { transform: rotate(180deg); }
+
+    .fmain { flex: 1; display: grid; place-items: center; padding: clamp(1rem, 3vw, 2rem) var(--gutter) clamp(3rem, 8vh, 6rem); position: relative; }
+
+    .fstep {
+      display: none; width: 100%; max-width: 680px;
+      flex-direction: column; align-items: stretch; text-align: left;
+    }
+    .fstep.is-active { display: flex; }
+    .fstep[data-type="intro"].is-active, .fstep--success.is-active { align-items: center; text-align: center; }
+    .anim-in { animation: fstepIn 0.55s var(--ease-out) both; }
+    @keyframes fstepIn { from { opacity: 0; transform: translateY(22px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+
+    .fstep__head { margin-bottom: 1.8rem; }
+    .fstep__q { font-size: clamp(1.7rem, 1.2rem + 2.2vw, 2.8rem); line-height: 1.1; letter-spacing: -0.02em; margin-top: 0.9rem; }
+    .fstep[data-type="intro"] .fstep__q { font-size: clamp(2.2rem, 1.4rem + 3vw, 4rem); }
+    .fstep__help { color: var(--text-2); font-size: 1.02rem; line-height: 1.6; margin-top: 1rem; max-width: 60ch; }
+    .fstep[data-type="intro"] .fstep__help, .fstep--success .fstep__help { margin-inline: auto; }
+    .fstep__help strong { color: var(--text-1); }
+
+    /* opções */
+    .fopts { display: flex; flex-direction: column; gap: 0.7rem; }
+    .fopt {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      width: 100%; text-align: left;
+      padding: 1.1rem 1.3rem;
+      border: 1px solid var(--border-strong); border-radius: var(--r-md);
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      color: var(--text-1); font-family: var(--font-display); font-weight: 500; font-size: 1.05rem;
+      transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out), transform 0.2s var(--ease-out), box-shadow 0.3s var(--ease-out);
+    }
+    .fopt:hover { border-color: var(--border-brand); transform: translateY(-2px); background: var(--surface-hover); }
+    .fopt__mark { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-strong); position: relative; transition: border-color 0.3s, background 0.3s; }
+    .fopt[aria-checked="true"] { border-color: var(--blue); background: rgba(46,107,255,0.12); box-shadow: 0 0 0 1px var(--blue), var(--glow-blue); }
+    .fopt[aria-checked="true"] .fopt__mark { border-color: var(--blue); background: var(--blue); }
+    .fopt[aria-checked="true"] .fopt__mark::after { content: ""; position: absolute; inset: 0; margin: auto; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+
+    /* campo "Outro" digitável */
+    .fother { margin-top: 0.7rem; animation: fstepIn 0.4s var(--ease-out) both; }
+    .fother[hidden] { display: none; }
+    .fother__input {
+      width: 100%; padding: 1rem 1.2rem;
+      background: var(--bg-0); border: 1px solid var(--blue); border-radius: var(--r-md);
+      color: var(--text-1); font-size: 1.02rem;
+      box-shadow: 0 0 0 3px rgba(46,107,255,0.16);
+      transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+    .fother__input::placeholder { color: var(--text-3); }
+    .fother__input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(46,107,255,0.28); background: var(--bg-1); }
+    .fother__input.invalid { border-color: #f06565; box-shadow: 0 0 0 3px rgba(240,101,101,0.18); }
+
+    /* campos */
+    .ffields { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+    .ffield { display: flex; flex-direction: column; gap: 0.5rem; }
+    .ffield--full, .ffield:only-child { grid-column: 1 / -1; }
+    .ffield label { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+    .ffield label i { color: var(--blue-energy); font-style: normal; }
+    .ffield input, .fselect select {
+      width: 100%; padding: 0.95rem 1.1rem;
+      background: var(--bg-0); border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+      color: var(--text-1); font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+    .ffield input::placeholder { color: var(--text-3); }
+    .ffield input:focus, .fselect select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(46,107,255,0.2); background: var(--bg-1); }
+    .ffield input.invalid, .fselect select.invalid { border-color: #f06565; }
+    .fselect { position: relative; }
+    .fselect :global(svg) { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
+    .fselect select { appearance: none; cursor: pointer; padding-right: 2.4rem; }
+    .fselect select option { background: var(--bg-2); color: var(--text-1); }
+
+    /* navegação */
+    .fstep__nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
+    .fstep__nav--center { justify-content: center; }
+    .btn :global(.flip) { transform: rotate(180deg); }
+    .fmeta { display: inline-flex; align-items: center; gap: 0.5em; justify-content: center; margin: 1.6rem auto 0; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-3); }
+    .fmeta :global(svg) { color: var(--cyan-400); }
+    .fconsent { margin-top: 1.1rem; font-size: 0.8rem; color: var(--text-3); text-align: center; }
+    .fconsent.is-error { color: #f06565; }
+    .fconsent.is-success { color: #4ade80; }
+
+    .fstep--success { align-items: center; text-align: center; }
+    .fsuccess__icon { display: grid; place-items: center; width: 84px; height: 84px; margin: 0 auto 1.4rem; border-radius: 50%; background: rgba(46,107,255,0.14); border: 1px solid var(--border-brand); color: var(--cyan-300); box-shadow: var(--glow-blue); }
+
+    @media (max-width: 560px) {
+      .ffields { grid-template-columns: 1fr; }
+      .fback-site span { display: none; }
+      .fstep__nav { flex-direction: row; }
+    }
+  </style>
+
+  <script is:inline define:vars={{ FORM_ENDPOINT, totalQ }}>
+    (() => {
+      const main = document.getElementById('fmain');
+      const steps = [...main.querySelectorAll('.fstep')];
+      const bar = document.getElementById('fbar');
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const state = {};
+      let idx = 0;
+
+      const qSteps = steps.filter((s) => ['single', 'multi', 'fields', 'contact'].includes(s.dataset.type));
+
+      function show(i, dir) {
+        idx = Math.max(0, Math.min(steps.length - 1, i));
+        steps.forEach((s) => { s.classList.remove('is-active', 'anim-in'); });
+        const el = steps[idx];
+        el.classList.add('is-active');
+        if (!prefersReduced) { void el.offsetWidth; el.classList.add('anim-in'); }
+        // progresso
+        const done = qSteps.indexOf(el);
+        const pct = el.dataset.type === 'success' ? 100 : (el.dataset.type === 'intro' ? 0 : ((done) / qSteps.length) * 100);
+        bar.style.width = pct + '%';
+        // foco
+        const focusable = el.querySelector('input, select, .fopt, [data-action="start"], [data-action="next"], [data-action="submit"]');
+        try { focusable && focusable.focus({ preventScroll: true }); } catch (e) {}
+        window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+      }
+
+      function validate(el) {
+        let ok = true;
+        const type = el.dataset.type;
+        if (type === 'single') {
+          if (!state[el.dataset.key]) ok = false;
+          // se "Outro" estiver selecionado, exige texto
+          const otherOpt = el.querySelector('.fopt[data-other][aria-checked="true"]');
+          const otherInput = el.querySelector('.fother__input');
+          if (otherOpt && otherInput) {
+            const bad = !otherInput.value.trim();
+            otherInput.classList.toggle('invalid', bad);
+            if (bad) ok = false;
+          }
+        } else if (type === 'multi') {
+          if (!(state[el.dataset.key] && state[el.dataset.key].length)) ok = false;
+          const otherOpt = el.querySelector('.fopt[data-other][aria-checked="true"]');
+          const otherInput = el.querySelector('.fother__input');
+          if (otherOpt && otherInput) {
+            const bad = !otherInput.value.trim();
+            otherInput.classList.toggle('invalid', bad);
+            if (bad) ok = false;
+          }
+        } else if (type === 'fields' || type === 'contact') {
+          el.querySelectorAll('[data-required="true"]').forEach((inp) => {
+            const v = inp.value.trim();
+            const bad = !v || (inp.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v));
+            inp.classList.toggle('invalid', bad);
+            if (bad) ok = false;
+          });
+        }
+        return ok;
+      }
+
+      function collectFields(el) {
+        el.querySelectorAll('input, select').forEach((inp) => { state[inp.name] = inp.value.trim(); });
+      }
+
+      // opções (single / multi)
+      main.querySelectorAll('.fstep').forEach((el) => {
+        const type = el.dataset.type;
+        if (type !== 'single' && type !== 'multi') return;
+        const key = el.dataset.key;
+        const otherWrap = el.querySelector('.fother');
+        const otherInput = otherWrap ? otherWrap.querySelector('.fother__input') : null;
+
+        function syncMulti() {
+          state[key] = [...el.querySelectorAll('.fopt[aria-checked="true"]')].map((o) => {
+            if (o.dataset.other && otherInput && otherInput.value.trim()) return otherInput.value.trim();
+            return o.dataset.value;
+          });
+        }
+
+        el.querySelectorAll('.fopt').forEach((opt) => {
+          opt.addEventListener('click', () => {
+            const val = opt.dataset.value;
+            const isOther = !!opt.dataset.other;
+            if (type === 'single') {
+              el.querySelectorAll('.fopt').forEach((o) => o.setAttribute('aria-checked', 'false'));
+              opt.setAttribute('aria-checked', 'true');
+              if (isOther) {
+                if (otherWrap) otherWrap.hidden = false;
+                state[key] = otherInput && otherInput.value.trim() ? otherInput.value.trim() : '';
+                if (otherInput) setTimeout(() => otherInput.focus(), 80);
+                // não auto-avança: deixa a pessoa escrever
+              } else {
+                if (otherWrap) { otherWrap.hidden = true; if (otherInput) { otherInput.value = ''; otherInput.classList.remove('invalid'); } }
+                state[key] = val;
+                setTimeout(() => next(), 320); // auto-avança
+              }
+            } else {
+              const on = opt.getAttribute('aria-checked') === 'true';
+              opt.setAttribute('aria-checked', on ? 'false' : 'true');
+              if (isOther && otherWrap) {
+                otherWrap.hidden = on; // estava ligado -> agora esconde
+                if (!on && otherInput) setTimeout(() => otherInput.focus(), 80);
+                if (on && otherInput) { otherInput.value = ''; otherInput.classList.remove('invalid'); }
+              }
+              syncMulti();
+            }
+          });
+        });
+
+        if (otherInput) {
+          otherInput.addEventListener('input', () => {
+            otherInput.classList.remove('invalid');
+            if (type === 'single') state[key] = otherInput.value.trim();
+            else syncMulti();
+          });
+        }
+      });
+
+      function next() {
+        const el = steps[idx];
+        if (['fields', 'contact'].includes(el.dataset.type)) collectFields(el);
+        if (!validate(el)) { shake(el); return; }
+        show(idx + 1);
+      }
+      function back() { show(idx - 1); }
+      function shake(el) {
+        const inv = el.querySelector('.invalid');
+        if (inv) inv.focus();
+      }
+
+      main.addEventListener('click', (e) => {
+        const a = e.target.closest('[data-action]');
+        if (!a) return;
+        const act = a.dataset.action;
+        if (act === 'start' || act === 'next') next();
+        else if (act === 'back') back();
+        else if (act === 'submit') submit(a);
+      });
+
+      // Enter avança (exceto em textarea)
+      main.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && steps[idx].dataset.type !== 'success') {
+          if (e.target.tagName === 'SELECT') return;
+          e.preventDefault();
+          steps[idx].dataset.type === 'contact' ? submit() : next();
+        }
+      });
+
+      async function submit(btn) {
+        const el = steps[idx];
+        collectFields(el);
+        if (!validate(el)) return;
+        const status = document.getElementById('fstatus');
+        const label = el.querySelector('.fsubmit-label');
+        // monta payload legível
+        const labels = {
+          desafio: 'Principal desafio', impacto: 'Maior impacto', solucoes: 'Soluções buscadas',
+          faturamento: 'Faturamento', investimento: 'Investimento', urgencia: 'Urgência', decisao: 'Decisão',
+          nome: 'Nome', empresa: 'Empresa', cargo: 'Cargo', segmento: 'Segmento', funcionarios: 'Funcionários',
+          email: 'E-mail', whatsapp: 'WhatsApp',
+        };
+        const data = {};
+        Object.keys(labels).forEach((k) => {
+          if (state[k] != null && state[k] !== '') data[labels[k]] = Array.isArray(state[k]) ? state[k].join(', ') : state[k];
+        });
+        data['_subject'] = `Novo diagnóstico — ${state.empresa || state.nome || 'Lead NOVRA'}`;
+
+        if (FORM_ENDPOINT.includes('SEU_ID_AQUI')) {
+          if (status) { status.textContent = 'Formulário em modo demonstração — configure o endpoint (Formspree) para receber os envios.'; status.className = 'fconsent is-error'; }
+          // mostra sucesso mesmo assim na demo
+          show(steps.length - 1);
+          return;
+        }
+        if (label) label.textContent = 'Enviando…';
+        btn && btn.setAttribute('disabled', 'true');
+        try {
+          const res = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+          if (!res.ok) throw new Error('falha');
+          show(steps.length - 1);
+        } catch (err) {
+          if (status) { status.textContent = 'Não foi possível enviar agora. Tente novamente ou escreva para contato@novratech.com.br.'; status.className = 'fconsent is-error'; }
+          if (label) label.textContent = 'Receber meu diagnóstico';
+          btn && btn.removeAttribute('disabled');
+        }
+      }
+
+      show(0);
+    })();
+  </script>
+</Base>
