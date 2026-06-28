@@ -108,6 +108,7 @@ const nav = [
     border: 1px solid var(--border-strong);
     background: var(--surface-2);
     padding: 0 12px;
+    position: relative; z-index: 101; /* acima do menu aberto p/ poder fechar (X) */
   }
   .nav-toggle span {
     display: block; height: 2px; width: 100%;
@@ -129,10 +130,13 @@ const nav = [
     background: rgba(6, 8, 15, 0.94);
     backdrop-filter: blur(26px);
     opacity: 0;
+    pointer-events: none; /* fechado não captura toques (não cobre o hambúrguer) */
     transform: translateY(-12px);
     transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
   }
-  .mobile-menu.is-open { opacity: 1; transform: none; }
+  /* respeita o atributo hidden — sem isso o display:flex deixava o menu invisível por cima da tela */
+  .mobile-menu[hidden] { display: none; }
+  .mobile-menu.is-open { opacity: 1; transform: none; pointer-events: auto; }
   .mobile-menu__nav { display: flex; flex-direction: column; }
   .mobile-menu__link {
     display: flex; align-items: baseline; gap: 1rem;

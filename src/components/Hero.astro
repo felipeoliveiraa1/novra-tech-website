@@ -37,7 +37,7 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
       </p>
 
       <div class="hero__actions" data-reveal style="--reveal-delay: 740ms">
-        <a href="#contato" class="btn btn-primary btn-lg" data-magnetic>
+        <a href="/formulario" class="btn btn-primary btn-lg" data-magnetic>
           Fale com um especialista
           <Icon name="arrow-right" />
         </a>
@@ -132,14 +132,62 @@ const caps = ['IA', 'Software', 'Automação', 'Cloud', 'Segurança', 'Dados'];
   .hero__scroll-line { display: block; width: 1px; height: 46px; background: var(--border-strong); position: relative; overflow: hidden; }
   .hero__scroll-line i { position: absolute; top: 0; left: 0; width: 100%; height: 45%; background: var(--blue-energy); animation: scroll-hint 2s var(--ease-in-out) infinite; }
 
-  /* tablet/mobile: vídeo recua para o fundo, mais sutil (texto manda) */
-  @media (max-width: 999px) {
-    .hero__video { object-position: 72% center; opacity: 0.5; }
-    .hero__video.is-ready { opacity: 0.5; }
+  /* tablet: vídeo mais presente à direita, texto à esquerda */
+  @media (max-width: 999px) and (min-width: 701px) {
+    .hero__video { object-position: 78% center; opacity: 0.72; }
+    .hero__video.is-ready { opacity: 0.72; }
     .hero__veil { background:
-      linear-gradient(90deg, var(--bg-0) 36%, rgba(10,10,12,0.7) 62%, rgba(10,10,12,0.35) 100%),
-      linear-gradient(180deg, var(--bg-0), transparent 22%, transparent 80%, var(--bg-0)); }
+      linear-gradient(rgba(7,7,9,0.18), rgba(7,7,9,0.18)),
+      linear-gradient(90deg, var(--bg-0) 30%, rgba(10,10,12,0.5) 58%, transparent 100%),
+      linear-gradient(180deg, var(--bg-0), transparent 16%, transparent 82%, var(--bg-0)); }
     .hero__content { max-width: 100%; }
+    .hero__scroll { display: none; }
+  }
+
+  /* phone: experiência cinematográfica — rosto em destaque no topo, conteúdo ancorado embaixo */
+  @media (max-width: 700px) {
+    .hero {
+      min-height: 100svh;
+      padding-top: clamp(4.5rem, 13vh, 6rem);
+      padding-bottom: clamp(2rem, 6vh, 3.25rem);
+      align-items: flex-end;
+    }
+    .hero__video {
+      object-fit: cover;
+      object-position: 84% 30%;
+      opacity: 0.96;
+    }
+    .hero__video.is-ready { opacity: 0.96; }
+    /* scrim: olho nítido no topo, faixa de baixo bem escura p/ leitura do texto */
+    .hero__veil {
+      background:
+        linear-gradient(180deg,
+          rgba(10,10,12,0.45) 0%,
+          rgba(10,10,12,0.05) 11%,
+          transparent 22%,
+          transparent 33%,
+          rgba(10,10,12,0.58) 44%,
+          rgba(10,10,12,0.88) 57%,
+          rgba(10,10,12,0.97) 70%,
+          var(--bg-0) 82%),
+        linear-gradient(90deg, rgba(10,10,12,0.38) 0%, rgba(10,10,12,0.14) 42%, transparent 78%);
+    }
+    /* esconde a chip pra não competir com o rosto (foco) */
+    .hero__eyebrow { display: none; }
+    .hero__content { max-width: 100%; align-items: flex-start; }
+    .hero__title {
+      margin-top: 1rem;
+      font-size: clamp(1.95rem, 1rem + 7vw, 2.75rem);
+      line-height: 1.06;
+      max-width: 15ch;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.7), 0 6px 34px rgba(0,0,0,0.95);
+    }
+    .hero__sig { margin-top: 1.3rem; }
+    .hero__lead { margin-top: 1.2rem; color: var(--text-1); text-shadow: 0 1px 2px rgba(0,0,0,0.85), 0 2px 18px rgba(0,0,0,0.95); }
+    .hero__actions { margin-top: 1.7rem; width: 100%; }
+    .hero__actions .btn { flex: 1 1 auto; justify-content: center; }
+    /* pills escondidas no phone: encurta o bloco e dá respiro ao rosto */
+    .hero__caps { display: none; }
     .hero__scroll { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
