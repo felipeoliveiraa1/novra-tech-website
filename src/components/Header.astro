@@ -32,22 +32,24 @@ const nav = [
       </button>
     </div>
   </div>
-
-  <!-- Mobile menu -->
-  <div class="mobile-menu" id="mobile-menu" hidden>
-    <nav class="mobile-menu__nav" aria-label="Navegação mobile">
-      {nav.map((item, i) => (
-        <a href={item.href} class="mobile-menu__link" style={`--i:${i}`}>
-          <span class="mobile-menu__num">{String(i + 1).padStart(2, '0')}</span>
-          {item.label}
-        </a>
-      ))}
-    </nav>
-    <a href="/formulario" class="btn btn-primary btn-lg btn-block mobile-menu__cta">
-      Iniciar um projeto <Icon name="arrow-right" />
-    </a>
-  </div>
 </header>
+
+<!-- Mobile menu — FORA do <header> de propósito: quando rola, o header ganha
+     backdrop-filter, que vira containing block do position:fixed e fazia o
+     inset:0 do menu colapsar (menu "transparente"/cortado ao descer a tela). -->
+<div class="mobile-menu" id="mobile-menu" hidden>
+  <nav class="mobile-menu__nav" aria-label="Navegação mobile">
+    {nav.map((item, i) => (
+      <a href={item.href} class="mobile-menu__link" style={`--i:${i}`}>
+        <span class="mobile-menu__num">{String(i + 1).padStart(2, '0')}</span>
+        {item.label}
+      </a>
+    ))}
+  </nav>
+  <a href="/formulario" class="btn btn-primary btn-lg btn-block mobile-menu__cta">
+    Iniciar um projeto <Icon name="arrow-right" />
+  </a>
+</div>
 
 <style>
   .site-header {
@@ -127,6 +129,9 @@ const nav = [
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 1.5rem;
+    overflow-y: auto;            /* telas baixas: rola dentro do menu, não corta */
+    overscroll-behavior: contain; /* não "vaza" o scroll p/ a página atrás */
     background: rgba(6, 8, 15, 0.94);
     backdrop-filter: blur(26px);
     opacity: 0;
