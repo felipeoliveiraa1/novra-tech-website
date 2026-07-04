@@ -359,12 +359,9 @@ Nome
 
 NOVRA
 
-Usuário sugerido
+Usuário (oficial)
 
-@novra.tech
-@novra.systems
-@novra.digital
-@novra.ai
+@novratech.oficial
 
 Bio sugerida
 

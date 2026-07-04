@@ -1,0 +1,104 @@
+NOVRA · KIT DE INSTAGRAM — COMO USAR  (v2 · artes redesenhadas)
+=====================================================
+
+Tudo aqui está pronto pra subir. Nenhuma edição necessária.
+Formato das artes: 2160 x 2700 (proporção 4:5, o tamanho que ocupa
+mais tela no feed). Renderizado em 2x (alta resolução) para o texto
+e a logo ficarem nítidos mesmo depois da compressão do Instagram.
+
+
+-----------------------------------------------------
+1) FOTO DE PERFIL
+-----------------------------------------------------
+Use o arquivo:
+   LOGO/FOTO-DE-PERFIL-instagram (1080x1080).png
+
+No app: Editar perfil > foto > escolher essa imagem.
+(O Instagram recorta em círculo — o símbolo já está centralizado
+ com folga, não corta nada.)
+
+
+-----------------------------------------------------
+2) BIO SUGERIDA (copiar e colar)
+-----------------------------------------------------
+Nome:   NOVRA
+Usuário: @novratech.oficial
+Bio:
+   Sistemas inteligentes para a próxima era.
+   Software · IA · Automação · Cloud · Segurança
+   📍 São Paulo · Brasil
+Site:   novratech.com.br
+
+
+-----------------------------------------------------
+3) ORDEM DE PUBLICAÇÃO (pasta POSTS/)
+-----------------------------------------------------
+Os posts estão numerados na ordem ideal de publicação.
+Sugestão: 2 a 3 posts por semana, intercalando carrossel e post único.
+
+   1 - Lançamento ............ post único  (fixe no topo do perfil!)
+   2 - Manifesto ............. post único
+   3 - Carrossel 5 sinais .... CARROSSEL (7 imagens)
+   4 - Prova 99,99% .......... post único
+   5 - Carrossel Serviços .... CARROSSEL (8 imagens)
+   6 - Frase de impacto ...... post único
+   7 - Cultura ............... post único
+   8 - Chamada final (CTA) ... post único
+
+Em cada pasta tem:
+   • a(s) imagem(ns)
+   • LEGENDA.txt  → abre, copia tudo e cola na hora de postar
+
+
+-----------------------------------------------------
+4) COMO POSTAR UM CARROSSEL (pastas 3 e 5)
+-----------------------------------------------------
+As imagens estão numeradas 1, 2, 3...
+No Instagram, toque em "selecionar vários" e escolha
+NA ORDEM: primeiro a 1, depois a 2, e assim por diante.
+A ordem que você toca = a ordem que aparece no carrossel.
+
+
+-----------------------------------------------------
+5) DICA DE ALCANCE
+-----------------------------------------------------
+• As hashtags já vêm na legenda. Se preferir um visual mais limpo,
+  apague as hashtags da legenda e cole elas no 1º COMENTÁRIO
+  (funciona igual pro alcance).
+• Melhores horários geralmente: 12h–13h e 19h–21h (dias de semana).
+• "Salve este post" e "Comenta" nas legendas dos carrosséis ajudam
+  o post a circular mais — deixe esses pedidos lá.
+
+
+-----------------------------------------------------
+6) PASTA LOGO/ — o que é cada arquivo
+-----------------------------------------------------
+FOTO-DE-PERFIL-instagram (1080x1080).png
+      → avatar do perfil (símbolo no fundo escuro da marca)
+
+novra-logo-completa-fundo-preto.png
+      → logo (símbolo + NOVRA) já com fundo preto da marca.
+        Uso geral: e-mail, apresentação, parceria, marca d'água.
+
+novra-simbolo-fundo-preto (1080x1080).png
+      → só o símbolo no fundo preto. Bom pra capa de destaque/story.
+
+novra-logo-completa-transparente.png
+      → logo prata SEM fundo (PNG transparente).
+        Use SOMENTE sobre fundos escuros (a logo é prateada).
+
+novra-simbolo-transparente.png  /  novra-simbolo-512.png
+      → só o símbolo, sem fundo. (o 512 tem brilho azul nas pontas)
+
+⚠️ A logo é prateada/cromada → some em fundo branco.
+   Pra fundo claro, use a versão "fundo-preto" ou peça que eu
+   gere uma versão escura da logo.
+
+
+-----------------------------------------------------
+SOBRE AS IMAGENS
+-----------------------------------------------------
+As fotos de fundo são do Unsplash (uso comercial livre, sem
+necessidade de crédito). Pode publicar sem preocupação.
+Quer trocar alguma foto (ex.: foto real da equipe no post de
+Cultura)? É só pedir que eu re-gero a arte.
