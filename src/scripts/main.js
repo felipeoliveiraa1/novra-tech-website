@@ -179,7 +179,7 @@ if ('IntersectionObserver' in window) {
 /* Cards: tilt 3D + spotlight seguindo o cursor (premium/interativo)  */
 /* ------------------------------------------------------------------ */
 if (isFinePointer) {
-  const cards = document.querySelectorAll('.card, .service, .case, .tech__card');
+  const cards = document.querySelectorAll('.card, .service, .case, .tech__card, .proof__card');
   cards.forEach((card) => {
     const tilt = !prefersReduced;
     card.addEventListener('pointermove', (e) => {
@@ -319,21 +319,30 @@ if (isFinePointer && !prefersReduced) {
   const items = hero ? [...hero.querySelectorAll('[data-parallax]')] : [];
   if (items.length) {
     let px = 0, py = 0, cx = 0, cy = 0;
+    let active = false, rafId = null;
     hero.addEventListener('pointermove', (e) => {
+      if (!active) return;
       const r = hero.getBoundingClientRect();
       px = (e.clientX - r.left) / r.width - 0.5;
       py = (e.clientY - r.top) / r.height - 0.5;
     });
     hero.addEventListener('pointerleave', () => { px = 0; py = 0; });
     const loop = () => {
+      if (!active) return;
       cx += (px - cx) * 0.06; cy += (py - cy) * 0.06;
       items.forEach((el) => {
         const d = parseFloat(el.dataset.parallax || '0.05');
         el.style.translate = `${cx * d * 100}px ${cy * d * 100}px`;
       });
-      requestAnimationFrame(loop);
+      rafId = requestAnimationFrame(loop);
     };
-    requestAnimationFrame(loop);
+    const start = () => { if (!active) { active = true; rafId = requestAnimationFrame(loop); } };
+    const stop = () => { active = false; if (rafId) cancelAnimationFrame(rafId); };
+    // roda só com o hero na tela (mesmo contrato dos canvases)
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? start() : stop())),
+        { threshold: 0 }).observe(hero);
+    } else start();
   }
 }
 
@@ -400,6 +409,8 @@ if (lenis) {
 (() => {
   const canvas = document.getElementById('hero-canvas');
   if (!canvas) return;
+  // phone: o canvas está display:none (CSS) — não gasta WebGL/shader à toa
+  if (window.matchMedia('(max-width: 700px)').matches) return;
   const reveal = () => requestAnimationFrame(() => canvas.classList.add('is-ready'));
 
   const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false })
@@ -466,18 +477,19 @@ if (lenis) {
 
   const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
   let mx = 0.5, my = 0.55, tmx = 0.5, tmy = 0.55;
+  let cRect = null; // cacheado no resize — não mede layout a cada pointermove
   function resize() {
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-    canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+    cRect = canvas.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.floor(cRect.width * dpr));
+    canvas.height = Math.max(1, Math.floor(cRect.height * dpr));
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.uniform2f(uRes, canvas.width, canvas.height);
   }
   window.addEventListener('pointermove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    tmx = (e.clientX - rect.left) / rect.width;
-    tmy = 1.0 - (e.clientY - rect.top) / rect.height;
-  });
+    if (!running || !cRect || !cRect.width) return;
+    tmx = (e.clientX - cRect.left) / cRect.width;
+    tmy = 1.0 - (e.clientY - cRect.top) / cRect.height;
+  }, { passive: true });
   let resizeT;
   window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(resize, 150); });
   resize();
@@ -614,3 +626,63 @@ if (lenis) {
     new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? start() : stop())), { threshold: 0 }).observe(canvas);
   } else { start(); }
 })();
+
+/* ------------------------------------------------------------------ */
+/* Intro de marca — marca a sessão e remove o nó após a animação      */
+/* ------------------------------------------------------------------ */
+(() => {
+  const intro = document.getElementById('intro');
+  if (!intro) return;
+  try { sessionStorage.setItem('novra-seen', '1'); } catch (e) {}
+  // a animação CSS termina em ~2.2s; remove o nó pra não pesar o DOM
+  setTimeout(() => intro.remove(), 2600);
+})();
+
+/* ------------------------------------------------------------------ */
+/* Decode — eyebrows "decodificam" ao entrar na tela (uma vez)        */
+/* ------------------------------------------------------------------ */
+(() => {
+  if (prefersReduced) return;
+  const els = document.querySelectorAll('.eyebrow');
+  if (!els.length || !('IntersectionObserver' in window)) return;
+  const CHARS = '01<>/\\|=+*#$&';
+  const decode = (el) => {
+    const final = el.textContent;
+    const n = final.length;
+    if (!n || n > 48) return;
+    const t0 = performance.now();
+    const DUR = 620;
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / DUR);
+      const fixed = Math.floor(k * n);
+      let out = final.slice(0, fixed);
+      for (let i = fixed; i < n; i++) {
+        const c = final[i];
+        out += c === ' ' ? ' ' : CHARS[(Math.random() * CHARS.length) | 0];
+      }
+      el.textContent = out;
+      if (k < 1) requestAnimationFrame(step);
+      else el.textContent = final;
+    };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { decode(e.target); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.6 });
+  els.forEach((el) => { if (!el.children.length) io.observe(el); });
+})();
+
+/* ------------------------------------------------------------------ */
+/* Footer — watermark NOVRA sobe e acende conforme o rodapé entra     */
+/* ------------------------------------------------------------------ */
+if (lenis) {
+  const wm = document.querySelector('.footer__watermark');
+  if (wm) {
+    gsap.fromTo(wm, { yPercent: 34, opacity: 0.25 }, {
+      yPercent: 0, opacity: 1, ease: 'none',
+      scrollTrigger: { trigger: wm, start: 'top bottom', end: 'bottom bottom', scrub: 0.4 },
+    });
+  }
+}

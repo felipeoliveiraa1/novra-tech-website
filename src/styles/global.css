@@ -421,3 +421,40 @@ html.gsap [data-reveal] { transition: none; }
   }
   [data-reveal] { opacity: 1; transform: none; filter: none; }
 }
+
+/* ------------------------------------------------------------------ */
+/* Halo conic — anel de luz girando na borda do card (hover)          */
+/* ------------------------------------------------------------------ */
+@property --halo-ang {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+.card-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px; /* espessura do anel */
+  background: conic-gradient(
+    from var(--halo-ang),
+    transparent 0%, transparent 72%,
+    rgba(46, 107, 255, 0.85) 82%,
+    rgba(0, 168, 255, 1) 88%,
+    rgba(139, 230, 255, 0.9) 93%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
+  pointer-events: none;
+}
+.card:hover > .card-halo {
+  opacity: 1;
+  animation: halo-spin 3.4s linear infinite;
+}
+@keyframes halo-spin {
+  to { --halo-ang: 360deg; }
+}

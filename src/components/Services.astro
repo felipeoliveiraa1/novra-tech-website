@@ -58,6 +58,7 @@ const services = [
     <div class="services__grid">
       {services.map((s, i) => (
         <article class="service card card-accent" data-reveal style={`--reveal-delay: ${(i % 4) * 80}ms`}>
+          <i class="card-halo" aria-hidden="true"></i>
           <span class="service__index">{String(i + 1).padStart(2, '0')}</span>
           <span class="service__icon"><Icon name={s.icon} size={26} /></span>
           <h3 class="service__title">{s.title}</h3>
