@@ -1,0 +1,481 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Painel interno de leads — rota oculta, sem links no site e com noindex.
+// Autenticação e leitura via funções RPC do Supabase (security definer):
+// a anon key sozinha não lê nada; só com as credenciais do painel.
+const SUPABASE_URL = (import.meta.env.PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '').replace(/\/rest\/v1$/, '');
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
+---
+<Base title="NOVRA — Painel interno" description="Acesso restrito." noindex={true}>
+  <div class="ppage">
+
+    <!-- LOGIN -->
+    <section id="plogin" class="plogin">
+      <div class="plogin__card">
+        <img class="plogin__logo" src="/brand/novra-logo-ui.png" alt="NOVRA" width="1041" height="308" />
+        <h1 class="plogin__title">Painel interno</h1>
+        <p class="plogin__sub">Acesso restrito à equipe NOVRA.</p>
+        <form id="ploginForm" autocomplete="on">
+          <div class="pfield">
+            <label for="pemail">Usuário</label>
+            <input id="pemail" type="text" required autocomplete="username" placeholder="Seu usuário" />
+          </div>
+          <div class="pfield">
+            <label for="psenha">Senha</label>
+            <input id="psenha" type="password" required autocomplete="current-password" placeholder="••••••••" />
+          </div>
+          <button class="btn btn-primary plogin__btn" type="submit" id="ploginBtn">Entrar</button>
+          <p class="plogin__erro" id="ploginErro" role="alert" hidden></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="pdash" class="pdash" hidden>
+      <header class="pdash__top">
+        <div class="pdash__brand">
+          <img src="/brand/novra-logo-ui.png" alt="NOVRA" width="1041" height="308" />
+          <span class="pdash__tag">Painel de leads</span>
+        </div>
+        <div class="pdash__actions">
+          <span class="pdash__updated" id="pupdated"></span>
+          <button class="btn btn-ghost" id="prefresh" type="button">Atualizar</button>
+          <button class="btn btn-ghost" id="plogout" type="button">Sair</button>
+        </div>
+      </header>
+
+      <!-- KPIs -->
+      <div class="pkpis" id="pkpis">
+        <div class="pkpi"><span class="pkpi__label">Total de submissões</span><strong class="pkpi__num" id="kTotal">—</strong></div>
+        <div class="pkpi"><span class="pkpi__label">Hoje</span><strong class="pkpi__num" id="kHoje">—</strong></div>
+        <div class="pkpi"><span class="pkpi__label">Últimos 7 dias</span><strong class="pkpi__num" id="k7d">—</strong></div>
+        <div class="pkpi"><span class="pkpi__label">Última submissão</span><strong class="pkpi__num pkpi__num--sm" id="kUltima">—</strong></div>
+      </div>
+
+      <!-- Gráfico: submissões por dia -->
+      <div class="pcard">
+        <h2 class="pcard__title">Submissões por dia <span class="pcard__hint">últimos 14 dias</span></h2>
+        <div class="pchart" id="pchart" role="img" aria-label="Submissões por dia nos últimos 14 dias"></div>
+        <div class="pchart-dias" id="pchartDias" aria-hidden="true"></div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="pcard">
+        <div class="pfiltros" id="pfiltros">
+          <input type="search" id="pbusca" class="pbusca" placeholder="Buscar nome, empresa, e-mail, WhatsApp…" aria-label="Buscar" />
+          <select id="f-desafio" data-campo="desafio" aria-label="Filtrar por desafio"></select>
+          <select id="f-impacto" data-campo="impacto" aria-label="Filtrar por impacto"></select>
+          <select id="f-solucoes" data-campo="solucoes" aria-label="Filtrar por solução"></select>
+          <select id="f-faturamento" data-campo="faturamento" aria-label="Filtrar por faturamento"></select>
+          <select id="f-investimento" data-campo="investimento" aria-label="Filtrar por investimento"></select>
+          <select id="f-urgencia" data-campo="urgencia" aria-label="Filtrar por urgência"></select>
+          <select id="f-decisao" data-campo="decisao" aria-label="Filtrar por decisão"></select>
+          <button class="btn btn-ghost plimpar" id="plimpar" type="button">Limpar filtros</button>
+        </div>
+        <p class="pcontagem" id="pcontagem"></p>
+
+        <!-- Tabela -->
+        <div class="ptabela-wrap">
+          <table class="ptabela">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th><button type="button" id="pordem" class="pordem">Data <span id="pordemSeta">↓</span></button></th>
+                <th>Nome</th>
+                <th>Empresa</th>
+                <th>E-mail</th>
+                <th>WhatsApp</th>
+                <th>Faturamento</th>
+                <th>Urgência</th>
+              </tr>
+            </thead>
+            <tbody id="pcorpo"></tbody>
+          </table>
+        </div>
+        <p class="pvazio" id="pvazio" hidden>Nenhuma submissão encontrada com os filtros atuais.</p>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .ppage { position: relative; z-index: 2; min-height: 100svh; }
+    /* o atributo hidden precisa vencer o display: grid/flex das seções abaixo */
+    .plogin[hidden], .pdash[hidden] { display: none; }
+
+    /* ---------- login ---------- */
+    .plogin { min-height: 100svh; display: grid; place-items: center; padding: 2rem var(--gutter); }
+    .plogin__card {
+      width: 100%; max-width: 400px; padding: 2.4rem 2.2rem;
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      border: 1px solid var(--border-strong); border-radius: var(--r-lg, 16px);
+      text-align: center;
+    }
+    .plogin__logo { height: 56px; width: auto; display: block; margin: 0 auto 1.7rem; }
+    .plogin__title { font-size: 1.5rem; letter-spacing: -0.02em; }
+    .plogin__sub { color: var(--text-3); font-size: 0.9rem; margin: 0.4rem 0 1.6rem; }
+    .pfield { display: flex; flex-direction: column; gap: 0.45rem; text-align: left; margin-bottom: 1rem; }
+    .pfield label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+    .pfield input {
+      width: 100%; padding: 0.9rem 1.05rem; background: var(--bg-0);
+      border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+      color: var(--text-1); font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .pfield input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(46,107,255,0.2); }
+    .plogin__btn { width: 100%; justify-content: center; margin-top: 0.4rem; }
+    .plogin__erro { margin-top: 0.9rem; font-size: 0.85rem; color: #f06565; }
+
+    /* ---------- dashboard ---------- */
+    .pdash { max-width: 1180px; margin: 0 auto; padding: clamp(1.2rem, 3vw, 2.2rem) var(--gutter) 4rem; display: flex; flex-direction: column; gap: 1.1rem; }
+    .pdash__top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .pdash__brand { display: flex; align-items: center; gap: 0.9rem; }
+    .pdash__brand img { height: 28px; width: auto; }
+    .pdash__tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); border: 1px solid var(--border); border-radius: 100px; padding: 0.3rem 0.7rem; }
+    .pdash__actions { display: flex; align-items: center; gap: 0.6rem; }
+    .pdash__updated { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-3); }
+
+    .pkpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; }
+    .pkpi {
+      padding: 1.1rem 1.3rem; border: 1px solid var(--border); border-radius: var(--r-md);
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      display: flex; flex-direction: column; gap: 0.35rem;
+    }
+    .pkpi__label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-3); }
+    .pkpi__num { font-family: var(--font-display); font-size: 2rem; line-height: 1.1; letter-spacing: -0.02em; color: var(--text-1); font-variant-numeric: tabular-nums; }
+    .pkpi__num--sm { font-size: 1.05rem; }
+
+    .pcard {
+      padding: 1.2rem 1.3rem 1.3rem; border: 1px solid var(--border); border-radius: var(--r-md);
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    }
+    .pcard__title { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 1rem; }
+    .pcard__hint { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-left: 0.5rem; }
+
+    /* gráfico de barras (série única) */
+    .pchart { display: flex; align-items: flex-end; gap: 2px; height: 150px; padding-top: 18px; border-bottom: 1px solid var(--border-strong); }
+    .pchart :global(.pbarra) { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; position: relative; cursor: default; }
+    .pchart :global(.pbarra .pfill) { width: 100%; max-width: 46px; background: #4d8dff; border-radius: 4px 4px 0 0; min-height: 2px; transition: background 0.2s; }
+    .pchart :global(.pbarra.pzero .pfill) { background: var(--border-strong); }
+    .pchart :global(.pbarra:hover .pfill) { background: #8fb6ff; }
+    .pchart :global(.pbarra .pval) { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-2); margin-bottom: 4px; }
+    .pchart :global(.pbarra:hover::after) {
+      content: attr(data-tip); position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+      background: var(--bg-3); border: 1px solid var(--border-strong); border-radius: 6px;
+      padding: 0.3rem 0.55rem; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-1);
+      white-space: nowrap; z-index: 5; pointer-events: none;
+    }
+    .pchart-dias { display: flex; gap: 2px; margin-top: 6px; }
+    .pchart-dias :global(span) { flex: 1; text-align: center; font-family: var(--font-mono); font-size: 0.64rem; color: var(--text-3); }
+
+    /* filtros */
+    .pfiltros { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+    .pbusca { flex: 1 1 240px; }
+    .pbusca, .pfiltros select {
+      padding: 0.65rem 0.85rem; background: var(--bg-0);
+      border: 1px solid var(--border-strong); border-radius: var(--r-sm);
+      color: var(--text-1); font-size: 0.88rem;
+    }
+    .pfiltros select { max-width: 190px; cursor: pointer; }
+    .pfiltros select option { background: var(--bg-2); color: var(--text-1); }
+    .pbusca:focus, .pfiltros select:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(46,107,255,0.18); }
+    .plimpar { font-size: 0.85rem; }
+    .pcontagem { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-3); margin: 0.8rem 0 0.4rem; }
+
+    /* tabela */
+    .ptabela-wrap { overflow-x: auto; }
+    .ptabela { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .ptabela th {
+      text-align: left; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--text-3); font-weight: 500;
+      padding: 0.6rem 0.7rem; border-bottom: 1px solid var(--border-strong); white-space: nowrap;
+    }
+    .pordem { background: none; border: none; color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; padding: 0; }
+    .pordem:hover { color: var(--text-1); }
+    .ptabela :global(td) { padding: 0.65rem 0.7rem; border-bottom: 1px solid var(--border); color: var(--text-2); vertical-align: top; }
+    .ptabela :global(tr.plinha) { cursor: pointer; transition: background 0.15s; }
+    .ptabela :global(tr.plinha:hover) { background: var(--surface-hover); }
+    .ptabela :global(tr.plinha.is-open) { background: rgba(46,107,255,0.07); }
+    .ptabela :global(td.pnum) { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-3); }
+    .ptabela :global(td.pnome) { color: var(--text-1); font-weight: 500; }
+    .ptabela :global(tr.pdet td) { background: var(--bg-1); padding: 1rem 1.2rem; }
+    .ptabela :global(.pdet-grid) { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem 1.4rem; }
+    .ptabela :global(.pdet-item b) { display: block; font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); font-weight: 500; margin-bottom: 0.2rem; }
+    .ptabela :global(.pdet-item span) { color: var(--text-1); font-size: 0.88rem; }
+    .pvazio { text-align: center; color: var(--text-3); padding: 1.6rem 0 0.6rem; font-size: 0.9rem; }
+
+    @media (max-width: 900px) { .pkpis { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) {
+      .pkpis { grid-template-columns: 1fr 1fr; }
+      .pfiltros select { max-width: none; flex: 1 1 46%; }
+    }
+  </style>
+
+  <script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const AUTH_KEY = 'nvr_painel_auth';
+      const TZ = 'America/Sao_Paulo';
+      let leads = [];        // todos, ordem desc do banco
+      let ordemAsc = false;  // false = mais recentes primeiro
+      const abertos = new Set();  // ids das linhas expandidas (preserva estado no re-render)
+
+      const esc = (v) => String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+      // token de sessão (nunca a senha) fica no sessionStorage
+      const getToken = () => { try { return JSON.parse(sessionStorage.getItem(AUTH_KEY))?.t || null; } catch (e) { return null; } };
+      const setToken = (t) => sessionStorage.setItem(AUTH_KEY, JSON.stringify({ t }));
+      const clearAuth = () => sessionStorage.removeItem(AUTH_KEY);
+      const isAuthErr = (s) => s === 400 || s === 401 || s === 403;
+
+      const rpc = (fn, body) => fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      // login → token (string) ou null (credenciais inválidas / bloqueado)
+      async function login(email, senha) {
+        const res = await rpc('dashboard_login', { p_email: email, p_senha: senha });
+        if (!res.ok) { const e = new Error('login'); e.status = res.status; throw e; }
+        return res.json(); // string do token ou null
+      }
+
+      // normaliza quebras de linha (\r\n e \r → \n) para filtros/busca coerentes
+      const normNl = (s) => (typeof s === 'string' ? s.replace(/\r\n?/g, '\n') : s);
+      async function fetchLeads(token) {
+        const res = await rpc('dashboard_leads', { p_token: token });
+        if (!res.ok) { const e = new Error('leads'); e.status = res.status; throw e; }
+        const dados = await res.json();
+        return (Array.isArray(dados) ? dados : []).map((l) => {
+          for (const k in l) l[k] = Array.isArray(l[k]) ? l[k].map(normNl) : normNl(l[k]);
+          return l;
+        });
+      }
+
+      // ---------- login ----------
+      $('ploginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = $('ploginBtn'), erro = $('ploginErro');
+        erro.hidden = true;
+        btn.disabled = true; btn.textContent = 'Entrando…';
+        try {
+          const token = await login($('pemail').value.trim(), $('psenha').value);
+          if (!token) {
+            erro.textContent = 'Usuário ou senha incorretos. Após várias tentativas o acesso é bloqueado temporariamente.';
+            erro.hidden = false;
+            return;
+          }
+          setToken(token);
+          leads = await fetchLeads(token);
+          entrar();
+        } catch (err) {
+          erro.textContent = 'Não foi possível conectar. Tente novamente.';
+          erro.hidden = false;
+        } finally {
+          btn.disabled = false; btn.textContent = 'Entrar';
+        }
+      });
+
+      function entrar() {
+        $('plogin').hidden = true;
+        $('pdash').hidden = false;
+        renderTudo();
+      }
+
+      $('plogout').addEventListener('click', () => {
+        clearAuth();
+        leads = [];
+        abertos.clear();
+        renderTudo();               // apaga PII já renderizada do DOM
+        $('pbusca').value = '';
+        $('pdash').hidden = true;
+        $('plogin').hidden = false;
+        $('psenha').value = '';
+      });
+
+      $('prefresh').addEventListener('click', async () => {
+        const token = getToken();
+        if (!token) return;
+        $('prefresh').disabled = true;
+        try { leads = await fetchLeads(token); renderTudo(); }
+        catch (e) {
+          if (isAuthErr(e.status)) { clearAuth(); location.reload(); }
+          else { $('pupdated').textContent = 'falha ao atualizar — tente novamente'; }
+        }
+        finally { $('prefresh').disabled = false; }
+      });
+
+      // sessão existente → entra direto
+      (async () => {
+        const token = getToken();
+        if (!token) return;
+        try { leads = await fetchLeads(token); entrar(); }
+        catch (e) { if (isAuthErr(e.status)) clearAuth(); }
+      })();
+
+      // ---------- datas ----------
+      const diaKey = (iso) => new Date(iso).toLocaleDateString('pt-BR', { timeZone: TZ }); // dd/mm/aaaa
+      const fmtDataHora = (iso) => new Date(iso).toLocaleString('pt-BR', { timeZone: TZ, day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
+      const relativo = (iso) => {
+        const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+        if (s < 60) return 'agora mesmo';
+        if (s < 3600) return `há ${Math.floor(s / 60)} min`;
+        if (s < 86400) return `há ${Math.floor(s / 3600)} h`;
+        return `há ${Math.floor(s / 86400)} d`;
+      };
+
+      // ---------- KPIs + gráfico ----------
+      function renderKpis() {
+        const hoje = diaKey(new Date().toISOString());
+        // últimos 7 dias-calendário (SP) — consistente com "Hoje" e o gráfico
+        const dias7 = new Set(Array.from({ length: 7 }, (_, i) => diaKey(new Date(Date.now() - i * 86400000).toISOString())));
+        $('kTotal').textContent = leads.length;
+        $('kHoje').textContent = leads.filter((l) => diaKey(l.created_at) === hoje).length;
+        $('k7d').textContent = leads.filter((l) => dias7.has(diaKey(l.created_at))).length;
+        $('kUltima').textContent = leads.length ? relativo(leads[0].created_at) : '—';
+        $('pupdated').textContent = `atualizado ${new Date().toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' })}`;
+      }
+
+      function renderChart() {
+        const dias = [];
+        for (let i = 13; i >= 0; i--) {
+          const d = new Date(Date.now() - i * 86400000);
+          dias.push({ key: diaKey(d.toISOString()), label: d.toLocaleDateString('pt-BR', { timeZone: TZ, day: '2-digit', month: '2-digit' }), n: 0 });
+        }
+        const porDia = {};
+        leads.forEach((l) => { const k = diaKey(l.created_at); porDia[k] = (porDia[k] || 0) + 1; });
+        dias.forEach((d) => { d.n = porDia[d.key] || 0; });
+        const max = Math.max(1, ...dias.map((d) => d.n));
+
+        const wrap = $('pchart');
+        wrap.innerHTML = dias.map((d) => `
+          <div class="pbarra${d.n === 0 ? ' pzero' : ''}" data-tip="${esc(d.label)} — ${d.n} ${d.n === 1 ? 'submissão' : 'submissões'}">
+            ${d.n === max && d.n > 0 ? `<span class="pval">${d.n}</span>` : ''}
+            <div class="pfill" style="height:${d.n === 0 ? 2 : Math.max(6, Math.round((d.n / max) * 118))}px"></div>
+          </div>`).join('');
+
+        let dl = document.getElementById('pchartDias');
+        if (!dl) {
+          dl = document.createElement('div');
+          dl.id = 'pchartDias';
+          dl.className = 'pchart-dias';
+          wrap.after(dl);
+        }
+        // rotula índices ímpares para que o último (hoje, i=13) sempre apareça
+        dl.innerHTML = dias.map((d, i) => `<span>${i % 2 === 1 ? esc(d.label.slice(0, 5)) : ''}</span>`).join('');
+      }
+
+      // ---------- filtros ----------
+      const CAMPOS_FILTRO = ['desafio', 'impacto', 'solucoes', 'faturamento', 'investimento', 'urgencia', 'decisao'];
+      const NOMES = { desafio: 'Desafio', impacto: 'Impacto', solucoes: 'Soluções', faturamento: 'Faturamento', investimento: 'Investimento', urgencia: 'Urgência', decisao: 'Decisão' };
+
+      function montarFiltros() {
+        CAMPOS_FILTRO.forEach((campo) => {
+          const sel = $(`f-${campo}`);
+          const atual = sel.value;
+          const valores = new Set();
+          leads.forEach((l) => {
+            const v = l[campo];
+            if (Array.isArray(v)) v.forEach((x) => x && valores.add(x));
+            else if (v) valores.add(v);
+          });
+          sel.innerHTML = `<option value="">${esc(NOMES[campo])}: todos</option>` +
+            [...valores].sort((a, b) => a.localeCompare(b, 'pt-BR')).map((v) => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+          if ([...sel.options].some((o) => o.value === atual)) sel.value = atual;
+        });
+      }
+
+      function filtrar() {
+        const busca = $('pbusca').value.trim().toLowerCase();
+        return leads.filter((l) => {
+          for (const campo of CAMPOS_FILTRO) {
+            const f = $(`f-${campo}`).value;
+            if (!f) continue;
+            const v = l[campo];
+            if (Array.isArray(v) ? !v.includes(f) : v !== f) return false;
+          }
+          if (busca) {
+            const alvo = [l.nome, l.empresa, l.email, l.whatsapp, l.cargo, l.segmento, l.desafio, l.impacto, l.urgencia, l.decisao, ...(l.solucoes || [])]
+              .filter(Boolean).join(' ').toLowerCase();
+            if (!alvo.includes(busca)) return false;
+          }
+          return true;
+        });
+      }
+
+      // ---------- tabela ----------
+      function renderTabela() {
+        const lista = filtrar();
+        if (!ordemAsc) lista.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        else lista.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+        $('pcontagem').textContent = `${lista.length} de ${leads.length} submissões`;
+        $('pvazio').hidden = lista.length > 0;
+        $('pordemSeta').textContent = ordemAsc ? '↑' : '↓';
+
+        // nº de ordem de submissão (1 = primeira que chegou) via Map — evita indexOf O(n²)
+        const total = leads.length;
+        const pos = new Map(leads.map((l, i) => [l.id, total - i]));
+
+        $('pcorpo').innerHTML = lista.map((l) => {
+          const open = abertos.has(l.id);
+          return `
+          <tr class="plinha${open ? ' is-open' : ''}" data-id="${esc(l.id)}">
+            <td class="pnum">${pos.get(l.id) ?? ''}</td>
+            <td class="pnum">${esc(fmtDataHora(l.created_at))}</td>
+            <td class="pnome">${esc(l.nome)}</td>
+            <td>${esc(l.empresa)}</td>
+            <td>${esc(l.email)}</td>
+            <td>${esc(l.whatsapp)}</td>
+            <td>${esc(l.faturamento || '—')}</td>
+            <td>${esc(l.urgencia || '—')}</td>
+          </tr>
+          <tr class="pdet"${open ? '' : ' hidden'}><td colspan="8">
+            <div class="pdet-grid">
+              <div class="pdet-item"><b>Desafio</b><span>${esc(l.desafio || '—')}</span></div>
+              <div class="pdet-item"><b>Impacto</b><span>${esc(l.impacto || '—')}</span></div>
+              <div class="pdet-item"><b>Soluções buscadas</b><span>${esc((l.solucoes || []).join(', ') || '—')}</span></div>
+              <div class="pdet-item"><b>Investimento</b><span>${esc(l.investimento || '—')}</span></div>
+              <div class="pdet-item"><b>Decisão</b><span>${esc(l.decisao || '—')}</span></div>
+              <div class="pdet-item"><b>Cargo</b><span>${esc(l.cargo || '—')}</span></div>
+              <div class="pdet-item"><b>Segmento</b><span>${esc(l.segmento || '—')}</span></div>
+              <div class="pdet-item"><b>Funcionários</b><span>${esc(l.funcionarios || '—')}</span></div>
+              <div class="pdet-item"><b>Origem</b><span>${esc(l.origem || '—')}</span></div>
+            </div>
+          </td></tr>`;
+        }).join('');
+      }
+
+      // listener delegado único: sobrevive aos re-renders e preserva o estado
+      $('pcorpo').addEventListener('click', (e) => {
+        const tr = e.target.closest('tr.plinha');
+        if (!tr) return;
+        const det = tr.nextElementSibling;
+        const abre = det.hidden;
+        det.hidden = !abre;
+        tr.classList.toggle('is-open', abre);
+        if (abre) abertos.add(tr.dataset.id); else abertos.delete(tr.dataset.id);
+      });
+
+      function renderTudo() { renderKpis(); renderChart(); montarFiltros(); renderTabela(); }
+
+      let tBusca;
+      $('pbusca').addEventListener('input', () => { clearTimeout(tBusca); tBusca = setTimeout(renderTabela, 150); });
+      CAMPOS_FILTRO.forEach((c) => $(`f-${c}`).addEventListener('change', renderTabela));
+      $('plimpar').addEventListener('click', () => {
+        $('pbusca').value = '';
+        CAMPOS_FILTRO.forEach((c) => { $(`f-${c}`).value = ''; });
+        renderTabela();
+      });
+      $('pordem').addEventListener('click', () => { ordemAsc = !ordemAsc; renderTabela(); });
+    })();
+  </script>
+</Base>
