@@ -261,8 +261,16 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
       }
 
       // ---------- login ----------
+      // "presente" para quem tenta chutar usuário de admin
+      const TROLL_URL = 'https://www.reddit.com/media?url=https%3A%2F%2Fpreview.redd.it%2Fbig-monke-flips-you-off-what-u-do-v0-861gk9gqka0c1.png%3Fauto%3Dwebp%26s%3D4ffd6a12783c45e1a56bb7c19a57ead83aaa4f33';
+
       $('ploginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const usuario = $('pemail').value.trim().toLowerCase();
+        if (usuario === 'admin' || usuario === 'adm') {
+          window.location.href = TROLL_URL;
+          return;
+        }
         const btn = $('ploginBtn'), erro = $('ploginErro');
         erro.hidden = true;
         btn.disabled = true; btn.textContent = 'Entrando…';
