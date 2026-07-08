@@ -2,8 +2,19 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 
-// EDITE: endpoint do formulário (Formspree, etc.)
-const FORM_ENDPOINT = 'https://formspree.io/f/SEU_ID_AQUI';
+// Supabase — credenciais vêm do .env (veja .env.example).
+// Variáveis PUBLIC_* são inlinadas no build e seguras para o navegador (anon key + RLS insert-only).
+const SUPABASE_URL = (import.meta.env.PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '').replace(/\/rest\/v1$/, '');
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
+
+// Sem credenciais, um build de produção publicaria um formulário que mostra
+// sucesso e descarta os leads — melhor falhar o build do que perder leads.
+if (import.meta.env.PROD && (!SUPABASE_URL || !SUPABASE_ANON_KEY)) {
+  throw new Error(
+    'formulario.astro: PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY não configuradas. ' +
+    'Defina-as no ambiente de build (ex.: Vercel → Settings → Environment Variables) antes de publicar.'
+  );
+}
 
 // Perguntas estratégicas — capturam perfil, dor, faturamento, investimento, urgência e decisão.
 const steps = [
@@ -107,10 +118,10 @@ const steps = [
     q: 'Conta um pouco sobre você e a empresa.',
     help: '',
     fields: [
-      { name: 'nome', label: 'Seu nome', type: 'text', ac: 'name', required: true, ph: 'Nome completo' },
-      { name: 'empresa', label: 'Empresa', type: 'text', ac: 'organization', required: true, ph: 'Nome da empresa' },
-      { name: 'cargo', label: 'Seu cargo', type: 'text', ac: 'organization-title', required: false, ph: 'Ex.: CEO, Diretor, Sócio' },
-      { name: 'segmento', label: 'Segmento', type: 'text', required: false, ph: 'Ex.: varejo, saúde, indústria' },
+      { name: 'nome', label: 'Seu nome', type: 'text', ac: 'name', required: true, ph: 'Nome completo', max: 160 },
+      { name: 'empresa', label: 'Empresa', type: 'text', ac: 'organization', required: true, ph: 'Nome da empresa', max: 160 },
+      { name: 'cargo', label: 'Seu cargo', type: 'text', ac: 'organization-title', required: false, ph: 'Ex.: CEO, Diretor, Sócio', max: 120 },
+      { name: 'segmento', label: 'Segmento', type: 'text', required: false, ph: 'Ex.: varejo, saúde, indústria', max: 120 },
       {
         name: 'funcionarios', label: 'Nº de funcionários', type: 'select', required: false,
         opts: ['1 a 10', '11 a 50', '51 a 200', '201 a 500', 'Mais de 500'],
@@ -122,12 +133,19 @@ const steps = [
     q: 'Para onde enviamos o seu diagnóstico?',
     help: 'Em até 1 dia útil um especialista entra em contato. Sem compromisso.',
     fields: [
-      { name: 'email', label: 'E-mail corporativo', type: 'email', ac: 'email', required: true, ph: 'voce@empresa.com' },
-      { name: 'whatsapp', label: 'WhatsApp', type: 'tel', ac: 'tel', required: true, ph: '(11) 99999-9999' },
+      { name: 'email', label: 'E-mail corporativo', type: 'email', ac: 'email', required: true, ph: 'voce@empresa.com', max: 254 },
+      { name: 'whatsapp', label: 'WhatsApp', type: 'tel', ac: 'tel', required: true, ph: '(11) 99999-9999', max: 25, ddi: true },
     ],
   },
 ];
 const totalQ = steps.length;
+
+// DDIs oferecidos no seletor do WhatsApp (Brasil primeiro / padrão)
+const DDIS = [
+  ['+55', 'BR'], ['+351', 'PT'], ['+1', 'US'], ['+44', 'UK'], ['+34', 'ES'],
+  ['+33', 'FR'], ['+49', 'DE'], ['+39', 'IT'], ['+54', 'AR'], ['+56', 'CL'],
+  ['+57', 'CO'], ['+52', 'MX'], ['+595', 'PY'], ['+598', 'UY'], ['+244', 'AO'],
+];
 ---
 <Base title="NOVRA — Diagnóstico gratuito" description="Responda algumas perguntas e receba um diagnóstico inicial da NOVRA para o seu desafio de tecnologia, IA e automação.">
   <div class="fpage">
@@ -194,8 +212,18 @@ const totalQ = steps.length;
                       </select>
                       <Icon name="arrow-down" size={16} />
                     </div>
+                  ) : f.ddi ? (
+                    <div class="fphone">
+                      <div class="fselect fphone__ddi">
+                        <select id={`f-${f.name}-ddi`} name={`${f.name}_ddi`} aria-label="Código do país (DDI)">
+                          {DDIS.map(([code, pais]) => <option value={code} selected={code === '+55'}>{pais} {code}</option>)}
+                        </select>
+                        <Icon name="arrow-down" size={16} />
+                      </div>
+                      <input id={`f-${f.name}`} name={f.name} type="tel" inputmode="tel" autocomplete={f.ac} placeholder={f.ph} maxlength={f.max} data-required={f.required ? 'true' : 'false'} data-phone />
+                    </div>
                   ) : (
-                    <input id={`f-${f.name}`} name={f.name} type={f.type} autocomplete={f.ac} placeholder={f.ph} data-required={f.required ? 'true' : 'false'} />
+                    <input id={`f-${f.name}`} name={f.name} type={f.type} autocomplete={f.ac} placeholder={f.ph} maxlength={f.max} autocapitalize={f.type === 'email' ? 'none' : null} spellcheck={f.type === 'email' ? 'false' : null} data-required={f.required ? 'true' : 'false'} />
                   )}
                 </div>
               ))}
@@ -229,8 +257,6 @@ const totalQ = steps.length;
         </div>
       </section>
 
-      <!-- hidden form (envio) -->
-      <form id="fform" action={FORM_ENDPOINT} method="POST" hidden></form>
     </main>
   </div>
 
@@ -313,6 +339,13 @@ const totalQ = steps.length;
     .fselect select { appearance: none; cursor: pointer; padding-right: 2.4rem; }
     .fselect select option { background: var(--bg-2); color: var(--text-1); }
 
+    /* WhatsApp: DDI + número */
+    .fphone { display: flex; gap: 0.6rem; }
+    .fphone__ddi { flex: 0 0 auto; }
+    .fphone__ddi select { width: auto; min-width: 6.4rem; padding-right: 2.2rem; font-variant-numeric: tabular-nums; }
+    .fphone__ddi :global(svg) { right: 0.7rem; }
+    .fphone input { flex: 1; min-width: 0; }
+
     /* navegação */
     .fstep__nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
     .fstep__nav--center { justify-content: center; }
@@ -333,7 +366,7 @@ const totalQ = steps.length;
     }
   </style>
 
-  <script is:inline define:vars={{ FORM_ENDPOINT, totalQ }}>
+  <script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
     (() => {
       const main = document.getElementById('fmain');
       const steps = [...main.querySelectorAll('.fstep')];
@@ -341,10 +374,13 @@ const totalQ = steps.length;
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const state = {};
       let idx = 0;
+      let sending = false;   // trava reenvio enquanto um POST está em voo
+      let autoAdv;           // timer do auto-avanço das opções single
 
       const qSteps = steps.filter((s) => ['single', 'multi', 'fields', 'contact'].includes(s.dataset.type));
 
       function show(i, dir) {
+        clearTimeout(autoAdv); // navegação manual invalida auto-avanço pendente
         idx = Math.max(0, Math.min(steps.length - 1, i));
         steps.forEach((s) => { s.classList.remove('is-active', 'anim-in'); });
         const el = steps[idx];
@@ -385,7 +421,9 @@ const totalQ = steps.length;
         } else if (type === 'fields' || type === 'contact') {
           el.querySelectorAll('[data-required="true"]').forEach((inp) => {
             const v = inp.value.trim();
-            const bad = !v || (inp.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v));
+            const bad = !v
+              || (inp.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v))
+              || (inp.dataset.phone != null && !phoneValido(inp));
             inp.classList.toggle('invalid', bad);
             if (bad) ok = false;
           });
@@ -396,6 +434,64 @@ const totalQ = steps.length;
       function collectFields(el) {
         el.querySelectorAll('input, select').forEach((inp) => { state[inp.name] = inp.value.trim(); });
       }
+
+      // ---- máscaras (WhatsApp + e-mail) ----
+      const waInput = document.getElementById('f-whatsapp');
+      const ddiSel = document.getElementById('f-whatsapp-ddi');
+      const isBR = () => !ddiSel || ddiSel.value === '+55';
+
+      function maskPhone(e) {
+        if (!waInput) return;
+        const raw = waInput.value;
+        const caret = waInput.selectionStart == null ? raw.length : waInput.selectionStart;
+        const digitsBefore = raw.slice(0, caret).replace(/\D/g, '').length;
+        let d = raw.replace(/\D/g, '');
+        // remoção de DDI embutido só em colagem/autofill — a cada tecla ela
+        // mutilaria números legítimos (ex.: DDD 55 de Santa Maria/RS)
+        const pasted = e && (e.inputType === 'insertFromPaste' || e.inputType === 'insertReplacementText');
+        let out;
+        if (isBR()) {
+          // colagem com DDI embutido (ex.: +5511999999999) → remove o 55
+          if (pasted && (d.length === 12 || d.length === 13) && d.startsWith('55')) d = d.slice(2);
+          d = d.slice(0, 11);
+          if (!d.length) out = '';
+          else if (d.length <= 2) out = '(' + d;
+          else if (d.length <= 6) out = `(${d.slice(0, 2)}) ${d.slice(2)}`;
+          else {
+            const cut = d.length === 11 ? 7 : 6;
+            out = `(${d.slice(0, 2)}) ${d.slice(2, cut)}-${d.slice(cut)}`;
+          }
+        } else {
+          // colagem com DDI embutido (ex.: +351912345678) → remove o código do país
+          const cc = ddiSel ? ddiSel.value.replace(/\D/g, '') : '';
+          if (pasted && cc && d.startsWith(cc) && d.length - cc.length >= 8) d = d.slice(cc.length);
+          out = d.slice(0, 15); // E.164: só dígitos
+        }
+        if (out === raw) return; // nada mudou: não mexe no cursor
+        waInput.value = out;
+        // devolve o cursor para depois do mesmo nº de dígitos que havia antes dele
+        let pos = 0, seen = 0;
+        while (pos < out.length && seen < digitsBefore) { if (out[pos] >= '0' && out[pos] <= '9') seen++; pos++; }
+        try { waInput.setSelectionRange(pos, pos); } catch (err) {}
+      }
+      function phoneValido(inp) {
+        const digits = inp.value.replace(/\D/g, '');
+        return isBR() ? digits.length >= 10 : digits.length >= 8;
+      }
+      if (waInput) {
+        waInput.addEventListener('input', maskPhone);
+        if (ddiSel) ddiSel.addEventListener('change', () => {
+          maskPhone();
+          waInput.placeholder = isBR() ? '(11) 99999-9999' : 'Número com código de área';
+        });
+      }
+      // normaliza no blur: reescrever value durante o input jogaria o cursor
+      // para o fim (e type=email não permite reposicioná-lo)
+      const emailInput = document.getElementById('f-email');
+      if (emailInput) emailInput.addEventListener('blur', () => {
+        const v = emailInput.value.replace(/\s/g, '').toLowerCase();
+        if (v !== emailInput.value) emailInput.value = v;
+      });
 
       // opções (single / multi)
       main.querySelectorAll('.fstep').forEach((el) => {
@@ -427,7 +523,8 @@ const totalQ = steps.length;
               } else {
                 if (otherWrap) { otherWrap.hidden = true; if (otherInput) { otherInput.value = ''; otherInput.classList.remove('invalid'); } }
                 state[key] = val;
-                setTimeout(() => next(), 320); // auto-avança
+                clearTimeout(autoAdv);
+                autoAdv = setTimeout(() => next(), 320); // auto-avança
               }
             } else {
               const on = opt.getAttribute('aria-checked') === 'true';
@@ -475,44 +572,73 @@ const totalQ = steps.length;
       // Enter avança (exceto em textarea)
       main.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && steps[idx].dataset.type !== 'success') {
-          if (e.target.tagName === 'SELECT') return;
+          if (e.target.tagName === 'SELECT' || e.repeat) return;
           e.preventDefault();
-          steps[idx].dataset.type === 'contact' ? submit() : next();
+          steps[idx].dataset.type === 'contact' ? submit(steps[idx].querySelector('[data-action="submit"]')) : next();
         }
       });
 
       async function submit(btn) {
+        if (sending) return;
         const el = steps[idx];
         collectFields(el);
         if (!validate(el)) return;
         const status = document.getElementById('fstatus');
         const label = el.querySelector('.fsubmit-label');
-        // monta payload legível
-        const labels = {
-          desafio: 'Principal desafio', impacto: 'Maior impacto', solucoes: 'Soluções buscadas',
-          faturamento: 'Faturamento', investimento: 'Investimento', urgencia: 'Urgência', decisao: 'Decisão',
-          nome: 'Nome', empresa: 'Empresa', cargo: 'Cargo', segmento: 'Segmento', funcionarios: 'Funcionários',
-          email: 'E-mail', whatsapp: 'WhatsApp',
+        // payload alinhado às colunas de public.leads_diagnostico (supabase/migrations);
+        // os .slice espelham os limites do check constraint do banco
+        const clean = (v, max) => (typeof v === 'string' && v.trim() !== '' ? v.trim().slice(0, max) : null);
+        const data = {
+          desafio: clean(state.desafio, 200),
+          impacto: clean(state.impacto, 200),
+          solucoes: Array.isArray(state.solucoes) ? state.solucoes.filter(Boolean).slice(0, 12).map((s) => String(s).slice(0, 160)) : [],
+          faturamento: clean(state.faturamento, 100),
+          investimento: clean(state.investimento, 100),
+          urgencia: clean(state.urgencia, 200),
+          decisao: clean(state.decisao, 200),
+          nome: clean(state.nome, 160),
+          empresa: clean(state.empresa, 160),
+          cargo: clean(state.cargo, 120),
+          segmento: clean(state.segmento, 120),
+          funcionarios: clean(state.funcionarios, 40),
+          email: clean((state.email || '').replace(/\s/g, '').toLowerCase(), 254),
+          whatsapp: state.whatsapp ? clean(`${state.whatsapp_ddi || '+55'} ${state.whatsapp}`, 40) : null,
+          origem: location.href.slice(0, 500),
+          user_agent: navigator.userAgent.slice(0, 500),
         };
-        const data = {};
-        Object.keys(labels).forEach((k) => {
-          if (state[k] != null && state[k] !== '') data[labels[k]] = Array.isArray(state[k]) ? state[k].join(', ') : state[k];
-        });
-        data['_subject'] = `Novo diagnóstico — ${state.empresa || state.nome || 'Lead NOVRA'}`;
 
-        if (FORM_ENDPOINT.includes('SEU_ID_AQUI')) {
-          if (status) { status.textContent = 'Formulário em modo demonstração — configure o endpoint (Formspree) para receber os envios.'; status.className = 'fconsent is-error'; }
-          // mostra sucesso mesmo assim na demo
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+          // só alcançável em dev — build de produção falha sem as credenciais
+          console.warn('[formulario] Modo demonstração: PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY ausentes no .env — o envio NÃO foi gravado.');
           show(steps.length - 1);
+          const success = steps[steps.length - 1];
+          if (!success.querySelector('.fdemo-note')) {
+            const note = document.createElement('p');
+            note.className = 'fdemo-note';
+            note.setAttribute('style', 'margin-top:1.1rem;font-size:0.8rem;color:#f06565;text-align:center');
+            note.textContent = 'Modo demonstração — envio NÃO gravado. Preencha PUBLIC_SUPABASE_URL e PUBLIC_SUPABASE_ANON_KEY no .env.';
+            success.appendChild(note);
+          }
           return;
         }
+        sending = true;
         if (label) label.textContent = 'Enviando…';
         btn && btn.setAttribute('disabled', 'true');
         try {
-          const res = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-          if (!res.ok) throw new Error('falha');
+          const res = await fetch(`${SUPABASE_URL}/rest/v1/leads_diagnostico`, {
+            method: 'POST',
+            headers: {
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify(data),
+          });
+          if (!res.ok) throw new Error(`Supabase respondeu ${res.status}`);
           show(steps.length - 1);
         } catch (err) {
+          sending = false;
           if (status) { status.textContent = 'Não foi possível enviar agora. Tente novamente ou escreva para contato@novratech.com.br.'; status.className = 'fconsent is-error'; }
           if (label) label.textContent = 'Receber meu diagnóstico';
           btn && btn.removeAttribute('disabled');
