@@ -17,15 +17,16 @@ const clientes = [
       <span>Insight</span>
     </div>
     <nav class="di-nav">
-      <button class="di-nav__item is-active" type="button"><i>▦</i> Visão geral</button>
-      <button class="di-nav__item is-soon" type="button" title="Disponível na versão completa"><i>◔</i> Vendas <em>breve</em></button>
-      <button class="di-nav__item is-soon" type="button" title="Disponível na versão completa"><i>◉</i> Clientes <em>breve</em></button>
+      <button class="di-nav__item is-active" data-action="di-nav" data-view="visao" type="button"><i>▦</i> Visão geral</button>
+      <button class="di-nav__item" data-action="di-nav" data-view="vendas" type="button"><i>◔</i> Vendas</button>
+      <button class="di-nav__item" data-action="di-nav" data-view="clientes" type="button"><i>◉</i> Clientes</button>
       <button class="di-nav__item is-soon" type="button" title="Disponível na versão completa"><i>✦</i> IA Preditiva <em>breve</em></button>
     </nav>
     <div class="di-side__foot">NOVRA Insight · v2.4</div>
   </aside>
 
   <div class="di-main">
+    <div class="di-view di-view--visao">
     <header class="di-top">
       <div>
         <h3 class="di-top__t">Visão geral</h3>
@@ -117,9 +118,109 @@ const clientes = [
           <button data-action="di-ask" data-q="1" type="button">Onde estou perdendo margem?</button>
           <button data-action="di-ask" data-q="2" type="button">Previsão do próximo mês?</button>
         </div>
+        <div class="di-ask__inputrow">
+          <input class="di-ask__input" type="text" placeholder="Ou pergunte com suas palavras…" aria-label="Pergunta para a IA" />
+          <button class="di-ask__send" data-action="di-ask-send" type="button" aria-label="Perguntar">➤</button>
+        </div>
         <div class="di-ask__out" hidden>
+          <p class="di-ask__q"></p>
           <p class="di-ask__a"></p>
           <div class="di-insight"><b>Recomendação</b><span class="di-insight__t"></span></div>
+        </div>
+      </div>
+    </div>
+    </div><!-- /di-view--visao -->
+
+    <!-- ===== VENDAS ===== -->
+    <div class="di-view di-view--vendas" hidden>
+      <header class="di-top">
+        <div><h3 class="di-top__t">Vendas</h3><span class="di-top__s">pipeline comercial · atualizado agora</span></div>
+      </header>
+      <div class="di-kpis di-kpis--3">
+        <div class="di-kpi"><span class="di-kpi__l">Vendas no mês</span><b>R$ <span data-vkpi="vmes">0</span> mi</b><em class="di-kpi__d">▲ 12% vs jun</em></div>
+        <div class="di-kpi"><span class="di-kpi__l">Taxa de conversão</span><b><span data-vkpi="conv">0</span>%</b><em class="di-kpi__d">▲ 3pp com IA no funil</em></div>
+        <div class="di-kpi"><span class="di-kpi__l">Ciclo médio de venda</span><b><span data-vkpi="ciclo">0</span> dias</b><em class="di-kpi__d">▼ era 26 dias</em></div>
+      </div>
+      <div class="di-row">
+        <div class="di-panel">
+          <div class="di-panel__h"><h4>Funil do mês</h4><span class="di-muted">da captação ao fechamento</span></div>
+          <ul class="di-funil">
+            <li><span class="n">Leads</span><span class="bar"><i style="--w:100%"></i></span><b>1.240</b></li>
+            <li><span class="n">Qualificados</span><span class="bar"><i style="--w:74%"></i></span><b>486</b></li>
+            <li><span class="n">Proposta</span><span class="bar"><i style="--w:46%"></i></span><b>214</b></li>
+            <li><span class="n">Negociação</span><span class="bar"><i style="--w:28%"></i></span><b>121</b></li>
+            <li><span class="n">Fechados</span><span class="bar bar--gold"><i style="--w:17%"></i></span><b>68</b></li>
+          </ul>
+        </div>
+        <div class="di-panel">
+          <div class="di-panel__h"><h4>Ranking do time</h4><span class="di-muted">vendas no mês</span></div>
+          <ul class="di-rank">
+            <li><span class="av">MC</span><span class="nm">Marina C.</span><span class="bar"><i style="--w:92%"></i></span><b>R$ 1,28 mi</b></li>
+            <li><span class="av">RS</span><span class="nm">Rafael S.</span><span class="bar"><i style="--w:81%"></i></span><b>R$ 1,12 mi</b></li>
+            <li><span class="av">JT</span><span class="nm">Júlia T.</span><span class="bar"><i style="--w:66%"></i></span><b>R$ 0,91 mi</b></li>
+            <li><span class="av">PA</span><span class="nm">Pedro A.</span><span class="bar"><i style="--w:52%"></i></span><b>R$ 0,72 mi</b></li>
+            <li><span class="av">LM</span><span class="nm">Luana M.</span><span class="bar"><i style="--w:44%"></i></span><b>R$ 0,61 mi</b></li>
+          </ul>
+        </div>
+      </div>
+      <div class="di-panel">
+        <div class="di-panel__h"><h4>Maiores oportunidades abertas</h4><span class="di-muted">probabilidade calculada pela IA</span></div>
+        <table class="di-table">
+          <thead><tr><th>Cliente</th><th>Estágio</th><th>Valor</th><th>Prob. de fechar</th></tr></thead>
+          <tbody>
+            <tr><td class="di-td-name">AgroCampo BR</td><td><span class="di-badge di-badge--mid">negociação</span></td><td>R$ 480 mil</td><td class="di-up">86%</td></tr>
+            <tr><td class="di-td-name">Farma Direta</td><td><span class="di-badge di-badge--mid">proposta</span></td><td>R$ 260 mil</td><td class="di-up">71%</td></tr>
+            <tr><td class="di-td-name">Mercado União</td><td><span class="di-badge di-badge--mid">negociação</span></td><td>R$ 195 mil</td><td class="di-up">64%</td></tr>
+            <tr><td class="di-td-name">Ótica Prisma</td><td><span class="di-badge di-badge--mid">proposta</span></td><td>R$ 88 mil</td><td class="di-down">38%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== CLIENTES ===== -->
+    <div class="di-view di-view--clientes" hidden>
+      <header class="di-top">
+        <div><h3 class="di-top__t">Clientes</h3><span class="di-top__s">saúde da carteira · atualizado agora</span></div>
+      </header>
+      <div class="di-kpis">
+        <div class="di-kpi"><span class="di-kpi__l">Clientes ativos</span><b><span data-vkpi="ativos">0</span></b><em class="di-kpi__d">▲ 24 novos no mês</em></div>
+        <div class="di-kpi"><span class="di-kpi__l">Receita recorrente</span><b>R$ <span data-vkpi="mrr">0</span> mil</b><em class="di-kpi__d">▲ 9% vs jun</em></div>
+        <div class="di-kpi"><span class="di-kpi__l">Cancelamento (churn)</span><b><span data-vkpi="churn">0</span>%</b><em class="di-kpi__d">▼ 0,6pp</em></div>
+        <div class="di-kpi"><span class="di-kpi__l">NPS</span><b><span data-vkpi="nps">0</span></b><em class="di-kpi__d">zona de excelência</em></div>
+      </div>
+      <div class="di-row">
+        <div class="di-panel">
+          <div class="di-panel__h"><h4>Satisfação (NPS 72)</h4></div>
+          <ul class="di-funil di-nps">
+            <li><span class="n">Promotores</span><span class="bar bar--ok"><i style="--w:78%"></i></span><b>78%</b></li>
+            <li><span class="n">Neutros</span><span class="bar"><i style="--w:16%"></i></span><b>16%</b></li>
+            <li><span class="n">Detratores</span><span class="bar bar--warn"><i style="--w:6%"></i></span><b>6%</b></li>
+          </ul>
+          <div class="di-panel__h" style="margin-top:1rem"><h4>Carteira por setor</h4></div>
+          <ul class="di-funil">
+            <li><span class="n">Varejo</span><span class="bar"><i style="--w:34%"></i></span><b>34%</b></li>
+            <li><span class="n">Saúde</span><span class="bar"><i style="--w:26%"></i></span><b>26%</b></li>
+            <li><span class="n">Indústria</span><span class="bar"><i style="--w:22%"></i></span><b>22%</b></li>
+            <li><span class="n">Serviços</span><span class="bar"><i style="--w:18%"></i></span><b>18%</b></li>
+          </ul>
+        </div>
+        <div class="di-panel di-risco">
+          <div class="di-panel__h"><h4><span class="di-spark">✦</span> Clientes em risco — detectado pela IA</h4></div>
+          <div class="di-risco__item">
+            <b>Casa &amp; Cia</b>
+            <span>Uso caiu 41% em 30 dias e 2 chamados sem resposta.</span>
+            <em>Sugestão: gerente de conta liga hoje + oferta de treinamento gratuito.</em>
+          </div>
+          <div class="di-risco__item">
+            <b>Ótica Prisma</b>
+            <span>Fatura em atraso há 9 dias — histórico sempre pontual.</span>
+            <em>Sugestão: cobrança leve por WhatsApp com link de 2ª via.</em>
+          </div>
+          <div class="di-risco__item">
+            <b>Bella Moda</b>
+            <span>Contrato renova em 18 dias, sem contato há 40.</span>
+            <em>Sugestão: agendar revisão de resultados antes da renovação.</em>
+          </div>
         </div>
       </div>
     </div>
@@ -250,6 +351,47 @@ const clientes = [
   .di-insight.show { opacity: 1; transform: none; }
   .di-insight b { display: block; color: var(--gold-light); font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.25rem; }
 
+  /* ---- views ---- */
+  .di-view.play > * { animation: di-view-in 0.5s var(--ease-out) both; }
+  .di-view.play > *:nth-child(2) { animation-delay: 0.05s; }
+  .di-view.play > *:nth-child(3) { animation-delay: 0.11s; }
+  .di-view.play > *:nth-child(4) { animation-delay: 0.17s; }
+  @keyframes di-view-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .di-view > * + * { margin-top: 0.9rem; }
+  .di-kpis--3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* funil / rank / nps (barras nomeadas) */
+  .di-funil, .di-rank { display: flex; flex-direction: column; gap: 0.6rem; list-style: none; margin: 0; padding: 0; }
+  .di-funil li, .di-rank li { display: flex; align-items: center; gap: 0.7rem; font-size: 0.76rem; color: var(--text-2); }
+  .di-funil .n { width: 96px; flex: 0 0 auto; font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-3); }
+  .di-funil .bar, .di-rank .bar { flex: 1; height: 10px; border-radius: 6px; background: rgba(255,255,255,0.07); overflow: hidden; }
+  .di-funil .bar i, .di-rank .bar i { display: block; height: 100%; border-radius: 6px; background: var(--grad-brand); width: 0; }
+  .play .di-funil .bar i, .play .di-rank .bar i { animation: di-fill 1s var(--ease-out) forwards; }
+  .di-funil .bar--gold i { background: var(--grad-gold); }
+  .di-funil .bar--ok i { background: linear-gradient(90deg, #2ea86b, #79e2a0); }
+  .di-funil .bar--warn i { background: linear-gradient(90deg, #b98a2e, #e9c268); }
+  .di-funil b, .di-rank b { width: 72px; text-align: right; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+  .di-rank .av { flex: 0 0 auto; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--grad-brand); color: #fff; font-size: 0.6rem; font-weight: 700; }
+  .di-rank .nm { width: 78px; flex: 0 0 auto; font-size: 0.72rem; color: var(--text-2); }
+
+  /* clientes em risco */
+  .di-risco__item { border: 1px solid rgba(201,162,75,0.28); border-radius: 10px; background: rgba(201,162,75,0.05); padding: 0.7rem 0.85rem; margin-bottom: 0.55rem; }
+  .di-risco__item b { display: block; font-size: 0.82rem; color: var(--text-1); }
+  .di-risco__item span { display: block; margin-top: 0.15rem; font-size: 0.72rem; color: var(--text-2); line-height: 1.5; }
+  .di-risco__item em { display: block; margin-top: 0.3rem; font-style: normal; font-size: 0.7rem; color: var(--gold-light); line-height: 1.5; }
+
+  /* pergunta livre */
+  .di-ask__inputrow { display: flex; gap: 0.45rem; margin-top: 0.6rem; }
+  .di-ask__input {
+    flex: 1; min-width: 0; font: inherit; font-size: 0.78rem; color: var(--text-1);
+    background: var(--surface); border: 1px solid var(--border-strong); border-radius: 10px;
+    padding: 0.55rem 0.8rem; outline: none;
+  }
+  .di-ask__input:focus { border-color: var(--border-brand); }
+  .di-ask__input::placeholder { color: var(--text-3); }
+  .di-ask__send { width: 40px; border: 0; border-radius: 10px; cursor: pointer; background: var(--grad-brand); color: #fff; font-size: 0.8rem; }
+  .di-ask__q { font-size: 0.7rem; color: var(--text-3); margin-bottom: 0.3rem; }
+
   @media (max-width: 860px) {
     .di { grid-template-columns: 1fr; }
     .di-side { flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid var(--border); padding: 0.7rem 0.9rem; overflow-x: auto; }
@@ -265,7 +407,7 @@ const clientes = [
 </style>
 
 <script>
-  import { registerDemo, mkScheduler, animateCount, typewriter, linePath, areaPath, replay } from '../../scripts/demo-utils.js';
+  import { registerDemo, mkScheduler, animateCount, typewriter, linePath, areaPath, replay, escapeHtml } from '../../scripts/demo-utils.js';
 
   const DATA = {
     '7d': {
@@ -307,6 +449,18 @@ const clientes = [
   ];
 
   const CIRC = 2 * Math.PI * 44; // r=44
+
+  // KPIs das views Vendas/Clientes
+  const VKPIS = {
+    vendas: { vmes: [4.82, 2, ''], conv: [23, 0, ''], ciclo: [18, 0, ''] },
+    clientes: { ativos: [312, 0, ''], mrr: [402, 0, ''], churn: [1.8, 1, ''], nps: [72, 0, ''] },
+  };
+  // pergunta livre → melhor resposta pronta
+  const ASK_MATCH = [
+    [/regi[ãa]o|cres|sudeste|sul\b/i, 0],
+    [/margem|perde|perda|custo|frete/i, 1],
+    [/previs|proje|pr[óo]ximo|futuro|m[êe]s que vem/i, 2],
+  ];
 
   registerDemo('insight', {
     ac: null, sched: null,
@@ -367,34 +521,73 @@ const clientes = [
       if (animate) replay(root.querySelector('.di-bars').closest('.di-panel'));
     },
 
+    go(root, view) {
+      root.querySelectorAll('.di-nav__item[data-view]').forEach((b) => b.classList.toggle('is-active', b.dataset.view === view));
+      root.querySelectorAll('.di-view').forEach((v) => { v.hidden = !v.classList.contains('di-view--' + view); });
+      const active = root.querySelector('.di-view--' + view);
+      replay(active);
+      const kpis = VKPIS[view];
+      if (kpis) {
+        Object.entries(kpis).forEach(([k, [v, d, s]]) => {
+          const el = root.querySelector(`[data-vkpi="${k}"]`);
+          if (el) animateCount(el, v, d, s);
+        });
+      }
+    },
+
+    answer(root, q, userText) {
+      root.querySelectorAll('.di-ask__chips button').forEach((b) => { b.disabled = true; });
+      const out = root.querySelector('.di-ask__out');
+      const qEl = root.querySelector('.di-ask__q');
+      const ans = root.querySelector('.di-ask__a');
+      const insight = root.querySelector('.di-insight');
+      const insightT = root.querySelector('.di-insight__t');
+      out.hidden = false;
+      qEl.innerHTML = userText ? `Você perguntou: “${escapeHtml(userText)}”` : '';
+      insight.classList.remove('show');
+      insightT.textContent = q.ins || '';
+      typewriter(ans, q.resp, this.sched, 34, () => {
+        if (q.ins) insight.classList.add('show');
+        this.sched.after(600, () => root.querySelectorAll('.di-ask__chips button').forEach((b) => { b.disabled = false; }));
+      });
+    },
+
     onAction(action, el, root) {
+      if (action === 'di-nav') { this.go(root, el.dataset.view); return; }
       if (action === 'di-period') {
         root.querySelectorAll('.di-seg button').forEach((b) => b.classList.toggle('is-on', b === el));
         this.paint(root, el.dataset.p, true);
       }
       if (action === 'di-ask') {
         const q = PERGUNTAS[parseInt(el.dataset.q, 10)];
-        if (!q) return;
-        root.querySelectorAll('.di-ask__chips button').forEach((b) => { b.disabled = b !== el; });
-        const out = root.querySelector('.di-ask__out');
-        const ans = root.querySelector('.di-ask__a');
-        const insight = root.querySelector('.di-insight');
-        const insightT = root.querySelector('.di-insight__t');
-        out.hidden = false;
-        insight.classList.remove('show');
-        insightT.textContent = q.ins;
-        typewriter(ans, q.resp, this.sched, 34, () => {
-          insight.classList.add('show');
-          this.sched.after(600, () => root.querySelectorAll('.di-ask__chips button').forEach((b) => { b.disabled = false; }));
-        });
+        if (q) this.answer(root, q);
       }
+      if (action === 'di-ask-send') this.freeAsk(root);
+    },
+
+    freeAsk(root) {
+      const input = root.querySelector('.di-ask__input');
+      const txt = (input.value || '').trim();
+      if (!txt) return;
+      input.value = '';
+      const hit = ASK_MATCH.find(([re]) => re.test(txt));
+      if (hit) { this.answer(root, PERGUNTAS[hit[1]], txt); return; }
+      this.answer(root, {
+        resp: 'Boa pergunta! Na versão completa eu respondo qualquer coisa com os dados reais da sua empresa. Nesta demo, experimente os temas ao lado: crescimento por região, margem ou previsão. 😉',
+        ins: '',
+      }, txt);
     },
 
     mount(root) {
       this.ac = new AbortController();
       this.sched = mkScheduler();
+      this.go(root, 'visao');
       this.paint(root, '30d', false);
       root.querySelectorAll('.di-seg button').forEach((b) => b.classList.toggle('is-on', b.dataset.p === '30d'));
+      // Enter pergunta
+      const askInput = root.querySelector('.di-ask__input');
+      askInput.value = '';
+      askInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') this.freeAsk(root); }, { signal: this.ac.signal });
       // tooltip do gráfico
       const svg = root.querySelector('.di-chart');
       const tip = root.querySelector('.di-tip');

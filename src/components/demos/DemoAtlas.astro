@@ -1,159 +1,201 @@
 ---
-// Atlas OS — app de gestão navegável: 4 módulos reais (visão geral,
-// pedidos com filtro, clientes com busca, financeiro com fluxo de caixa).
-const pedidos = [
-  { id: '#4.812', cliente: 'Distribuidora Alfa', valor: 'R$ 12.480', status: 'faturado', label: 'faturado', data: '18/07' },
-  { id: '#4.813', cliente: 'Grupo Horizonte', valor: 'R$ 8.940', status: 'em-rota', label: 'em rota', data: '18/07' },
-  { id: '#4.814', cliente: 'Rede Vitale', valor: 'R$ 21.300', status: 'separacao', label: 'separação', data: '18/07' },
-  { id: '#4.815', cliente: 'Casa & Cia', valor: 'R$ 4.120', status: 'aguardando', label: 'aguardando', data: '18/07' },
-  { id: '#4.816', cliente: 'Bella Moda', valor: 'R$ 7.650', status: 'faturado', label: 'faturado', data: '17/07' },
-  { id: '#4.817', cliente: 'TransLog Express', valor: 'R$ 15.980', status: 'em-rota', label: 'em rota', data: '17/07' },
-  { id: '#4.818', cliente: 'Mercado União', valor: 'R$ 3.240', status: 'faturado', label: 'faturado', data: '17/07' },
-  { id: '#4.819', cliente: 'Ótica Prisma', valor: 'R$ 1.890', status: 'separacao', label: 'separação', data: '16/07' },
-  { id: '#4.820', cliente: 'AgroCampo BR', valor: 'R$ 28.700', status: 'faturado', label: 'faturado', data: '16/07' },
-  { id: '#4.821', cliente: 'Farma Direta', valor: 'R$ 6.410', status: 'aguardando', label: 'aguardando', data: '16/07' },
+// Atlas ERP — o dia a dia da empresa com AÇÕES reais: aprovar compra,
+// emitir NF-e, repor estoque, dar baixa em conta. Cada ação muda o sistema.
+const vendas = [
+  { id: '#V-1042', cliente: 'Distribuidora Alfa', itens: '12 itens', valor: 'R$ 12.480', nf: '12.844', done: false },
+  { id: '#V-1043', cliente: 'Grupo Horizonte', itens: '4 itens', valor: 'R$ 8.940', nf: '12.845', done: false },
+  { id: '#V-1044', cliente: 'Rede Vitale', itens: '23 itens', valor: 'R$ 21.300', nf: '12.846', done: false },
+  { id: '#V-1041', cliente: 'Bella Moda', itens: '7 itens', valor: 'R$ 7.650', nf: '12.843', emitida: true },
+  { id: '#V-1040', cliente: 'AgroCampo BR', itens: '31 itens', valor: 'R$ 28.700', nf: '12.842', emitida: true },
 ];
-const clientes = [
-  { nome: 'Distribuidora Alfa', cidade: 'Campinas · SP', desde: '2023', ltv: 'R$ 148 mil', status: 'ativo' },
-  { nome: 'Grupo Horizonte', cidade: 'São Paulo · SP', desde: '2022', ltv: 'R$ 231 mil', status: 'ativo' },
-  { nome: 'Rede Vitale', cidade: 'Belo Horizonte · MG', desde: '2024', ltv: 'R$ 96 mil', status: 'ativo' },
-  { nome: 'Casa & Cia', cidade: 'Curitiba · PR', desde: '2023', ltv: 'R$ 74 mil', status: 'inadimplente' },
-  { nome: 'Bella Moda', cidade: 'Rio de Janeiro · RJ', desde: '2025', ltv: 'R$ 31 mil', status: 'ativo' },
-  { nome: 'TransLog Express', cidade: 'Cajamar · SP', desde: '2022', ltv: 'R$ 187 mil', status: 'ativo' },
-  { nome: 'AgroCampo BR', cidade: 'Rondonópolis · MT', desde: '2024', ltv: 'R$ 205 mil', status: 'ativo' },
-  { nome: 'Farma Direta', cidade: 'Recife · PE', desde: '2025', ltv: 'R$ 42 mil', status: 'novo' },
+const estoque = [
+  { sku: 'SKU-118', prod: 'Válvula industrial 2"', qtd: 4, min: 20, nivel: 'critico' },
+  { sku: 'SKU-204', prod: 'Sensor de pressão PX-9', qtd: 11, min: 15, nivel: 'baixo' },
+  { sku: 'SKU-077', prod: 'Cabo blindado 4mm (rolo)', qtd: 46, min: 25, nivel: 'ok' },
+  { sku: 'SKU-131', prod: 'Painel de controle CLP-A', qtd: 8, min: 5, nivel: 'ok' },
+  { sku: 'SKU-350', prod: 'Bomba hidráulica BH-40', qtd: 17, min: 10, nivel: 'ok' },
+  { sku: 'SKU-092', prod: 'Filtro industrial F-200', qtd: 12, min: 12, nivel: 'baixo' },
+];
+const compras = [
+  { id: '#C-388', forn: 'Máx Embalagens', valor: 'R$ 12.100', prazo: '5 dias úteis', pendente: true },
+  { id: '#C-389', forn: 'TecnoParts Ltda', valor: 'R$ 34.500', prazo: '12 dias úteis', pendente: true },
+  { id: '#C-387', forn: 'Aço Forte S.A.', valor: 'R$ 18.750', prazo: '8 dias úteis', pendente: false },
+  { id: '#C-386', forn: 'Elétrica Nacional', valor: 'R$ 6.220', prazo: '3 dias úteis', pendente: false },
 ];
 const contas = [
-  { venc: '22/07', desc: 'Frete — TransLog', valor: 'R$ 8.420', status: 'agendado' },
-  { venc: '25/07', desc: 'Fornecedor — Máx Embalagens', valor: 'R$ 12.100', status: 'agendado' },
-  { venc: '28/07', desc: 'Energia — unidade Campinas', valor: 'R$ 4.380', status: 'pendente' },
-  { venc: '30/07', desc: 'Folha — colaboradores', valor: 'R$ 96.500', status: 'agendado' },
-  { venc: '02/08', desc: 'Aluguel — CD Central', valor: 'R$ 22.000', status: 'pendente' },
+  { id: 'F-221', desc: 'Frete — TransLog', tipo: 'pagar', venc: 'hoje', valor: 'R$ 8.420', v: 8.4 },
+  { id: 'F-222', desc: 'Mensalidade — Rede Vitale', tipo: 'receber', venc: 'hoje', valor: 'R$ 21.300', v: 21.3 },
+  { id: 'F-223', desc: 'Fornecedor — Máx Embalagens', tipo: 'pagar', venc: 'em 3 dias', valor: 'R$ 12.100', v: 12.1 },
+  { id: 'F-224', desc: 'Contrato — Grupo Horizonte', tipo: 'receber', venc: 'em 5 dias', valor: 'R$ 42.000', v: 42.0 },
+  { id: 'F-225', desc: 'Energia — unidade Campinas', tipo: 'pagar', venc: 'em 7 dias', valor: 'R$ 4.380', v: 4.4 },
 ];
 ---
-<section class="demo at" id="demo-atlas" data-demo="atlas" data-view="visao" hidden>
-  <aside class="at-side">
-    <div class="at-side__brand">
+<section class="demo ae" id="demo-atlas" data-demo="atlas" data-view="hoje" hidden>
+  <aside class="ae-side">
+    <div class="ae-side__brand">
       <img src="/brand/novra-icon-ui.png" alt="" width="26" height="28" />
-      <span>Atlas<em>OS</em></span>
+      <span>Atlas<em>ERP</em></span>
     </div>
-    <nav class="at-nav">
-      <button data-action="at-nav" data-view="visao" class="is-on" type="button"><i>▦</i> Visão geral</button>
-      <button data-action="at-nav" data-view="pedidos" type="button"><i>▤</i> Pedidos</button>
-      <button data-action="at-nav" data-view="clientes" type="button"><i>◉</i> Clientes</button>
-      <button data-action="at-nav" data-view="financeiro" type="button"><i>◈</i> Financeiro</button>
+    <nav class="ae-nav">
+      <button data-action="ae-nav" data-view="hoje" class="is-on" type="button"><i>☀</i> Hoje <em class="ae-nav__badge" data-badge="hoje">6</em></button>
+      <button data-action="ae-nav" data-view="vendas" type="button"><i>▤</i> Vendas &amp; NF-e <em class="ae-nav__badge" data-badge="vendas">3</em></button>
+      <button data-action="ae-nav" data-view="estoque" type="button"><i>▦</i> Estoque <em class="ae-nav__badge ae-nav__badge--warn" data-badge="estoque">2</em></button>
+      <button data-action="ae-nav" data-view="compras" type="button"><i>⇄</i> Compras <em class="ae-nav__badge" data-badge="compras">2</em></button>
+      <button data-action="ae-nav" data-view="financeiro" type="button"><i>◈</i> Financeiro</button>
     </nav>
-    <div class="at-side__user">
-      <span class="at-avatar">F</span>
+    <div class="ae-side__user">
+      <span class="ae-avatar">F</span>
       <div><b>Felipe O.</b><em>Diretor · Matriz</em></div>
     </div>
   </aside>
 
-  <div class="at-main">
-    <!-- ===== VISÃO GERAL ===== -->
-    <div class="at-view at-view--visao">
-      <header class="at-head"><h3>Visão geral</h3><span>sexta-feira, 18 de julho</span></header>
-      <div class="at-kpis">
-        <div class="at-kpi"><span>Faturamento do mês</span><b>R$ <i data-kpi="fat">0</i> mil</b><em class="up">▲ 12% vs jun</em></div>
-        <div class="at-kpi"><span>Pedidos hoje</span><b><i data-kpi="ped">0</i></b><em class="up">▲ 5 desde ontem</em></div>
-        <div class="at-kpi"><span>Ticket médio</span><b>R$ <i data-kpi="tik">0</i></b><em>estável</em></div>
-        <div class="at-kpi"><span>Inadimplência</span><b><i data-kpi="ina">0</i>%</b><em class="up">▼ 0,8pp</em></div>
+  <div class="ae-main">
+    <!-- ===== HOJE ===== -->
+    <div class="ae-view ae-view--hoje">
+      <header class="ae-head"><h3>Bom dia, Felipe 👋</h3><span>sexta-feira, 18 de julho · unidade Matriz</span></header>
+      <div class="ae-kpis">
+        <div class="ae-kpi"><span>Vendas hoje</span><b>R$ <i data-kpi="vhoje">0</i> mil</b><em class="up">▲ 12% vs média</em></div>
+        <div class="ae-kpi"><span>Saldo em caixa</span><b>R$ <i data-kpi="saldo">0</i> mil</b><em>atualiza com as baixas ↓</em></div>
+        <div class="ae-kpi"><span>Pendências do dia</span><b><i data-kpi="pend">0</i></b><em>resolva nos módulos →</em></div>
       </div>
-      <div class="at-cols">
-        <div class="at-panel">
-          <h4>Fluxo do mês <span>entradas × saídas · R$ mil</span></h4>
-          <svg class="at-chart" viewBox="0 0 560 170" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="ga-in" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="#2E6BFF"/><stop offset="1" stop-color="#00A8FF"/>
-              </linearGradient>
-            </defs>
-            <path class="at-line at-line--in" fill="none" stroke="url(#ga-in)" stroke-width="2.5" stroke-linecap="round" d=""></path>
-            <path class="at-line at-line--out" fill="none" stroke="rgba(201,162,75,0.85)" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" d=""></path>
-          </svg>
-          <div class="at-legend"><span><i class="a"></i> entradas</span><span><i class="b"></i> saídas</span></div>
+      <div class="ae-panel">
+        <h4>Precisa de você agora</h4>
+        <div class="ae-tasks">
+          <button class="ae-task" data-action="ae-nav" data-view="compras" type="button">
+            <span class="ae-task__ic ae-task__ic--blue">⇄</span>
+            <span class="ae-task__t"><b>Compras para aprovar</b> — fornecedores aguardando seu ok</span>
+            <span class="ae-task__n" data-tcount="compras">2</span>
+            <span class="ae-task__go">Aprovar →</span>
+          </button>
+          <button class="ae-task" data-action="ae-nav" data-view="vendas" type="button">
+            <span class="ae-task__ic ae-task__ic--blue">▤</span>
+            <span class="ae-task__t"><b>NF-e para emitir</b> — vendas fechadas sem nota</span>
+            <span class="ae-task__n" data-tcount="vendas">3</span>
+            <span class="ae-task__go">Emitir →</span>
+          </button>
+          <button class="ae-task ae-task--warn" data-action="ae-nav" data-view="estoque" type="button">
+            <span class="ae-task__ic ae-task__ic--gold">!</span>
+            <span class="ae-task__t"><b>Estoque abaixo do mínimo</b> — inclui 1 item crítico</span>
+            <span class="ae-task__n ae-task__n--warn" data-tcount="estoque">3</span>
+            <span class="ae-task__go">Repor →</span>
+          </button>
+          <button class="ae-task" data-action="ae-nav" data-view="financeiro" type="button">
+            <span class="ae-task__ic ae-task__ic--blue">◈</span>
+            <span class="ae-task__t"><b>Contas para dar baixa</b> — pagamentos e recebimentos em aberto</span>
+            <span class="ae-task__n" data-tcount="financeiro">5</span>
+            <span class="ae-task__go">Dar baixa →</span>
+          </button>
         </div>
-        <div class="at-panel">
-          <h4>Atalhos</h4>
-          <div class="at-short">
-            <button data-action="at-nav" data-view="pedidos" type="button">▤ Ver pedidos em aberto <em>4</em></button>
-            <button data-action="at-nav" data-view="clientes" type="button">◉ Clientes inadimplentes <em>1</em></button>
-            <button data-action="at-nav" data-view="financeiro" type="button">◈ Contas desta semana <em>2</em></button>
-          </div>
-          <div class="at-tip"><b>Atlas sugere:</b> o pedido #4.815 aguarda aprovação há 2 dias — o cliente costuma comprar 2× mais quando aprovado em 24h.</div>
-        </div>
+      </div>
+      <div class="ae-panel ae-ia">
+        <h4><span class="ae-spark">✦</span> Atlas sugere</h4>
+        <p>O cliente <b>Rede Vitale</b> compra a cada 21 dias e o último pedido foi há 19 — boa hora de o comercial ligar. E o item <b>Válvula industrial 2"</b> está crítico com lead time de 12 dias: aprovar a reposição hoje evita ruptura na semana que vem.</p>
       </div>
     </div>
 
-    <!-- ===== PEDIDOS ===== -->
-    <div class="at-view at-view--pedidos" hidden>
-      <header class="at-head"><h3>Pedidos</h3><span class="at-count">10 pedidos</span></header>
-      <div class="at-filters">
-        <button data-action="at-filter" data-status="todos" class="is-on" type="button">Todos</button>
-        <button data-action="at-filter" data-status="faturado" type="button">Faturados</button>
-        <button data-action="at-filter" data-status="em-rota" type="button">Em rota</button>
-        <button data-action="at-filter" data-status="separacao" type="button">Separação</button>
-        <button data-action="at-filter" data-status="aguardando" type="button">Aguardando</button>
-      </div>
-      <div class="at-panel at-panel--table">
-        <table class="at-table">
-          <thead><tr><th>Pedido</th><th>Cliente</th><th>Valor</th><th>Data</th><th>Status</th></tr></thead>
+    <!-- ===== VENDAS & NF ===== -->
+    <div class="ae-view ae-view--vendas" hidden>
+      <header class="ae-head"><h3>Vendas &amp; NF-e</h3><span><i data-tcount2="vendas">3</i> notas pendentes</span></header>
+      <div class="ae-panel ae-panel--table">
+        <table class="ae-table">
+          <thead><tr><th>Venda</th><th>Cliente</th><th>Itens</th><th>Valor</th><th>Nota fiscal</th></tr></thead>
           <tbody>
-            {pedidos.map((p) => (
-              <tr data-status={p.status}>
-                <td class="mono">{p.id}</td>
-                <td class="name">{p.cliente}</td>
-                <td>{p.valor}</td>
-                <td class="mono dim">{p.data}</td>
-                <td><span class={`at-badge at-badge--${p.status}`}>{p.label}</span></td>
+            {vendas.map((v) => (
+              <tr data-row="venda" data-done={v.emitida ? '1' : undefined} data-keep={v.emitida ? '1' : undefined}>
+                <td class="mono">{v.id}</td>
+                <td class="name">{v.cliente}</td>
+                <td class="dim">{v.itens}</td>
+                <td>{v.valor}</td>
+                <td>
+                  <button class="ae-act" data-action="ae-nf" type="button">Emitir NF-e</button>
+                  <span class="ae-done">NF {v.nf} ✓</span>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <p class="ae-foot-note">A emissão fala com a SEFAZ, envia o XML/DANFE por e-mail ao cliente e lança no financeiro — aqui, simulada em 1 clique.</p>
     </div>
 
-    <!-- ===== CLIENTES ===== -->
-    <div class="at-view at-view--clientes" hidden>
-      <header class="at-head"><h3>Clientes</h3><span class="at-ccount">8 clientes</span></header>
-      <input class="at-search" type="search" placeholder="Buscar por nome ou cidade… (experimente: vitale)" aria-label="Buscar cliente" />
-      <div class="at-panel at-panel--table">
-        <table class="at-table">
-          <thead><tr><th>Cliente</th><th>Cidade</th><th>Desde</th><th>LTV</th><th>Status</th></tr></thead>
+    <!-- ===== ESTOQUE ===== -->
+    <div class="ae-view ae-view--estoque" hidden>
+      <header class="ae-head"><h3>Estoque</h3><span>unidade Matriz · <i data-tcount2="estoque">2</i> itens p/ repor</span></header>
+      <div class="ae-panel ae-panel--table">
+        <table class="ae-table">
+          <thead><tr><th>SKU</th><th>Produto</th><th>Em estoque</th><th>Mínimo</th><th>Situação</th></tr></thead>
           <tbody>
-            {clientes.map((c) => (
-              <tr>
-                <td class="name">{c.nome}</td>
-                <td class="dim">{c.cidade}</td>
-                <td class="mono dim">{c.desde}</td>
-                <td>{c.ltv}</td>
-                <td><span class={`at-badge at-badge--${c.status === 'ativo' ? 'faturado' : c.status === 'novo' ? 'em-rota' : 'aguardando'}`}>{c.status}</span></td>
+            {estoque.map((e) => (
+              <tr data-row="estoque" data-nivel={e.nivel}>
+                <td class="mono dim">{e.sku}</td>
+                <td class="name">{e.prod}</td>
+                <td class="mono">{e.qtd} un</td>
+                <td class="mono dim">{e.min} un</td>
+                <td>
+                  {e.nivel === 'ok'
+                    ? <span class="ae-badge ae-badge--ok">ok</span>
+                    : <>
+                        <span class={`ae-badge ${e.nivel === 'critico' ? 'ae-badge--crit' : 'ae-badge--warn'}`}>{e.nivel === 'critico' ? 'crítico' : 'baixo'}</span>
+                        <button class="ae-act" data-action="ae-repor" type="button">Repor</button>
+                        <span class="ae-done">reposição pedida ✓</span>
+                      </>
+                  }
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <p class="ae-foot-note">"Repor" cria o pedido de compra com o fornecedor padrão do item e a quantidade ideal calculada pelo giro.</p>
+    </div>
+
+    <!-- ===== COMPRAS ===== -->
+    <div class="ae-view ae-view--compras" hidden>
+      <header class="ae-head"><h3>Compras</h3><span><i data-tcount2="compras">2</i> aguardando aprovação</span></header>
+      <div class="ae-panel ae-panel--table">
+        <table class="ae-table">
+          <thead><tr><th>Pedido</th><th>Fornecedor</th><th>Valor</th><th>Prazo</th><th>Aprovação</th></tr></thead>
+          <tbody>
+            {compras.map((c) => (
+              <tr data-row="compra" data-done={c.pendente ? undefined : '1'} data-keep={c.pendente ? undefined : '1'}>
+                <td class="mono">{c.id}</td>
+                <td class="name">{c.forn}</td>
+                <td>{c.valor}</td>
+                <td class="dim">{c.prazo}</td>
+                <td>
+                  <button class="ae-act" data-action="ae-aprovar" type="button">Aprovar</button>
+                  <span class="ae-done">aprovado ✓</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="ae-foot-note">Alçadas configuráveis: até R$ 20 mil o gerente aprova; acima, vai pro diretor — com trilha de auditoria.</p>
     </div>
 
     <!-- ===== FINANCEIRO ===== -->
-    <div class="at-view at-view--financeiro" hidden>
-      <header class="at-head"><h3>Financeiro</h3><span>posição de hoje</span></header>
-      <div class="at-kpis at-kpis--3">
-        <div class="at-kpi"><span>Saldo em caixa</span><b>R$ <i data-kpi="saldo">0</i> mil</b><em class="up">▲ saudável</em></div>
-        <div class="at-kpi"><span>A receber (30d)</span><b>R$ <i data-kpi="receber">0</i> mil</b><em>12 títulos</em></div>
-        <div class="at-kpi"><span>A pagar (30d)</span><b>R$ <i data-kpi="pagar">0</i> mil</b><em>5 contas</em></div>
+    <div class="ae-view ae-view--financeiro" hidden>
+      <header class="ae-head"><h3>Financeiro</h3><span>dar baixa atualiza o caixa em tempo real</span></header>
+      <div class="ae-kpis ae-kpis--fin">
+        <div class="ae-kpi"><span>Saldo em caixa</span><b>R$ <i data-kpi="saldo2">0</i> mil</b><em class="ae-saldo-hint">baixas refletem aqui ↓</em></div>
+        <div class="ae-kpi"><span>A receber (30d)</span><b>R$ 386 mil</b><em>12 títulos</em></div>
+        <div class="ae-kpi"><span>A pagar (30d)</span><b>R$ 143 mil</b><em>9 contas</em></div>
       </div>
-      <div class="at-panel at-panel--table">
-        <h4>Próximas contas</h4>
-        <table class="at-table">
-          <thead><tr><th>Venc.</th><th>Descrição</th><th>Valor</th><th>Status</th></tr></thead>
+      <div class="ae-panel ae-panel--table">
+        <table class="ae-table">
+          <thead><tr><th>Conta</th><th>Tipo</th><th>Vencimento</th><th>Valor</th><th>Baixa</th></tr></thead>
           <tbody>
             {contas.map((c) => (
-              <tr>
-                <td class="mono dim">{c.venc}</td>
+              <tr data-row="conta" data-tipo={c.tipo} data-v={c.v}>
                 <td class="name">{c.desc}</td>
-                <td>{c.valor}</td>
-                <td><span class={`at-badge at-badge--${c.status === 'agendado' ? 'faturado' : 'aguardando'}`}>{c.status}</span></td>
+                <td><span class={`ae-badge ${c.tipo === 'receber' ? 'ae-badge--ok' : 'ae-badge--mid'}`}>{c.tipo}</span></td>
+                <td class={c.venc === 'hoje' ? 'ae-hoje' : 'dim'}>{c.venc}</td>
+                <td class="mono">{c.valor}</td>
+                <td>
+                  <button class="ae-act" data-action="ae-baixa" type="button">Dar baixa</button>
+                  <span class="ae-done">{c.tipo === 'receber' ? 'recebida ✓' : 'paga ✓'}</span>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -161,197 +203,248 @@ const contas = [
       </div>
     </div>
   </div>
+
+  <div class="ae-toastzone" aria-live="polite"></div>
 </section>
 
 <style is:global>
-  .at { display: grid; grid-template-columns: 200px 1fr; min-height: 100%; background: #0a0b10; }
-  .at-side { display: flex; flex-direction: column; gap: 1rem; border-right: 1px solid var(--border); padding: 1.1rem 0.8rem; background: rgba(255,255,255,0.012); }
-  .at-side__brand { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 600; padding: 0.2rem 0.4rem; }
-  .at-side__brand em { font-style: normal; color: var(--cyan-400); }
-  .at-nav { display: flex; flex-direction: column; gap: 0.25rem; }
-  .at-nav button {
+  .ae { display: grid; grid-template-columns: 210px 1fr; min-height: 100%; background: #0a0b10; position: relative; }
+  .ae-side { display: flex; flex-direction: column; gap: 1rem; border-right: 1px solid var(--border); padding: 1.1rem 0.8rem; background: rgba(255,255,255,0.012); }
+  .ae-side__brand { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 600; padding: 0.2rem 0.4rem; }
+  .ae-side__brand em { font-style: normal; color: var(--cyan-400); }
+  .ae-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+  .ae-nav button {
     display: flex; align-items: center; gap: 0.6rem;
     font: inherit; font-size: 0.84rem; color: var(--text-2); text-align: left; cursor: pointer;
     padding: 0.6rem 0.7rem; border-radius: 10px; border: 1px solid transparent; background: none;
     transition: background 0.25s, color 0.25s, border-color 0.25s;
   }
-  .at-nav button i { font-style: normal; opacity: 0.85; }
-  .at-nav button:hover { background: var(--surface-hover); color: var(--text-1); }
-  .at-nav button.is-on { background: rgba(46, 107, 255, 0.14); color: var(--text-1); border-color: rgba(46, 107, 255, 0.3); }
-  .at-side__user { margin-top: auto; display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem; }
-  .at-avatar { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--grad-brand); color: #fff; font-weight: 600; font-size: 0.8rem; }
-  .at-side__user b { display: block; font-size: 0.76rem; }
-  .at-side__user em { display: block; font-style: normal; font-size: 0.6rem; color: var(--text-3); }
+  .ae-nav button i { font-style: normal; opacity: 0.85; }
+  .ae-nav button:hover { background: var(--surface-hover); color: var(--text-1); }
+  .ae-nav button.is-on { background: rgba(46, 107, 255, 0.14); color: var(--text-1); border-color: rgba(46, 107, 255, 0.3); }
+  .ae-nav__badge {
+    margin-left: auto; font-style: normal; font-family: var(--font-mono); font-size: 0.62rem;
+    min-width: 20px; text-align: center; padding: 0.15em 0.4em; border-radius: 99px;
+    background: rgba(46, 107, 255, 0.18); color: var(--cyan-300); border: 1px solid rgba(46,107,255,0.35);
+  }
+  .ae-nav__badge--warn { background: rgba(233,194,104,0.12); color: #e9c268; border-color: rgba(233,194,104,0.35); }
+  .ae-nav__badge:empty { display: none; }
+  .ae-side__user { margin-top: auto; display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem; }
+  .ae-avatar { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--grad-brand); color: #fff; font-weight: 600; font-size: 0.8rem; }
+  .ae-side__user b { display: block; font-size: 0.76rem; }
+  .ae-side__user em { display: block; font-style: normal; font-size: 0.6rem; color: var(--text-3); }
 
-  .at-main { padding: 1.2rem clamp(1rem, 2.4vw, 1.8rem) 2rem; min-width: 0; }
-  .at-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.9rem; }
-  .at-head h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
-  .at-head span { font-size: 0.72rem; color: var(--text-3); }
+  .ae-main { padding: 1.2rem clamp(1rem, 2.4vw, 1.8rem) 2rem; min-width: 0; }
+  .ae-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+  .ae-head h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+  .ae-head span { font-size: 0.72rem; color: var(--text-3); }
 
-  .at-view.play .at-kpi, .at-view.play .at-panel { animation: at-in 0.5s var(--ease-out) both; }
-  .at-view.play > *:nth-child(2) { animation-delay: 0.05s; }
-  .at-view.play > *:nth-child(3) { animation-delay: 0.12s; }
-  @keyframes at-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .ae-view.play > * { animation: ae-in 0.5s var(--ease-out) both; }
+  .ae-view.play > *:nth-child(2) { animation-delay: 0.06s; }
+  .ae-view.play > *:nth-child(3) { animation-delay: 0.12s; }
+  @keyframes ae-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-  .at-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; margin-bottom: 0.9rem; }
-  .at-kpis--3 { grid-template-columns: repeat(3, 1fr); }
-  .at-kpi { border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 0.9rem; background: rgba(255,255,255,0.016); min-width: 0; }
-  .at-kpi span { display: block; font-size: 0.64rem; color: var(--text-3); letter-spacing: 0.03em; }
-  .at-kpi b { display: block; margin-top: 0.15rem; font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; background: linear-gradient(180deg,#fff,#b9c6e0); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; }
-  .at-kpi b i { font-style: normal; }
-  .at-kpi em { display: block; margin-top: 0.1rem; font-style: normal; font-size: 0.64rem; color: var(--text-3); }
-  .at-kpi em.up { color: #79e2a0; }
+  .ae-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin-bottom: 0.9rem; }
+  .ae-kpi { border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 0.9rem; background: rgba(255,255,255,0.016); min-width: 0; }
+  .ae-kpi span { display: block; font-size: 0.64rem; color: var(--text-3); }
+  .ae-kpi b { display: block; margin-top: 0.15rem; font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; background: linear-gradient(180deg,#fff,#b9c6e0); -webkit-background-clip: text; background-clip: text; color: transparent; white-space: nowrap; }
+  .ae-kpi b i { font-style: normal; }
+  .ae-kpi em { display: block; margin-top: 0.1rem; font-style: normal; font-size: 0.62rem; color: var(--text-3); }
+  .ae-kpi em.up { color: #79e2a0; }
 
-  .at-cols { display: grid; grid-template-columns: 1.4fr 1fr; gap: 0.9rem; }
-  .at-cols > * { min-width: 0; }
-  .at-panel { border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem 1rem; background: rgba(255,255,255,0.014); min-width: 0; }
-  .at-panel h4 { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.7rem; }
-  .at-panel h4 span { text-transform: none; letter-spacing: 0.02em; margin-left: 0.5rem; }
-  .at-chart { width: 100%; height: 150px; display: block; }
-  .at-line--in { stroke-dasharray: 1200; stroke-dashoffset: 1200; }
-  .play .at-line--in { animation: at-draw 1.2s var(--ease-out) 0.15s forwards; }
-  .at-line--out { opacity: 0; }
-  .play .at-line--out { animation: at-fadein 0.6s ease 1s forwards; }
-  @keyframes at-draw { to { stroke-dashoffset: 0; } }
-  @keyframes at-fadein { to { opacity: 1; } }
-  .at-legend { display: flex; gap: 1rem; margin-top: 0.4rem; font-size: 0.66rem; color: var(--text-3); }
-  .at-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; margin-right: 0.35rem; vertical-align: middle; }
-  .at-legend .a { background: var(--grad-brand); }
-  .at-legend .b { background: rgba(201,162,75,0.85); }
+  .ae-panel { border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem 1rem; background: rgba(255,255,255,0.014); min-width: 0; margin-bottom: 0.9rem; }
+  .ae-panel h4 { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.7rem; }
+  .ae-panel--table { overflow-x: auto; }
 
-  .at-short { display: flex; flex-direction: column; gap: 0.45rem; }
-  .at-short button {
-    display: flex; align-items: center; gap: 0.5rem;
-    font: inherit; font-size: 0.78rem; color: var(--text-1); text-align: left; cursor: pointer;
-    padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+  .ae-tasks { display: flex; flex-direction: column; gap: 0.5rem; }
+  .ae-task {
+    display: flex; align-items: center; gap: 0.8rem;
+    font: inherit; text-align: left; cursor: pointer; width: 100%;
+    padding: 0.7rem 0.85rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
     transition: border-color 0.25s, background 0.25s, transform 0.25s var(--ease-out);
   }
-  .at-short button:hover { border-color: var(--border-brand); background: rgba(46,107,255,0.07); transform: translateY(-1px); }
-  .at-short button em { margin-left: auto; font-style: normal; font-family: var(--font-mono); font-size: 0.66rem; color: var(--cyan-400); }
-  .at-tip { margin-top: 0.8rem; font-size: 0.74rem; line-height: 1.55; color: var(--text-2); border-left: 2px solid var(--gold); padding-left: 0.75rem; }
-  .at-tip b { color: var(--gold-light); }
-
-  .at-filters { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
-  .at-filters button {
-    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.04em; color: var(--text-2); cursor: pointer;
-    padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 99px; background: var(--surface);
-    transition: all 0.25s;
+  .ae-task:hover { border-color: var(--border-brand); background: rgba(46,107,255,0.06); transform: translateY(-1px); }
+  .ae-task--warn:hover { border-color: rgba(233,194,104,0.5); background: rgba(233,194,104,0.05); }
+  .ae-task__ic { flex: 0 0 auto; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; font-size: 0.85rem; }
+  .ae-task__ic--blue { color: var(--cyan-300); background: rgba(0,168,255,0.1); }
+  .ae-task__ic--gold { color: #e9c268; background: rgba(233,194,104,0.12); }
+  .ae-task__t { flex: 1; font-size: 0.82rem; color: var(--text-2); line-height: 1.4; }
+  .ae-task__t b { color: var(--text-1); }
+  .ae-task__t i { font-style: normal; }
+  .ae-task__n {
+    flex: 0 0 auto; min-width: 26px; text-align: center;
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+    padding: 0.2em 0.5em; border-radius: 99px;
+    background: rgba(46,107,255,0.16); color: var(--cyan-300); border: 1px solid rgba(46,107,255,0.35);
   }
-  .at-filters button.is-on { background: linear-gradient(120deg, rgba(46,107,255,0.85), rgba(0,168,255,0.85)); color: #fff; border-color: transparent; }
+  .ae-task__n--warn { background: rgba(233,194,104,0.12); color: #e9c268; border-color: rgba(233,194,104,0.35); }
+  .ae-task__go { font-family: var(--font-display); font-weight: 600; font-size: 0.78rem; color: var(--cyan-400); white-space: nowrap; }
+  .ae-task.is-clear { opacity: 0.45; }
+  .ae-task.is-clear .ae-task__go { visibility: hidden; }
 
-  .at-search {
-    width: 100%; font: inherit; font-size: 0.84rem; color: var(--text-1);
-    background: var(--surface); border: 1px solid var(--border-strong); border-radius: 12px;
-    padding: 0.65rem 0.95rem; outline: none; margin-bottom: 0.8rem;
+  .ae-ia p { font-size: 0.82rem; line-height: 1.65; color: var(--text-2); }
+  .ae-ia b { color: var(--text-1); }
+  .ae-spark { color: var(--gold); }
+
+  .ae-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .ae-table th { text-align: left; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); padding: 0.4rem 0.55rem; border-bottom: 1px solid var(--border); }
+  .ae-table td { padding: 0.55rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-2); white-space: nowrap; vertical-align: middle; }
+  .ae-table .name { color: var(--text-1); font-weight: 500; }
+  .ae-table .mono { font-family: var(--font-mono); font-size: 0.72rem; }
+  .ae-table .dim { color: var(--text-3); }
+  .ae-hoje { color: #e9c268; font-weight: 600; }
+
+  .ae-badge { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.04em; padding: 0.22em 0.6em; border-radius: 99px; margin-right: 0.5rem; }
+  .ae-badge--ok { color: #79e2a0; border: 1px solid rgba(121,226,160,0.35); background: rgba(121,226,160,0.08); }
+  .ae-badge--warn { color: #e9c268; border: 1px solid rgba(233,194,104,0.35); background: rgba(233,194,104,0.08); }
+  .ae-badge--crit { color: #ff8f8f; border: 1px solid rgba(255,143,143,0.4); background: rgba(255,143,143,0.08); animation: ae-crit 1.6s ease-in-out infinite; }
+  @keyframes ae-crit { 50% { box-shadow: 0 0 12px rgba(255,143,143,0.35); } }
+  .ae-badge--mid { color: var(--text-2); border: 1px solid var(--border); background: var(--surface); }
+
+  /* ação → feito: o estado mora no data-done da linha */
+  .ae-act {
+    font: inherit; font-size: 0.72rem; font-weight: 600; color: #fff; cursor: pointer;
+    padding: 0.4rem 0.8rem; border: 0; border-radius: 8px;
+    background: linear-gradient(120deg, rgba(46,107,255,0.9), rgba(0,168,255,0.9));
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
   }
-  .at-search:focus { border-color: var(--border-brand); }
-  .at-search::placeholder { color: var(--text-3); }
+  .ae-act:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(46,107,255,0.4); }
+  .ae-done {
+    display: none; font-family: var(--font-mono); font-size: 0.66rem; color: #79e2a0;
+    border: 1px solid rgba(121,226,160,0.35); background: rgba(121,226,160,0.08);
+    padding: 0.3em 0.7em; border-radius: 99px;
+  }
+  tr[data-done] .ae-act { display: none; }
+  tr[data-done] .ae-done { display: inline-block; animation: ae-pop 0.4s var(--ease-out); }
+  tr[data-done] .ae-badge--crit, tr[data-done] .ae-badge--warn { animation: none; opacity: 0.55; }
+  @keyframes ae-pop { from { transform: scale(0.7); opacity: 0; } to { transform: none; opacity: 1; } }
 
-  .at-panel--table { overflow-x: auto; }
-  .at-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-  .at-table th { text-align: left; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); padding: 0.4rem 0.55rem; border-bottom: 1px solid var(--border); }
-  .at-table td { padding: 0.55rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-2); white-space: nowrap; }
-  .at-table .name { color: var(--text-1); font-weight: 500; }
-  .at-table .mono { font-family: var(--font-mono); font-size: 0.7rem; }
-  .at-table .dim { color: var(--text-3); }
-  .at-badge { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.04em; padding: 0.22em 0.6em; border-radius: 99px; }
-  .at-badge--faturado { color: #79e2a0; border: 1px solid rgba(121,226,160,0.35); background: rgba(121,226,160,0.08); }
-  .at-badge--em-rota { color: var(--cyan-300); border: 1px solid rgba(0,168,255,0.4); background: rgba(0,168,255,0.08); }
-  .at-badge--separacao { color: #c9cfdd; border: 1px solid var(--border-strong); background: var(--surface); }
-  .at-badge--aguardando { color: #e9c268; border: 1px solid rgba(233,194,104,0.35); background: rgba(233,194,104,0.08); }
+  .ae-foot-note { font-size: 0.72rem; color: var(--text-3); line-height: 1.55; border-left: 2px solid var(--gold); padding-left: 0.75rem; }
+
+  .ae-toastzone { position: absolute; right: 1.2rem; bottom: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; z-index: 5; pointer-events: none; }
+  .ae-toast {
+    display: flex; align-items: center; gap: 0.6rem;
+    border: 1px solid rgba(121, 226, 160, 0.4); border-radius: 12px;
+    background: rgba(10, 28, 20, 0.94); backdrop-filter: blur(8px);
+    padding: 0.6rem 0.9rem; font-size: 0.76rem; color: #dcffe9;
+    opacity: 0; transform: translateY(10px);
+    animation: ae-toast-in 0.45s var(--ease-out) forwards;
+    max-width: 340px;
+  }
+  @keyframes ae-toast-in { to { opacity: 1; transform: none; } }
+  .ae-toast b { color: #79e2a0; }
 
   @media (max-width: 860px) {
-    .at { grid-template-columns: 1fr; }
-    .at-side { flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid var(--border); padding: 0.7rem 0.9rem; overflow-x: auto; }
-    .at-nav { flex-direction: row; }
-    .at-nav button { white-space: nowrap; padding: 0.45rem 0.6rem; }
-    .at-side__brand span { display: none; }
-    .at-side__user { display: none; }
-    .at-kpis, .at-kpis--3 { grid-template-columns: repeat(2, 1fr); }
-    .at-cols { grid-template-columns: 1fr; }
+    .ae { grid-template-columns: 1fr; }
+    .ae-side { flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid var(--border); padding: 0.7rem 0.9rem; overflow-x: auto; }
+    .ae-nav { flex-direction: row; }
+    .ae-nav button { white-space: nowrap; padding: 0.45rem 0.6rem; }
+    .ae-side__brand span { display: none; }
+    .ae-side__user { display: none; }
+    .ae-kpis, .ae-kpis--fin { grid-template-columns: 1fr; }
+    .ae-task__go { display: none; }
   }
 </style>
 
 <script>
-  import { registerDemo, mkScheduler, animateCount, linePath, replay } from '../../scripts/demo-utils.js';
+  import { registerDemo, mkScheduler, animateCount, replay } from '../../scripts/demo-utils.js';
 
-  const CAIXA = {
-    entradas: [420, 455, 438, 510, 532, 548],
-    saidas: [365, 371, 380, 392, 405, 398],
-  };
-  const KPIS = {
-    visao: { fat: [532, 0, ''], ped: [38, 0, ''], tik: [358, 0, ''], ina: [2.4, 1, ''] },
-    financeiro: { saldo: [412, 0, ''], receber: [386, 0, ''], pagar: [143, 0, ''] },
-  };
+  const SALDO_BASE = 412; // R$ mil
 
   registerDemo('atlas', {
-    ac: null, sched: null,
+    ac: null, sched: null, saldo: SALDO_BASE,
+
+    toast(root, html) {
+      const t = document.createElement('div');
+      t.className = 'ae-toast';
+      t.innerHTML = html; // conteúdo interno controlado (nunca input de usuário)
+      root.querySelector('.ae-toastzone').appendChild(t);
+      this.sched.after(4200, () => t.remove());
+    },
+
+    counts(root) {
+      const c = {
+        vendas: root.querySelectorAll('tr[data-row="venda"]:not([data-done])').length,
+        estoque: root.querySelectorAll('tr[data-row="estoque"]:not([data-done]):not([data-nivel="ok"])').length,
+        compras: root.querySelectorAll('tr[data-row="compra"]:not([data-done])').length,
+        financeiro: root.querySelectorAll('tr[data-row="conta"]:not([data-done])').length,
+      };
+      c.hoje = c.vendas + c.estoque + c.compras + Math.min(c.financeiro, 2);
+      // badges da sidebar
+      Object.entries(c).forEach(([k, v]) => {
+        const b = root.querySelector(`[data-badge="${k}"]`);
+        if (b) b.textContent = v > 0 ? String(v) : '';
+      });
+      // contadores nos textos
+      root.querySelectorAll('[data-tcount]').forEach((el) => { el.textContent = String(c[el.dataset.tcount] ?? ''); });
+      root.querySelectorAll('[data-tcount2]').forEach((el) => { el.textContent = String(c[el.dataset.tcount2] ?? ''); });
+      // tarefa concluída fica apagada
+      root.querySelectorAll('.ae-task').forEach((task) => {
+        const key = task.dataset.view;
+        const map = { compras: c.compras, vendas: c.vendas, estoque: c.estoque, financeiro: c.financeiro };
+        if (key in map) task.classList.toggle('is-clear', map[key] === 0);
+      });
+      const pend = root.querySelector('[data-kpi="pend"]');
+      if (pend) pend.textContent = String(c.hoje);
+      return c;
+    },
 
     go(root, view) {
       root.dataset.view = view;
-      root.querySelectorAll('.at-nav button').forEach((b) => b.classList.toggle('is-on', b.dataset.view === view));
-      root.querySelectorAll('.at-view').forEach((v) => { v.hidden = !v.classList.contains('at-view--' + view); });
-      const active = root.querySelector('.at-view--' + view);
-      replay(active);
-      const kpis = KPIS[view];
-      if (kpis) {
-        Object.entries(kpis).forEach(([k, [v, d, s]]) => {
-          const el = root.querySelector(`[data-kpi="${k}"]`);
-          if (el) animateCount(el, v, d, s);
-        });
+      root.querySelectorAll('.ae-nav button').forEach((b) => b.classList.toggle('is-on', b.dataset.view === view));
+      root.querySelectorAll('.ae-view').forEach((v) => { v.hidden = !v.classList.contains('ae-view--' + view); });
+      replay(root.querySelector('.ae-view--' + view));
+      if (view === 'hoje') {
+        animateCount(root.querySelector('[data-kpi="vhoje"]'), 38, 0, '');
+        animateCount(root.querySelector('[data-kpi="saldo"]'), this.saldo, 0, '');
       }
-      if (view === 'visao') this.paintChart(root);
-    },
-
-    paintChart(root) {
-      root.querySelector('.at-line--in').setAttribute('d', linePath(CAIXA.entradas, 560, 170, 10));
-      root.querySelector('.at-line--out').setAttribute('d', linePath(CAIXA.saidas, 560, 170, 10));
+      if (view === 'financeiro') animateCount(root.querySelector('[data-kpi="saldo2"]'), this.saldo, 0, '');
     },
 
     onAction(action, el, root) {
-      if (action === 'at-nav') this.go(root, el.dataset.view);
-      if (action === 'at-filter') {
-        const st = el.dataset.status;
-        root.querySelectorAll('.at-filters button').forEach((b) => b.classList.toggle('is-on', b === el));
-        let n = 0;
-        root.querySelectorAll('.at-view--pedidos tbody tr').forEach((tr) => {
-          const show = st === 'todos' || tr.dataset.status === st;
-          tr.hidden = !show;
-          if (show) n++;
-        });
-        root.querySelector('.at-count').textContent = `${n} pedido${n === 1 ? '' : 's'}`;
+      if (action === 'ae-nav') { this.go(root, el.dataset.view); return; }
+      const tr = el.closest('tr');
+      if (!tr || tr.dataset.done) return;
+      if (action === 'ae-nf') {
+        tr.dataset.done = '1';
+        const nf = tr.querySelector('.ae-done').textContent.trim();
+        this.toast(root, `<b>✓ ${nf.replace(' ✓', '')}</b>&nbsp;autorizada na SEFAZ — DANFE enviada ao cliente (simulação)`);
       }
+      if (action === 'ae-aprovar') {
+        tr.dataset.done = '1';
+        this.toast(root, `<b>✓ Pedido ${tr.querySelector('.mono').textContent}</b>&nbsp;aprovado — fornecedor notificado`);
+      }
+      if (action === 'ae-repor') {
+        tr.dataset.done = '1';
+        this.toast(root, `<b>✓ Pedido de compra criado</b>&nbsp;com a quantidade ideal pelo giro do item`);
+      }
+      if (action === 'ae-baixa') {
+        tr.dataset.done = '1';
+        const v = parseFloat(tr.dataset.v || '0');
+        this.saldo = Math.round((this.saldo + (tr.dataset.tipo === 'receber' ? v : -v)) * 10) / 10;
+        const k2 = root.querySelector('[data-kpi="saldo2"]');
+        if (k2) animateCount(k2, this.saldo, 0, '');
+        this.toast(root, tr.dataset.tipo === 'receber'
+          ? `<b>✓ Recebimento confirmado</b>&nbsp;— saldo atualizado`
+          : `<b>✓ Pagamento baixado</b>&nbsp;— saldo atualizado`);
+      }
+      this.counts(root);
     },
 
     mount(root) {
       this.ac = new AbortController();
       this.sched = mkScheduler();
-      // reset de filtros/contadores (podem ter ficado de uma visita anterior)
-      root.querySelectorAll('.at-filters button').forEach((b) => b.classList.toggle('is-on', b.dataset.status === 'todos'));
-      root.querySelectorAll('.at-view--pedidos tbody tr, .at-view--clientes tbody tr').forEach((tr) => { tr.hidden = false; });
-      root.querySelector('.at-count').textContent = '10 pedidos';
-      root.querySelector('.at-ccount').textContent = '8 clientes';
-      this.go(root, 'visao');
-      // busca de clientes
-      const search = root.querySelector('.at-search');
-      search.value = '';
-      search.addEventListener('input', () => {
-        const q = search.value.trim().toLowerCase();
-        let n = 0;
-        root.querySelectorAll('.at-view--clientes tbody tr').forEach((tr) => {
-          const show = !q || tr.textContent.toLowerCase().includes(q);
-          tr.hidden = !show;
-          if (show) n++;
-        });
-        root.querySelector('.at-ccount').textContent = `${n} cliente${n === 1 ? '' : 's'}`;
-      }, { signal: this.ac.signal });
+      this.saldo = SALDO_BASE;
+      // reset: desfaz ações de visitas anteriores (as [data-keep] nascem concluídas no markup)
+      root.querySelectorAll('tr[data-done]:not([data-keep])').forEach((tr) => { delete tr.dataset.done; });
+      root.querySelector('.ae-toastzone').textContent = '';
+      this.counts(root);
+      this.go(root, 'hoje');
     },
 
-    unmount(root) {
+    unmount() {
       if (this.ac) this.ac.abort();
       if (this.sched) this.sched.clear();
-      // reseta filtros/busca p/ próxima abertura
-      root.querySelectorAll('.at-view--pedidos tbody tr, .at-view--clientes tbody tr').forEach((tr) => { tr.hidden = false; });
     },
   });
 </script>

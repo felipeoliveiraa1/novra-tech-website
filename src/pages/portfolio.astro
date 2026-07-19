@@ -10,8 +10,8 @@ const projects = [
   {
     slug: 'insight', num: '01', cat: 'Dashboards · Inteligência de negócio',
     name: 'NOVRA Insight',
-    pitch: 'BI completo com IA: filtre períodos, passe o mouse nos gráficos e pergunte em português.',
-    tags: ['dashboard completo', 'pergunte à IA', 'tempo real'],
+    pitch: 'BI com 3 áreas navegáveis: visão geral, vendas e clientes — e uma IA que responde em português.',
+    tags: ['funil e ranking do time', 'clientes em risco (IA)', 'pergunte à IA'],
   },
   {
     slug: 'agente', num: '02', cat: 'Agentes de IA · Atendimento',
@@ -20,16 +20,16 @@ const projects = [
     tags: ['converse de verdade', 'integrações ao vivo', '24/7'],
   },
   {
-    slug: 'atlas', num: '03', cat: 'Apps · Software sob medida',
-    name: 'Atlas OS',
-    pitch: 'Um sistema de gestão navegável: pedidos, clientes e financeiro no mesmo lugar.',
-    tags: ['app navegável', 'filtros e busca', 'multiempresa'],
+    slug: 'atlas', num: '03', cat: 'ERP · Gestão da empresa',
+    name: 'Atlas ERP',
+    pitch: 'O dia a dia da empresa em um clique: aprove compras, emita NF-e, reponha estoque e dê baixa em contas.',
+    tags: ['emitir NF-e', 'aprovar compras', 'estoque + financeiro'],
   },
   {
     slug: 'processflow', num: '04', cat: 'Automações · Operação',
     name: 'ProcessFlow',
-    pitch: 'Torre de controle logística com frota ao vivo — e um botão que otimiza rotas com IA.',
-    tags: ['mapa ao vivo', 'otimizar com IA', 'eventos em tempo real'],
+    pitch: 'Torre de controle logística: clique nos hubs, acompanhe entregas e otimize rotas com IA.',
+    tags: ['hubs clicáveis', 'entregas ao vivo', 'otimizar com IA'],
   },
 ];
 ---
@@ -263,7 +263,7 @@ const projects = [
     import { getDemo, replay } from '../scripts/demo-utils.js';
 
     const slugs = ['insight', 'agente', 'atlas', 'processflow'];
-    const NAMES = { insight: 'NOVRA Insight', agente: 'Agente NOVRA', atlas: 'Atlas OS', processflow: 'ProcessFlow' };
+    const NAMES = { insight: 'NOVRA Insight', agente: 'Agente NOVRA', atlas: 'Atlas ERP', processflow: 'ProcessFlow' };
     // links antigos continuam abrindo a demo mais próxima
     const ALIASES = { insightsphere: 'insight', datatrust: 'insight', copiloto: 'agente', cloudbridge: 'processflow' };
 

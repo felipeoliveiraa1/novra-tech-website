@@ -58,21 +58,44 @@
           <circle class="pw-truck pw-truck--opt" r="4"><animateMotion dur="6s" repeatCount="indefinite" begin="1.6s"><mpath href="#pw-rb3"/></animateMotion></circle>
         </g>
 
-        <!-- hubs -->
+        <!-- hubs (clicáveis: mostram o painel da praça) -->
         <g class="pw-hubs">
-          <g transform="translate(430,350)"><circle class="pw-hub pw-hub--main" r="8"/><text class="pw-lbl" x="-14" y="24">CD Central · SP</text></g>
-          <g transform="translate(510,330)"><circle class="pw-hub" r="5"/><text class="pw-lbl" x="10" y="4">RJ</text></g>
-          <g transform="translate(480,300)"><circle class="pw-hub" r="5"/><text class="pw-lbl" x="9" y="-6">BH</text></g>
-          <g transform="translate(420,240)"><circle class="pw-hub" r="5"/><text class="pw-lbl" x="10" y="4">BSB</text></g>
-          <g transform="translate(600,190)"><circle class="pw-hub" r="5"/><text class="pw-lbl" x="10" y="4">REC</text></g>
-          <g transform="translate(400,410)"><circle class="pw-hub" r="5"/><text class="pw-lbl" x="-38" y="4">CWB</text></g>
-          <g transform="translate(370,470)"><circle class="pw-hub" r="5"/><text class="pw-lbl" x="-40" y="4">POA</text></g>
+          <g class="pw-hubg" data-action="pw-hub" data-hub="sp" transform="translate(430,350)"><circle class="pw-hit" r="18"/><circle class="pw-hub pw-hub--main" r="8"/><text class="pw-lbl" x="-14" y="24">CD Central · SP</text></g>
+          <g class="pw-hubg" data-action="pw-hub" data-hub="rj" transform="translate(510,330)"><circle class="pw-hit" r="15"/><circle class="pw-hub" r="5"/><text class="pw-lbl" x="10" y="4">RJ</text></g>
+          <g class="pw-hubg" data-action="pw-hub" data-hub="bh" transform="translate(480,300)"><circle class="pw-hit" r="15"/><circle class="pw-hub" r="5"/><text class="pw-lbl" x="9" y="-6">BH</text></g>
+          <g class="pw-hubg" data-action="pw-hub" data-hub="bsb" transform="translate(420,240)"><circle class="pw-hit" r="15"/><circle class="pw-hub" r="5"/><text class="pw-lbl" x="10" y="4">BSB</text></g>
+          <g class="pw-hubg" data-action="pw-hub" data-hub="rec" transform="translate(600,190)"><circle class="pw-hit" r="15"/><circle class="pw-hub" r="5"/><text class="pw-lbl" x="10" y="4">REC</text></g>
+          <g class="pw-hubg" data-action="pw-hub" data-hub="cwb" transform="translate(400,410)"><circle class="pw-hit" r="15"/><circle class="pw-hub" r="5"/><text class="pw-lbl" x="-38" y="4">CWB</text></g>
+          <g class="pw-hubg" data-action="pw-hub" data-hub="poa" transform="translate(370,470)"><circle class="pw-hit" r="15"/><circle class="pw-hub" r="5"/><text class="pw-lbl" x="-40" y="4">POA</text></g>
         </g>
       </svg>
+      <p class="pw-hint">Toque em um hub do mapa para ver a praça em detalhe.</p>
+      <div class="pw-entregas">
+        <h4>Entregas em andamento</h4>
+        <table class="pw-table">
+          <thead><tr><th>Pedido</th><th>Rota</th><th>Motorista</th><th>Chega em</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr data-late><td class="mono">#8.451</td><td>SP → RJ</td><td>Carlos M.</td><td class="pw-eta" data-eta-antes="2h40" data-eta-depois="1h55">2h40</td><td><span class="pw-st pw-st--late">atrasando</span><span class="pw-st pw-st--ok">no prazo</span></td></tr>
+            <tr><td class="mono">#8.452</td><td>SP → BH</td><td>Ana P.</td><td class="pw-eta" data-eta-antes="3h10" data-eta-depois="2h48">3h10</td><td><span class="pw-st pw-st--ok">no prazo</span></td></tr>
+            <tr><td class="mono">#8.449</td><td>BSB → REC</td><td>Jorge L.</td><td class="pw-eta" data-eta-antes="5h20" data-eta-depois="4h35">5h20</td><td><span class="pw-st pw-st--ok">no prazo</span></td></tr>
+            <tr><td class="mono">#8.455</td><td>SP → CWB</td><td>Renata S.</td><td class="pw-eta" data-eta-antes="1h45" data-eta-depois="1h30">1h45</td><td><span class="pw-st pw-st--ok">no prazo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
       <div class="pw-toastzone"></div>
     </div>
 
     <aside class="pw-side">
+      <div class="pw-hubcard" hidden>
+        <div class="pw-hubcard__h"><b class="pw-hubcard__nome">—</b><button class="pw-hubcard__x" data-action="pw-hub-close" type="button" aria-label="Fechar">✕</button></div>
+        <div class="pw-hubcard__grid">
+          <div><span>Entregas hoje</span><b class="pw-hubcard__ent">—</b></div>
+          <div><span>Veículos ativos</span><b class="pw-hubcard__vei">—</b></div>
+          <div><span>Ocupação da doca</span><b class="pw-hubcard__ocu">—</b></div>
+          <div><span>Pontualidade</span><b class="pw-hubcard__pon">—</b></div>
+        </div>
+        <p class="pw-hubcard__nota">—</p>
+      </div>
       <div class="pw-kpis">
         <div class="pw-kpi"><span>Entregas no prazo</span><b><i data-kpi="prazo">0</i>%</b><em data-kpid="prazo"></em></div>
         <div class="pw-kpi"><span>Custo por entrega</span><b><i data-kpi="custo">0</i></b><em data-kpid="custo">índice base 100</em></div>
@@ -121,6 +144,40 @@
   .pw-hub { fill: #10131c; stroke: rgba(150, 185, 255, 0.75); stroke-width: 1.6; }
   .pw-hub--main { stroke: var(--blue-energy); stroke-width: 2; filter: drop-shadow(0 0 10px rgba(0,168,255,0.6)); }
   .pw-lbl { fill: #9aa7c0; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; }
+
+  /* hubs clicáveis */
+  .pw-hubg { cursor: pointer; }
+  .pw-hit { fill: transparent; }
+  .pw-hubg:hover .pw-hub { stroke: var(--blue-energy); }
+  .pw-hubg.is-sel .pw-hub { stroke: var(--gold); stroke-width: 2.4; filter: drop-shadow(0 0 10px rgba(201,162,75,0.7)); }
+  .pw-hint { margin-top: 0.4rem; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.04em; color: var(--text-3); }
+
+  /* painel da praça */
+  .pw-hubcard { border: 1px solid rgba(201,162,75,0.4); border-radius: 14px; padding: 0.85rem 0.95rem; background: rgba(201,162,75,0.05); animation: pw-feed-in 0.4s var(--ease-out); }
+  .pw-hubcard__h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+  .pw-hubcard__h b { font-family: var(--font-display); font-size: 0.95rem; }
+  .pw-hubcard__x { border: 0; background: none; color: var(--text-3); cursor: pointer; font-size: 0.8rem; padding: 0.2rem 0.4rem; }
+  .pw-hubcard__x:hover { color: var(--text-1); }
+  .pw-hubcard__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 0.8rem; }
+  .pw-hubcard__grid span { display: block; font-size: 0.58rem; color: var(--text-3); }
+  .pw-hubcard__grid b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--text-1); }
+  .pw-hubcard__nota { margin-top: 0.6rem; font-size: 0.7rem; line-height: 1.5; color: var(--gold-light); }
+
+  /* tabela de entregas */
+  .pw-entregas { margin-top: 0.7rem; border-top: 1px solid var(--border); padding-top: 0.7rem; overflow-x: auto; }
+  .pw-entregas h4 { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.5rem; }
+  .pw-table { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
+  .pw-table th { text-align: left; font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); padding: 0.3rem 0.5rem; border-bottom: 1px solid var(--border); }
+  .pw-table td { padding: 0.45rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-2); white-space: nowrap; }
+  .pw-table .mono { font-family: var(--font-mono); font-size: 0.66rem; }
+  .pw-eta.is-melhor { color: #35e0a8; font-weight: 600; }
+  .pw-st { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.04em; padding: 0.2em 0.55em; border-radius: 99px; }
+  .pw-st--ok { color: #79e2a0; border: 1px solid rgba(121,226,160,0.35); background: rgba(121,226,160,0.08); }
+  .pw-st--late { color: #e9c268; border: 1px solid rgba(233,194,104,0.35); background: rgba(233,194,104,0.08); }
+  /* linha atrasada: badge troca quando otimiza */
+  tr[data-late] .pw-st--ok { display: none; }
+  [data-optimized] tr[data-late] .pw-st--late { display: none; }
+  [data-optimized] tr[data-late] .pw-st--ok { display: inline-block; }
 
   .pw-toastzone { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
   .pw-toast {
@@ -190,6 +247,15 @@
     antes: { prazo: 89, custo: 100, ocupacao: 71 },
     depois: { prazo: 96, custo: 87, ocupacao: 83 },
   };
+  const HUBS = {
+    sp: { nome: 'CD Central · São Paulo', ent: '1.284', vei: '62', ocu: '84%', pon: '94%', nota: 'Hub principal. A IA sugere antecipar a janela da Doca 4, ociosa entre 14h e 16h.' },
+    rj: { nome: 'Hub Rio de Janeiro', ent: '312', vei: '18', ocu: '71%', pon: '91%', nota: 'Chuva forte na região — rota SP-011 com desvio sugerido pela IA (−38 min).' },
+    bh: { nome: 'Hub Belo Horizonte', ent: '246', vei: '14', ocu: '66%', pon: '97%', nota: 'Melhor pontualidade da malha. Rota 100% no prazo hoje.' },
+    bsb: { nome: 'Hub Brasília', ent: '188', vei: '11', ocu: '58%', pon: '93%', nota: 'Capacidade ociosa — candidata a absorver o interior de GO (sugestão da IA).' },
+    rec: { nome: 'Hub Recife', ent: '204', vei: '12', ocu: '77%', pon: '89%', nota: 'ETA médio caiu 22 min após a última otimização de rotas.' },
+    cwb: { nome: 'Hub Curitiba', ent: '176', vei: '10', ocu: '62%', pon: '95%', nota: 'Fluxo estável. Doca 2 com fila pontual às 9h — janela realocada.' },
+    poa: { nome: 'Hub Porto Alegre', ent: '142', vei: '9', ocu: '54%', pon: '92%', nota: 'Volume em alta de 8% na semana — monitorando capacidade.' },
+  };
 
   registerDemo('processflow', {
     sched: null, feedIdx: 0,
@@ -220,13 +286,38 @@
       }
     },
 
+    showHub(root, key) {
+      const h = HUBS[key];
+      if (!h) return;
+      root.querySelectorAll('.pw-hubg').forEach((g) => g.classList.toggle('is-sel', g.dataset.hub === key));
+      const card = root.querySelector('.pw-hubcard');
+      card.hidden = false;
+      card.querySelector('.pw-hubcard__nome').textContent = h.nome;
+      card.querySelector('.pw-hubcard__ent').textContent = h.ent;
+      card.querySelector('.pw-hubcard__vei').textContent = h.vei;
+      card.querySelector('.pw-hubcard__ocu').textContent = h.ocu;
+      card.querySelector('.pw-hubcard__pon').textContent = h.pon;
+      card.querySelector('.pw-hubcard__nota').textContent = h.nota;
+    },
+    hideHub(root) {
+      root.querySelector('.pw-hubcard').hidden = true;
+      root.querySelectorAll('.pw-hubg').forEach((g) => g.classList.remove('is-sel'));
+    },
+
     onAction(action, el, root) {
+      if (action === 'pw-hub') { this.showHub(root, el.dataset.hub); return; }
+      if (action === 'pw-hub-close') { this.hideHub(root); return; }
       if (action !== 'pw-optimize' || el.disabled) return;
       const label = el.querySelector('.pw-optimize__label');
       el.disabled = true;
       label.textContent = 'Analisando 312 rotas…';
       this.sched.after(1400, () => {
         root.dataset.optimized = '1';
+        // ETAs das entregas melhoram junto
+        root.querySelectorAll('.pw-eta').forEach((td) => {
+          td.textContent = td.dataset.etaDepois;
+          td.classList.add('is-melhor');
+        });
         this.setKpis(root, KPIS.depois, { prazo: '▲ +7pp agora', custo: '▼ −13% agora', ocupacao: '▲ +12pp agora' });
         label.textContent = 'Rotas otimizadas ✓';
         el.classList.add('is-done');
@@ -253,6 +344,12 @@
       root.querySelector('[data-kpid="custo"]').textContent = 'índice base 100';
       root.querySelector('[data-kpid="ocupacao"]').textContent = 'meta: 80%';
       root.querySelector('.pw-toastzone').textContent = '';
+      this.hideHub(root);
+      // reset das ETAs
+      root.querySelectorAll('.pw-eta').forEach((td) => {
+        td.textContent = td.dataset.etaAntes;
+        td.classList.remove('is-melhor');
+      });
       const ul = root.querySelector('.pw-feed');
       ul.textContent = '';
       // 3 eventos iniciais + fluxo contínuo
