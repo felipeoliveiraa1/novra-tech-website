@@ -1,0 +1,438 @@
+---
+// NOVRA Insight — demo de BI completo: sidebar, períodos funcionais,
+// gráfico com tooltip, barras, donut, tabela e "pergunte à IA".
+const clientes = [
+  { nome: 'Grupo Horizonte', setor: 'Varejo', mrr: 'R$ 84,3 mil', cresc: '+18%', up: true, status: 'saudável' },
+  { nome: 'Rede Vitale', setor: 'Saúde', mrr: 'R$ 61,0 mil', cresc: '+11%', up: true, status: 'saudável' },
+  { nome: 'Distribuidora Alfa', setor: 'Atacado', mrr: 'R$ 52,8 mil', cresc: '+7%', up: true, status: 'saudável' },
+  { nome: 'Casa & Cia', setor: 'Casa & Deco', mrr: 'R$ 47,2 mil', cresc: '−4%', up: false, status: 'atenção' },
+  { nome: 'TransLog Express', setor: 'Logística', mrr: 'R$ 39,9 mil', cresc: '+23%', up: true, status: 'saudável' },
+  { nome: 'Bella Moda', setor: 'Moda', mrr: 'R$ 28,4 mil', cresc: '+2%', up: true, status: 'estável' },
+];
+---
+<section class="demo di" id="demo-insight" data-demo="insight" hidden>
+  <aside class="di-side">
+    <div class="di-side__brand">
+      <img src="/brand/novra-icon-ui.png" alt="" width="28" height="30" />
+      <span>Insight</span>
+    </div>
+    <nav class="di-nav">
+      <button class="di-nav__item is-active" type="button"><i>▦</i> Visão geral</button>
+      <button class="di-nav__item is-soon" type="button" title="Disponível na versão completa"><i>◔</i> Vendas <em>breve</em></button>
+      <button class="di-nav__item is-soon" type="button" title="Disponível na versão completa"><i>◉</i> Clientes <em>breve</em></button>
+      <button class="di-nav__item is-soon" type="button" title="Disponível na versão completa"><i>✦</i> IA Preditiva <em>breve</em></button>
+    </nav>
+    <div class="di-side__foot">NOVRA Insight · v2.4</div>
+  </aside>
+
+  <div class="di-main">
+    <header class="di-top">
+      <div>
+        <h3 class="di-top__t">Visão geral</h3>
+        <span class="di-top__s">Todas as unidades · atualizado agora</span>
+      </div>
+      <div class="di-seg" role="group" aria-label="Período">
+        <button data-action="di-period" data-p="7d" type="button">7 dias</button>
+        <button data-action="di-period" data-p="30d" class="is-on" type="button">30 dias</button>
+        <button data-action="di-period" data-p="12m" type="button">12 meses</button>
+      </div>
+    </header>
+
+    <div class="di-kpis">
+      <div class="di-kpi"><span class="di-kpi__l">Receita</span><b>R$ <span data-kpi="receita">0</span></b><em class="di-kpi__d" data-kpid="receita"></em></div>
+      <div class="di-kpi"><span class="di-kpi__l">Pedidos</span><b><span data-kpi="pedidos">0</span></b><em class="di-kpi__d" data-kpid="pedidos"></em></div>
+      <div class="di-kpi"><span class="di-kpi__l">Ticket médio</span><b>R$ <span data-kpi="ticket">0</span></b><em class="di-kpi__d" data-kpid="ticket"></em></div>
+      <div class="di-kpi"><span class="di-kpi__l">Decisões assistidas por IA</span><b><span data-kpi="ia">0</span>%</b><em class="di-kpi__d" data-kpid="ia"></em></div>
+    </div>
+
+    <div class="di-panel di-chart-panel">
+      <div class="di-panel__h">
+        <h4>Receita no período</h4>
+        <span class="di-legend"><i></i> realizado</span>
+      </div>
+      <div class="di-chartwrap">
+        <svg class="di-chart" viewBox="0 0 760 240" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="gi-line" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#2E6BFF"/><stop offset="1" stop-color="#00A8FF"/>
+            </linearGradient>
+            <linearGradient id="gi-area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(0,168,255,0.22)"/><stop offset="1" stop-color="rgba(0,168,255,0)"/>
+            </linearGradient>
+          </defs>
+          <g class="di-grid-h" stroke="rgba(255,255,255,0.05)">
+            <line x1="0" y1="60" x2="760" y2="60"/><line x1="0" y1="120" x2="760" y2="120"/><line x1="0" y1="180" x2="760" y2="180"/>
+          </g>
+          <path class="di-area" fill="url(#gi-area)" d=""></path>
+          <path class="di-line" fill="none" stroke="url(#gi-line)" stroke-width="2.5" stroke-linecap="round" d=""></path>
+          <circle class="di-marker" r="4" fill="#00A8FF" stroke="#0a0b10" stroke-width="2" opacity="0"/>
+        </svg>
+        <div class="di-tip" hidden><b></b><span></span></div>
+        <div class="di-axis"></div>
+      </div>
+    </div>
+
+    <div class="di-row">
+      <div class="di-panel">
+        <div class="di-panel__h"><h4>Receita por região</h4></div>
+        <ul class="di-bars"></ul>
+      </div>
+      <div class="di-panel di-donut-panel">
+        <div class="di-panel__h"><h4>Mix de canais</h4></div>
+        <div class="di-donutwrap">
+          <svg class="di-donut" viewBox="0 0 120 120" width="132" height="132" aria-hidden="true">
+            <circle class="di-donut__track" cx="60" cy="60" r="44"/>
+            <circle class="di-donut__seg" data-seg="0" cx="60" cy="60" r="44"/>
+            <circle class="di-donut__seg" data-seg="1" cx="60" cy="60" r="44"/>
+            <circle class="di-donut__seg" data-seg="2" cx="60" cy="60" r="44"/>
+            <circle class="di-donut__seg" data-seg="3" cx="60" cy="60" r="44"/>
+          </svg>
+          <ul class="di-donut__legend"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="di-row di-row--bottom">
+      <div class="di-panel">
+        <div class="di-panel__h"><h4>Top clientes</h4><span class="di-muted">MRR · crescimento</span></div>
+        <table class="di-table">
+          <thead><tr><th>Cliente</th><th>Setor</th><th>MRR</th><th>Cresc.</th><th>Status</th></tr></thead>
+          <tbody>
+            {clientes.map((c) => (
+              <tr>
+                <td class="di-td-name">{c.nome}</td>
+                <td class="di-muted">{c.setor}</td>
+                <td>{c.mrr}</td>
+                <td class={c.up ? 'di-up' : 'di-down'}>{c.cresc}</td>
+                <td><span class={`di-badge di-badge--${c.status === 'saudável' ? 'ok' : c.status === 'atenção' ? 'warn' : 'mid'}`}>{c.status}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="di-panel di-ask">
+        <div class="di-panel__h"><h4><span class="di-spark">✦</span> Pergunte à IA</h4></div>
+        <div class="di-ask__chips">
+          <button data-action="di-ask" data-q="0" type="button">Qual região mais cresceu?</button>
+          <button data-action="di-ask" data-q="1" type="button">Onde estou perdendo margem?</button>
+          <button data-action="di-ask" data-q="2" type="button">Previsão do próximo mês?</button>
+        </div>
+        <div class="di-ask__out" hidden>
+          <p class="di-ask__a"></p>
+          <div class="di-insight"><b>Recomendação</b><span class="di-insight__t"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  /* prefixo di- (Demo Insight). is:global de propósito: estilos precisam valer
+     p/ nós criados em runtime e p/ o conteúdo independente de escopo do Astro */
+  .di { display: grid; grid-template-columns: 210px 1fr; min-height: 100%; background: #0a0b10; }
+  .di-side {
+    display: flex; flex-direction: column; gap: 1rem;
+    border-right: 1px solid var(--border); padding: 1.1rem 0.9rem;
+    background: rgba(255, 255, 255, 0.012);
+  }
+  .di-side__brand { display: flex; align-items: center; gap: 0.55rem; font-family: var(--font-display); font-weight: 600; font-size: 1rem; padding: 0.2rem 0.4rem; }
+  .di-side__brand img { display: block; }
+  .di-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+  .di-nav__item {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 0.7rem; border-radius: 10px; border: 0; background: none;
+    font: inherit; font-size: 0.84rem; color: var(--text-2); text-align: left; cursor: pointer;
+  }
+  .di-nav__item i { font-style: normal; opacity: 0.8; }
+  .di-nav__item em { margin-left: auto; font-style: normal; font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); border: 1px solid var(--border); border-radius: 99px; padding: 0.15em 0.5em; }
+  .di-nav__item.is-active { background: rgba(46, 107, 255, 0.14); color: var(--text-1); border: 1px solid rgba(46, 107, 255, 0.3); }
+  .di-nav__item.is-soon { cursor: default; opacity: 0.65; }
+  .di-side__foot { margin-top: auto; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; color: var(--text-3); padding: 0 0.4rem; }
+
+  .di-main { padding: 1.2rem clamp(1rem, 2.4vw, 1.8rem) 2rem; min-width: 0; display: flex; flex-direction: column; gap: 0.9rem; }
+  .di-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .di-top__t { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+  .di-top__s { font-size: 0.72rem; color: var(--text-3); }
+  .di-seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 10px; overflow: hidden; background: var(--surface); }
+  .di-seg button {
+    border: 0; background: none; color: var(--text-2); cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; padding: 0.5rem 0.85rem;
+    transition: background 0.25s, color 0.25s;
+  }
+  .di-seg button.is-on { background: linear-gradient(120deg, rgba(46,107,255,0.85), rgba(0,168,255,0.85)); color: #fff; }
+
+  .di-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; }
+  .di-kpi { border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 0.9rem; background: rgba(255, 255, 255, 0.016); min-width: 0; }
+  .di-kpi__l { display: block; font-size: 0.66rem; color: var(--text-3); letter-spacing: 0.04em; }
+  .di-kpi b {
+    display: block; margin-top: 0.15rem;
+    font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.01em;
+    background: linear-gradient(180deg, #fff, #b9c6e0); -webkit-background-clip: text; background-clip: text; color: transparent;
+    white-space: nowrap;
+  }
+  .di-kpi__d { display: block; margin-top: 0.1rem; font-style: normal; font-size: 0.66rem; color: #79e2a0; }
+
+  .di-panel { border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem 1rem; background: rgba(255, 255, 255, 0.014); min-width: 0; }
+  .di-panel__h { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.7rem; }
+  .di-panel__h h4 { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
+  .di-legend { font-size: 0.66rem; color: var(--text-3); display: inline-flex; align-items: center; gap: 0.4rem; }
+  .di-legend i { width: 14px; height: 3px; border-radius: 2px; background: var(--grad-brand); display: inline-block; }
+  .di-muted { color: var(--text-3); font-size: 0.68rem; }
+
+  .di-chartwrap { position: relative; }
+  .di-chart { width: 100%; height: clamp(150px, 24vh, 230px); display: block; touch-action: none; }
+  .di-line { stroke-dasharray: 1600; stroke-dashoffset: 1600; }
+  .play .di-line { animation: di-draw 1.3s var(--ease-out) 0.1s forwards; }
+  .di-area { opacity: 0; }
+  .play .di-area { animation: di-fade 0.7s ease 1s forwards; }
+  @keyframes di-draw { to { stroke-dashoffset: 0; } }
+  @keyframes di-fade { to { opacity: 1; } }
+  .di-axis { display: flex; justify-content: space-between; margin-top: 0.3rem; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.04em; color: var(--text-3); }
+  .di-tip {
+    position: absolute; z-index: 3; pointer-events: none;
+    background: #14161f; border: 1px solid var(--border-strong); border-radius: 8px;
+    padding: 0.35rem 0.6rem; transform: translate(-50%, -120%);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5); white-space: nowrap;
+  }
+  .di-tip b { display: block; font-size: 0.78rem; }
+  .di-tip span { font-family: var(--font-mono); font-size: 0.58rem; color: var(--text-3); }
+
+  .di-row { display: grid; grid-template-columns: 1.3fr 1fr; gap: 0.9rem; }
+  .di-row > * { min-width: 0; }
+  .di-row--bottom { grid-template-columns: 1.5fr 1fr; }
+
+  .di-bars { display: flex; flex-direction: column; gap: 0.65rem; list-style: none; margin: 0.2rem 0 0; padding: 0; }
+  .di-bars li { display: flex; align-items: center; gap: 0.7rem; font-size: 0.76rem; color: var(--text-2); }
+  .di-bars .n { width: 104px; flex: 0 0 auto; font-family: var(--font-mono); font-size: 0.64rem; color: var(--text-3); }
+  .di-bars .bar { flex: 1; height: 9px; border-radius: 6px; background: rgba(255,255,255,0.07); overflow: hidden; }
+  .di-bars .bar i { display: block; height: 100%; border-radius: 6px; background: var(--grad-brand); width: 0; }
+  .play .di-bars .bar i { animation: di-fill 1s var(--ease-out) forwards; }
+  @keyframes di-fill { to { width: var(--w, 50%); } }
+  .di-bars .v { width: 40px; text-align: right; font-size: 0.7rem; font-weight: 600; }
+
+  .di-donutwrap { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; }
+  .di-donut__track { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 13; }
+  .di-donut__seg { fill: none; stroke-width: 13; stroke-linecap: butt; transform: rotate(-90deg); transform-origin: center; transition: stroke-dasharray 0.9s var(--ease-out), stroke-dashoffset 0.9s var(--ease-out); }
+  .di-donut__seg[data-seg="0"] { stroke: #2E6BFF; }
+  .di-donut__seg[data-seg="1"] { stroke: #00A8FF; }
+  .di-donut__seg[data-seg="2"] { stroke: #C9A24B; }
+  .di-donut__seg[data-seg="3"] { stroke: rgba(255,255,255,0.28); }
+  .di-donut__legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.74rem; color: var(--text-2); }
+  .di-donut__legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 0.5rem; }
+  .di-donut__legend b { color: var(--text-1); margin-left: 0.35rem; }
+
+  .di-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .di-table th { text-align: left; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--border); }
+  .di-table td { padding: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-2); white-space: nowrap; }
+  .di-td-name { color: var(--text-1); font-weight: 500; }
+  .di-up { color: #79e2a0; } .di-down { color: #e2a079; }
+  .di-badge { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.04em; padding: 0.2em 0.55em; border-radius: 99px; }
+  .di-badge--ok { color: #79e2a0; border: 1px solid rgba(121,226,160,0.35); background: rgba(121,226,160,0.08); }
+  .di-badge--warn { color: #e9c268; border: 1px solid rgba(233,194,104,0.35); background: rgba(233,194,104,0.08); }
+  .di-badge--mid { color: var(--text-2); border: 1px solid var(--border); background: var(--surface); }
+
+  .di-spark { color: var(--gold); }
+  .di-ask__chips { display: flex; flex-direction: column; gap: 0.45rem; }
+  .di-ask__chips button {
+    text-align: left; font: inherit; font-size: 0.78rem; color: var(--text-1); cursor: pointer;
+    padding: 0.55rem 0.8rem; border: 1px solid var(--border-brand); border-radius: 10px;
+    background: rgba(46, 107, 255, 0.07); transition: background 0.25s, transform 0.25s var(--ease-out);
+  }
+  .di-ask__chips button:hover { background: rgba(46, 107, 255, 0.14); transform: translateY(-1px); }
+  .di-ask__chips button:disabled { opacity: 0.45; cursor: default; transform: none; }
+  .di-ask__out { margin-top: 0.8rem; }
+  .di-ask__a { font-size: 0.8rem; line-height: 1.6; color: var(--text-1); min-height: 2.4em; }
+  .di-insight {
+    margin-top: 0.6rem; border: 1px solid rgba(201,162,75,0.35); border-radius: 10px;
+    background: rgba(201,162,75,0.06); padding: 0.6rem 0.75rem; font-size: 0.74rem; line-height: 1.55; color: var(--text-1);
+    opacity: 0; transform: translateY(6px); transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  }
+  .di-insight.show { opacity: 1; transform: none; }
+  .di-insight b { display: block; color: var(--gold-light); font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.25rem; }
+
+  @media (max-width: 860px) {
+    .di { grid-template-columns: 1fr; }
+    .di-side { flex-direction: row; align-items: center; border-right: 0; border-bottom: 1px solid var(--border); padding: 0.7rem 0.9rem; overflow-x: auto; }
+    .di-nav { flex-direction: row; }
+    .di-nav__item { white-space: nowrap; padding: 0.45rem 0.6rem; }
+    .di-nav__item em { display: none; }
+    .di-side__foot { display: none; }
+    .di-kpis { grid-template-columns: repeat(2, 1fr); }
+    .di-row, .di-row--bottom { grid-template-columns: 1fr; }
+    .di-table td:nth-child(2) { display: none; }
+    .di-table th:nth-child(2) { display: none; }
+  }
+</style>
+
+<script>
+  import { registerDemo, mkScheduler, animateCount, typewriter, linePath, areaPath, replay } from '../../scripts/demo-utils.js';
+
+  const DATA = {
+    '7d': {
+      axis: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+      serie: [148, 176, 163, 189, 214, 122, 96],
+      unit: 'R$ mil',
+      kpis: { receita: { v: 1.11, d: 2, s: ' mi' }, pedidos: { v: 3120, d: 0, s: '' }, ticket: { v: 355, d: 0, s: '' }, ia: { v: 42, d: 0, s: '' } },
+      delta: { receita: '▲ 8% vs semana anterior', pedidos: '▲ 5%', ticket: '▲ 3%', ia: '▲ 2pp' },
+      regioes: [['Sudeste', 46], ['Sul', 22], ['Nordeste', 18], ['Centro-Oeste', 14]],
+      canais: [['Digital', 44], ['Lojas', 32], ['B2B', 15], ['Parceiros', 9]],
+    },
+    '30d': {
+      axis: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+      serie: [1090, 1180, 1235, 1310],
+      unit: 'R$ mil',
+      kpis: { receita: { v: 4.82, d: 2, s: ' mi' }, pedidos: { v: 13460, d: 0, s: '' }, ticket: { v: 358, d: 0, s: '' }, ia: { v: 44, d: 0, s: '' } },
+      delta: { receita: '▲ 12% vs mês anterior', pedidos: '▲ 9%', ticket: '▲ 2%', ia: '▲ 4pp' },
+      regioes: [['Sudeste', 48], ['Sul', 21], ['Nordeste', 18], ['Centro-Oeste', 13]],
+      canais: [['Digital', 46], ['Lojas', 30], ['B2B', 15], ['Parceiros', 9]],
+    },
+    '12m': {
+      axis: ['Ago', 'Set', 'Out', 'Nov', 'Dez', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+      serie: [3.1, 3.3, 3.6, 4.1, 4.9, 3.8, 3.7, 4.0, 4.2, 4.4, 4.6, 4.8],
+      unit: 'R$ mi',
+      kpis: { receita: { v: 48.6, d: 1, s: ' mi' }, pedidos: { v: 151200, d: 0, s: '' }, ticket: { v: 344, d: 0, s: '' }, ia: { v: 38, d: 0, s: '' } },
+      delta: { receita: '▲ 31% vs ano anterior', pedidos: '▲ 24%', ticket: '▲ 6%', ia: '▲ 17pp' },
+      regioes: [['Sudeste', 44], ['Sul', 23], ['Nordeste', 19], ['Centro-Oeste', 14]],
+      canais: [['Digital', 41], ['Lojas', 34], ['B2B', 16], ['Parceiros', 9]],
+    },
+  };
+
+  const PERGUNTAS = [
+    { resp: 'O Sudeste cresceu 34% no trimestre, puxado pelo canal digital (+61%). O Sul vem em segundo, com 19%.',
+      ins: 'Replicar a campanha do canal digital no Sul, onde o perfil de cliente é semelhante — potencial estimado de +R$ 2,1 mi/trimestre.' },
+    { resp: 'A margem caiu 6,2 pontos no Centro-Oeste: o frete subiu 22% no trimestre e concentrou 84% da perda.',
+      ins: 'Renegociar a tabela com a transportadora atual ou migrar 3 rotas para o parceiro B — economia projetada de R$ 180 mil/mês.' },
+    { resp: 'Projeção para o próximo mês: R$ 5,2 mi (±4%) — 12% acima do mesmo mês do ano passado, sustentada pela sazonalidade do digital.',
+      ins: 'Antecipar reforço de estoque nas 3 categorias líderes até o dia 10 para capturar o pico sem ruptura.' },
+  ];
+
+  const CIRC = 2 * Math.PI * 44; // r=44
+
+  registerDemo('insight', {
+    ac: null, sched: null,
+
+    paint(root, key, animate) {
+      const d = DATA[key];
+      // linha + área
+      const line = root.querySelector('.di-line');
+      const area = root.querySelector('.di-area');
+      line.setAttribute('d', linePath(d.serie, 760, 240, 10));
+      area.setAttribute('d', areaPath(d.serie, 760, 240, 10));
+      // eixo
+      const axis = root.querySelector('.di-axis');
+      axis.textContent = '';
+      d.axis.forEach((a) => { const s = document.createElement('span'); s.textContent = a; axis.appendChild(s); });
+      // KPIs
+      Object.entries(d.kpis).forEach(([k, cfg]) => {
+        const el = root.querySelector(`[data-kpi="${k}"]`);
+        if (el) animateCount(el, cfg.v, cfg.d, cfg.s);
+      });
+      Object.entries(d.delta).forEach(([k, txt]) => {
+        const el = root.querySelector(`[data-kpid="${k}"]`);
+        if (el) el.textContent = txt;
+      });
+      // barras
+      const ul = root.querySelector('.di-bars');
+      ul.textContent = '';
+      d.regioes.forEach(([nome, pct]) => {
+        const li = document.createElement('li');
+        const n = document.createElement('span'); n.className = 'n'; n.textContent = nome;
+        const bar = document.createElement('span'); bar.className = 'bar';
+        const i = document.createElement('i'); i.style.setProperty('--w', pct + '%'); bar.appendChild(i);
+        const v = document.createElement('span'); v.className = 'v'; v.textContent = pct + '%';
+        li.append(n, bar, v); ul.appendChild(li);
+      });
+      // donut + legenda
+      const COLORS = ['#2E6BFF', '#00A8FF', '#C9A24B', 'rgba(255,255,255,0.28)'];
+      let acc = 0;
+      root.querySelectorAll('.di-donut__seg').forEach((seg, i) => {
+        const pct = d.canais[i] ? d.canais[i][1] : 0;
+        const len = (pct / 100) * CIRC;
+        seg.setAttribute('stroke-dasharray', `${Math.max(len - 2, 0)} ${CIRC - len + 2}`);
+        seg.setAttribute('stroke-dashoffset', String(-acc));
+        acc += len;
+      });
+      const leg = root.querySelector('.di-donut__legend');
+      leg.textContent = '';
+      d.canais.forEach(([nome, pct], i) => {
+        const li = document.createElement('li');
+        const sw = document.createElement('i'); sw.style.background = COLORS[i];
+        const b = document.createElement('b'); b.textContent = pct + '%';
+        li.append(sw, document.createTextNode(nome), b);
+        leg.appendChild(li);
+      });
+      // guarda a série ativa p/ o tooltip
+      this.series = d.serie; this.axisLabels = d.axis; this.unit = d.unit;
+      if (animate) replay(root.querySelector('.di-chart-panel'));
+      if (animate) replay(root.querySelector('.di-bars').closest('.di-panel'));
+    },
+
+    onAction(action, el, root) {
+      if (action === 'di-period') {
+        root.querySelectorAll('.di-seg button').forEach((b) => b.classList.toggle('is-on', b === el));
+        this.paint(root, el.dataset.p, true);
+      }
+      if (action === 'di-ask') {
+        const q = PERGUNTAS[parseInt(el.dataset.q, 10)];
+        if (!q) return;
+        root.querySelectorAll('.di-ask__chips button').forEach((b) => { b.disabled = b !== el; });
+        const out = root.querySelector('.di-ask__out');
+        const ans = root.querySelector('.di-ask__a');
+        const insight = root.querySelector('.di-insight');
+        const insightT = root.querySelector('.di-insight__t');
+        out.hidden = false;
+        insight.classList.remove('show');
+        insightT.textContent = q.ins;
+        typewriter(ans, q.resp, this.sched, 34, () => {
+          insight.classList.add('show');
+          this.sched.after(600, () => root.querySelectorAll('.di-ask__chips button').forEach((b) => { b.disabled = false; }));
+        });
+      }
+    },
+
+    mount(root) {
+      this.ac = new AbortController();
+      this.sched = mkScheduler();
+      this.paint(root, '30d', false);
+      root.querySelectorAll('.di-seg button').forEach((b) => b.classList.toggle('is-on', b.dataset.p === '30d'));
+      // tooltip do gráfico
+      const svg = root.querySelector('.di-chart');
+      const tip = root.querySelector('.di-tip');
+      const marker = root.querySelector('.di-marker');
+      const wrap = root.querySelector('.di-chartwrap');
+      const move = (e) => {
+        const r = svg.getBoundingClientRect();
+        const frac = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1);
+        const pts = this.series || [];
+        if (!pts.length) return;
+        const idx = Math.round(frac * (pts.length - 1));
+        const pad = 10;
+        const cx = pad + (idx * (760 - pad * 2)) / (pts.length - 1);
+        const min = Math.min(...pts), max = Math.max(...pts), range = max - min || 1;
+        const cy = 240 - pad - ((pts[idx] - min) / range) * (240 - pad * 2);
+        marker.setAttribute('cx', String(cx)); marker.setAttribute('cy', String(cy));
+        marker.setAttribute('opacity', '1');
+        const wr = wrap.getBoundingClientRect();
+        tip.hidden = false;
+        tip.style.left = ((cx / 760) * r.width + (r.left - wr.left)) + 'px';
+        tip.style.top = ((cy / 240) * r.height + (r.top - wr.top)) + 'px';
+        tip.querySelector('b').textContent = this.unit.replace('R$ ', 'R$ ') === this.unit ? `${this.unit.split(' ')[0]} ${pts[idx].toLocaleString('pt-BR')} ${this.unit.split(' ')[1] || ''}`.trim() : String(pts[idx]);
+        tip.querySelector('span').textContent = this.axisLabels[idx] || '';
+      };
+      svg.addEventListener('pointermove', move, { signal: this.ac.signal, passive: true });
+      svg.addEventListener('pointerleave', () => { tip.hidden = true; marker.setAttribute('opacity', '0'); }, { signal: this.ac.signal });
+    },
+
+    unmount(root) {
+      if (this.ac) this.ac.abort();
+      if (this.sched) this.sched.clear();
+      const out = root.querySelector('.di-ask__out');
+      if (out) out.hidden = true;
+      const tip = root.querySelector('.di-tip');
+      if (tip) tip.hidden = true;
+      const marker = root.querySelector('.di-marker');
+      if (marker) marker.setAttribute('opacity', '0');
+      root.querySelectorAll('.di-ask__chips button').forEach((b) => { b.disabled = false; });
+    },
+  });
+</script>

@@ -1,112 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
+import DemoInsight from '../components/demos/DemoInsight.astro';
+import DemoAgente from '../components/demos/DemoAgente.astro';
+import DemoAtlas from '../components/demos/DemoAtlas.astro';
+import DemoProcessflow from '../components/demos/DemoProcessflow.astro';
 
-// Portfólio demonstrativo — 6 projetos-conceito cobrindo os 4 serviços core.
-// Rota fora do menu: só quem tem o link vê (uso em reunião comercial).
+// Portfólio v2 — demos de produto imersivas. Rota fora do menu (uso comercial).
 const projects = [
   {
-    slug: 'datatrust', num: '01', cat: 'Dados · Governança', setor: 'Varejo',
-    name: 'DataTrust Hub',
-    pitch: 'Dados confiáveis e LGPD em dia — sem trabalho manual.',
-    mini: ['98,4% completude', '−80% risco de multa', 'LGPD 100%'],
-    desafio: 'Cadastros de clientes duplicados, campos vazios e dados fora da LGPD geravam multas e decisões erradas em uma operação de varejo com milhões de registros.',
-    solucao: 'Plataforma que audita os dados sozinha, corrige erros automaticamente, centraliza tudo num catálogo único e usa IA para apontar anomalias antes que virem prejuízo.',
-    impacto: 'A empresa passa a confiar no próprio cadastro: menos multa, menos retrabalho e decisões tomadas em cima de números reais.',
-    metrics: [
-      { v: 98.4, d: 1, s: '%', label: 'completude dos dados' },
-      { v: 80, d: 0, s: '%', label: 'menos risco de multa' },
-      { v: 25, d: 0, s: '%', label: 'mais confiança p/ decidir' },
-    ],
-    stack: ['Python', 'Spark', 'Airflow', 'Machine Learning', 'AWS'],
+    slug: 'insight', num: '01', cat: 'Dashboards · Inteligência de negócio',
+    name: 'NOVRA Insight',
+    pitch: 'BI completo com IA: filtre períodos, passe o mouse nos gráficos e pergunte em português.',
+    tags: ['dashboard completo', 'pergunte à IA', 'tempo real'],
   },
   {
-    slug: 'processflow', num: '02', cat: 'Automações · Operação', setor: 'Logística',
-    name: 'ProcessFlow AI',
-    pitch: 'A operação inteira numa tela — e a IA sugerindo o melhor caminho.',
-    mini: ['96% no prazo', '−30% custo', 'torre de controle'],
-    desafio: 'Entregas atrasando, custo subindo e ninguém enxergava onde estava o gargalo: a operação rodava em planilhas e sistemas que não conversavam.',
-    solucao: 'Torre de controle com mapa vivo da operação: rotas otimizadas por IA, alertas de atraso antes de acontecerem e tarefas repetitivas executadas por robôs.',
-    impacto: 'O gestor vê tudo em tempo real e age antes do problema — a operação fica mais barata, mais rápida e previsível.',
-    metrics: [
-      { v: 30, d: 0, s: '%', label: 'menos custo operacional' },
-      { v: 20, d: 0, s: '%', label: 'mais pontualidade' },
-      { v: 96, d: 0, s: '%', label: 'entregas no prazo' },
-    ],
-    stack: ['RPA', 'IA de rotas', 'Integrações', 'Dashboards em tempo real'],
+    slug: 'agente', num: '02', cat: 'Agentes de IA · Atendimento',
+    name: 'Agente NOVRA',
+    pitch: 'Um agente de IA no WhatsApp que agenda, cobra e resolve — converse com ele agora.',
+    tags: ['converse de verdade', 'integrações ao vivo', '24/7'],
   },
   {
-    slug: 'insightsphere', num: '03', cat: 'IA · Inteligência de Negócio', setor: 'Financeiro',
-    name: 'InsightSphere',
-    pitch: 'Pergunte em português. Receba a resposta em segundos.',
-    mini: ['pergunta em texto livre', '−50% tempo de decisão', 'previsões por IA'],
-    desafio: 'A diretoria esperava dias por relatórios: cada pergunta nova virava um chamado para o time de BI, e a decisão chegava atrasada.',
-    solucao: 'Central de inteligência onde o executivo pergunta em linguagem natural ("qual região mais cresceu?") e a IA responde na hora, com gráfico e recomendação.',
-    impacto: 'A resposta que levava uma semana passa a levar segundos — e a empresa enxerga oportunidades que antes passavam batido.',
-    metrics: [
-      { v: 50, d: 0, s: '%', label: 'menos tempo p/ decidir' },
-      { v: 10, d: 0, s: '%', label: 'mais oportunidades vistas' },
-      { v: 4, d: 0, s: 's', label: 'da pergunta à resposta' },
-    ],
-    stack: ['LLMs', 'NLP', 'BI self-service', 'Modelos preditivos'],
-  },
-  {
-    slug: 'cloudbridge', num: '04', cat: 'Cloud · Modernização', setor: 'Indústria',
-    name: 'CloudBridge',
-    pitch: 'Do servidor antigo à nuvem — sem parar a fábrica.',
-    mini: ['−40% custo de infra', 'zero downtime', '+30% velocidade'],
-    desafio: 'Infraestrutura antiga, cara e no limite: sem espaço pra crescer, sem integração com nada novo e com risco real de parada.',
-    solucao: 'Migração planejada de todos os sistemas e dados para a nuvem, por etapas e sem interromper a operação — com segurança e custo sob controle desde o dia 1.',
-    impacto: 'A empresa troca um custo fixo alto por uma estrutura que cresce conforme a demanda — mais rápida, mais segura e 40% mais barata.',
-    metrics: [
-      { v: 40, d: 0, s: '%', label: 'menos custo de infra' },
-      { v: 30, d: 0, s: '%', label: 'mais velocidade' },
-      { v: 0, d: 0, s: '', label: 'minutos de parada na virada' },
-    ],
-    stack: ['Data Lakehouse', 'Snowflake', 'Kubernetes', 'Infra como código'],
-  },
-  {
-    slug: 'atlas', num: '05', cat: 'Software sob medida', setor: 'Serviços',
+    slug: 'atlas', num: '03', cat: 'Apps · Software sob medida',
     name: 'Atlas OS',
-    pitch: 'O sistema que roda a empresa inteira — do jeito dela.',
-    mini: ['1 sistema único', '−60% retrabalho', '99,9% no ar'],
-    desafio: 'Sete planilhas, três sistemas que não conversavam e o processo inteiro dependendo da memória das pessoas. Crescer significava contratar mais gente pra apagar incêndio.',
-    solucao: 'Plataforma única, desenhada em cima do processo real da empresa: vendas, operação, financeiro e relatórios no mesmo lugar, com permissões e trilha de auditoria.',
-    impacto: 'A operação para de depender de heróis: qualquer pessoa entra, entende e executa. A empresa escala sem multiplicar o caos.',
-    metrics: [
-      { v: 60, d: 0, s: '%', label: 'menos retrabalho' },
-      { v: 99.9, d: 1, s: '%', label: 'de disponibilidade' },
-      { v: 1, d: 0, s: '', label: 'sistema no lugar de 10' },
-    ],
-    stack: ['React', 'Node.js', 'PostgreSQL', 'APIs & integrações'],
+    pitch: 'Um sistema de gestão navegável: pedidos, clientes e financeiro no mesmo lugar.',
+    tags: ['app navegável', 'filtros e busca', 'multiempresa'],
   },
   {
-    slug: 'copiloto', num: '06', cat: 'IA · Atendimento', setor: 'Saúde',
-    name: 'Copiloto NOVRA',
-    pitch: 'Atende, agenda e resolve — 24h por dia, com a cara da sua empresa.',
-    mini: ['78% resolvido sem humano', '24/7', 'CSAT 4,8'],
-    desafio: 'Pacientes ligando fora do horário, fila no WhatsApp, agenda com buracos e a recepção afogada em tarefas repetitivas.',
-    solucao: 'Assistente de IA no WhatsApp treinado com as regras da clínica: responde dúvidas, agenda e remarca consultas direto na agenda real, e passa pro humano quando precisa.',
-    impacto: 'O paciente é atendido na hora, a qualquer hora — e a equipe fica livre pra cuidar de quem está na frente dela.',
-    metrics: [
-      { v: 78, d: 0, s: '%', label: 'resolvido sem humano' },
-      { v: 24, d: 0, s: 'h', label: 'atendimento por dia' },
-      { v: 4.8, d: 1, s: '', label: 'nota média (CSAT)' },
-    ],
-    stack: ['LLMs', 'WhatsApp API', 'Integração c/ agenda', 'CRM'],
+    slug: 'processflow', num: '04', cat: 'Automações · Operação',
+    name: 'ProcessFlow',
+    pitch: 'Torre de controle logística com frota ao vivo — e um botão que otimiza rotas com IA.',
+    tags: ['mapa ao vivo', 'otimizar com IA', 'eventos em tempo real'],
   },
 ];
 ---
 <Base
-  title="NOVRA — Portfólio de projetos"
-  description="Projetos-conceito da NOVRA em dados, automação, IA, cloud e software sob medida."
+  title="NOVRA — Demos de produto"
+  description="Quatro produtos interativos da NOVRA: BI com IA, agente de atendimento, app de gestão e torre de controle logística."
+  noindex={true}
 >
-  <!-- topo próprio (sem âncoras da home) -->
   <header class="pf-top">
     <div class="container pf-top__inner">
       <a href="/" class="pf-top__brand" aria-label="NOVRA — página inicial">
         <img src="/brand/novra-logo-ui.png" alt="NOVRA" width="1041" height="308" />
       </a>
-      <span class="chip"><span class="dot"></span> Portfólio · Projetos selecionados</span>
+      <span class="chip"><span class="dot"></span> Demos interativas</span>
     </div>
   </header>
 
@@ -115,13 +52,13 @@ const projects = [
       <span class="glow-orb pf-hero__orb" aria-hidden="true"></span>
       <div class="container">
         <div class="section-head" data-reveal>
-          <span class="eyebrow">O que sabemos construir</span>
+          <span class="eyebrow">Portfólio vivo</span>
           <span class="signature-line signature-line--sm head-sig" aria-hidden="true"></span>
-          <h1 class="h1 balance">Projetos que mostram o nosso <span class="text-gradient">potencial.</span></h1>
+          <h1 class="h1 balance">Quatro produtos. <span class="text-gradient">Entre e use.</span></h1>
         </div>
         <p class="lead pretty pf-hero__lead" data-reveal style="--reveal-delay: 120ms">
-          Seis projetos-conceito, um para cada frente em que atuamos.
-          <strong>Toque em um card</strong> para abrir o projeto e ver a solução funcionando.
+          Nada de slides: cada card abre um <strong>software funcionando</strong> —
+          clique nos filtros, converse com o agente, navegue no app.
         </p>
       </div>
     </section>
@@ -130,634 +67,316 @@ const projects = [
       <div class="container">
         <div class="pf-grid">
           {projects.map((p, i) => (
-            <button class="pf-card card card-accent" data-open={p.slug} data-reveal style={`--reveal-delay: ${(i % 3) * 90}ms`} type="button">
+            <button class="pf-card card card-accent" data-open={p.slug} data-reveal style={`--reveal-delay: ${(i % 2) * 90}ms`} type="button">
               <i class="card-halo" aria-hidden="true"></i>
               <span class="pf-card__num">{p.num}</span>
               <span class="pf-card__cat">{p.cat}</span>
               <span class="pf-card__name">{p.name}</span>
-              <span class="pf-card__pitch">{p.pitch}</span>
-              <span class="pf-card__minis">
-                {p.mini.map((m) => <em>{m}</em>)}
+
+              <span class={`pf-prev pf-prev--${p.slug}`} aria-hidden="true">
+                {p.slug === 'insight' && (
+                  <span class="pf-prev__frame">
+                    <i class="pv-side"><b></b><b></b><b></b></i>
+                    <i class="pv-main">
+                      <em class="pv-kpi"></em><em class="pv-kpi"></em><em class="pv-kpi"></em>
+                      <svg viewBox="0 0 200 46" preserveAspectRatio="none"><path d="M4 40 C 30 36, 50 30, 72 28 C 104 25, 126 16, 152 12 C 170 9, 186 6, 196 4" fill="none" stroke="url(#pvg)" stroke-width="2"/><defs><linearGradient id="pvg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E6BFF"/><stop offset="1" stop-color="#00A8FF"/></linearGradient></defs></svg>
+                    </i>
+                  </span>
+                )}
+                {p.slug === 'agente' && (
+                  <span class="pf-prev__frame pf-prev__frame--chat">
+                    <i class="pv-bub pv-bub--in"></i>
+                    <i class="pv-bub pv-bub--out"></i>
+                    <i class="pv-bub pv-bub--in pv-bub--short"></i>
+                    <i class="pv-dots"><b></b><b></b><b></b></i>
+                  </span>
+                )}
+                {p.slug === 'atlas' && (
+                  <span class="pf-prev__frame">
+                    <i class="pv-side"><b></b><b></b><b></b><b></b></i>
+                    <i class="pv-main">
+                      <em class="pv-row"><b class="ok"></b></em>
+                      <em class="pv-row"><b class="cy"></b></em>
+                      <em class="pv-row"><b class="wa"></b></em>
+                      <em class="pv-row"><b class="ok"></b></em>
+                    </i>
+                  </span>
+                )}
+                {p.slug === 'processflow' && (
+                  <span class="pf-prev__frame pf-prev__frame--map">
+                    <svg viewBox="0 0 220 92">
+                      <path d="M92,8 L136,12 L172,26 L204,42 L188,64 L150,82 L108,88 L70,78 L38,58 L44,26 Z" fill="rgba(46,107,255,0.06)" stroke="rgba(120,158,255,0.3)" stroke-width="1"/>
+                      <path d="M110,52 C 130,48 150,44 168,40" fill="none" stroke="rgba(120,170,255,0.55)" stroke-width="1.4" stroke-dasharray="4 4"/>
+                      <path d="M110,52 C 100,62 90,70 82,76" fill="none" stroke="rgba(120,170,255,0.55)" stroke-width="1.4" stroke-dasharray="4 4"/>
+                      <path d="M110,52 C 112,40 116,30 122,22" fill="none" stroke="rgba(201,162,75,0.7)" stroke-width="1.4" stroke-dasharray="4 4"/>
+                      <circle cx="110" cy="52" r="4" fill="#10131c" stroke="#00A8FF" stroke-width="1.6"/>
+                      <circle cx="168" cy="40" r="2.5" fill="#10131c" stroke="rgba(150,185,255,0.7)" stroke-width="1.2"/>
+                      <circle cx="82" cy="76" r="2.5" fill="#10131c" stroke="rgba(150,185,255,0.7)" stroke-width="1.2"/>
+                      <circle cx="122" cy="22" r="2.5" fill="#10131c" stroke="rgba(150,185,255,0.7)" stroke-width="1.2"/>
+                    </svg>
+                  </span>
+                )}
               </span>
-              <span class="pf-card__go">Ver projeto <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+
+              <span class="pf-card__pitch">{p.pitch}</span>
+              <span class="pf-card__tags">{p.tags.map((t) => <em>{t}</em>)}</span>
+              <span class="pf-card__go">Abrir demo <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
             </button>
           ))}
         </div>
         <p class="pf-note" data-reveal>
-          Projetos-conceito demonstrativos · métricas projetadas a partir de benchmarks de mercado.
+          Demos interativas com dados fictícios, construídas pela NOVRA para demonstração de capacidade.
         </p>
       </div>
     </section>
   </main>
 
-  <!-- ===================== OVERLAY DE PROJETO ===================== -->
-  <div class="pf-overlay" id="pf-overlay" hidden aria-modal="true" role="dialog">
-    <div class="pf-overlay__backdrop" data-close></div>
-    <div class="pf-sheet" data-lenis-prevent>
-      <div class="pf-sheet__bar">
-        <span class="pf-sheet__crumb">NOVRA · Portfólio</span>
-        <div class="pf-sheet__nav">
-          <button class="pf-navbtn" id="pf-prev" aria-label="Projeto anterior" type="button">←</button>
-          <button class="pf-navbtn" id="pf-next" aria-label="Próximo projeto" type="button">→</button>
-          <button class="pf-navbtn pf-navbtn--close" data-close aria-label="Fechar" type="button">✕</button>
-        </div>
+  <!-- ===================== TAKEOVER FULLSCREEN ===================== -->
+  <div class="pf-tk" id="pf-tk" hidden role="dialog" aria-modal="true" aria-label="Demonstração de produto">
+    <div class="pf-tk__bar">
+      <button class="pf-tk__back" data-action="close" type="button">← Voltar</button>
+      <div class="pf-tk__mid">
+        <span class="pf-tk__title" id="pf-tk-title">—</span>
+        <span class="pf-tk__chip">demo interativa · dados fictícios</span>
       </div>
-
-      {projects.map((p) => (
-        <article class="pf-detail" id={`pf-${p.slug}`} hidden>
-          <header class="pf-detail__head">
-            <span class="pf-detail__cat">{p.cat} · <b>{p.setor}</b></span>
-            <h2 class="pf-detail__name">{p.name}</h2>
-            <p class="pf-detail__pitch">{p.pitch}</p>
-          </header>
-
-          <div class="pf-screen" data-screen={p.slug}>
-            <div class="pf-screen__bar" aria-hidden="true">
-              <i></i><i></i><i></i>
-              <span>{p.name} — demonstração</span>
-            </div>
-            <div class="pf-screen__body" id={`scr-${p.slug}`}></div>
-          </div>
-
-          <div class="pf-cols">
-            <div class="pf-col"><h3>O desafio</h3><p>{p.desafio}</p></div>
-            <div class="pf-col"><h3>A solução</h3><p>{p.solucao}</p></div>
-            <div class="pf-col"><h3>O impacto</h3><p>{p.impacto}</p></div>
-          </div>
-
-          <div class="pf-metrics">
-            {p.metrics.map((m) => (
-              <div class="pf-metric">
-                <span class="pf-metric__v" data-count={m.v} data-decimals={m.d} data-suffix={m.s}>0</span>
-                <span class="pf-metric__l">{m.label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div class="pf-stack">
-            {p.stack.map((t) => <span>{t}</span>)}
-          </div>
-          <p class="pf-detail__note">Projeto-conceito demonstrativo · métricas projetadas.</p>
-        </article>
-      ))}
+      <div class="pf-tk__nav">
+        <button class="pf-navbtn" data-action="prev" aria-label="Demo anterior" type="button">←</button>
+        <button class="pf-navbtn" data-action="next" aria-label="Próxima demo" type="button">→</button>
+      </div>
+    </div>
+    <div class="pf-tk__stage" data-lenis-prevent>
+      <DemoInsight />
+      <DemoAgente />
+      <DemoAtlas />
+      <DemoProcessflow />
     </div>
   </div>
 
   <style is:global>
-    /* is:global: as telas de demonstração são injetadas via JS (innerHTML) e
-       não recebem o atributo de escopo do Astro — escopo manual via prefixos .pf-/.dz- */
-    /* ---------- topo ---------- */
+    /* ---------- topo / hero / grid (prefixo pf-) ---------- */
     .pf-top { position: relative; z-index: 5; padding-top: 1.6rem; }
     .pf-top__inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
     .pf-top__brand img { height: 38px; width: auto; display: block; }
-
     .pf { position: relative; z-index: 2; }
-
-    /* ---------- hero ---------- */
-    .pf-hero { position: relative; padding: clamp(3rem, 8vh, 5.5rem) 0 clamp(1.5rem, 4vh, 3rem); overflow: visible; }
+    .pf-hero { position: relative; padding: clamp(3rem, 8vh, 5rem) 0 clamp(1.2rem, 3vh, 2.4rem); }
     .pf-hero__orb { top: -30%; left: 8%; width: 44vw; height: 44vw; max-width: 620px; max-height: 620px;
       background: radial-gradient(circle, rgba(46, 107, 255, 0.16), transparent 66%); }
     .pf-hero__lead { max-width: 560px; margin-top: 1.2rem; }
     .pf-hero__lead strong { color: var(--text-1); }
 
-    /* ---------- grid de cards ---------- */
     .pf-gallery { padding: 1rem 0 clamp(4rem, 9vh, 7rem); }
     .pf-grid { display: grid; grid-template-columns: 1fr; gap: 1.3rem; }
-    @media (min-width: 640px) { .pf-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1020px) { .pf-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 720px) { .pf-grid { grid-template-columns: repeat(2, 1fr); } }
 
     .pf-card {
       text-align: left; cursor: pointer;
-      display: flex; flex-direction: column; align-items: flex-start;
-      padding: clamp(1.5rem, 1.2rem + 1vw, 2rem);
-      min-height: 250px;
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: clamp(1.4rem, 1.1rem + 1vw, 1.9rem);
       color: inherit; font: inherit;
     }
-    .pf-card__num {
-      position: absolute; top: 1.3rem; right: 1.4rem;
-      font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-3); letter-spacing: 0.05em;
-    }
-    .pf-card__cat {
-      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--cyan-400); margin-bottom: 0.9rem;
-    }
-    .pf-card__name { font-family: var(--font-display); font-weight: 600; font-size: 1.35rem; letter-spacing: -0.01em; color: var(--text-1); }
-    .pf-card__pitch { margin-top: 0.5rem; font-size: 0.93rem; line-height: 1.55; color: var(--text-2); }
-    .pf-card__minis { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: auto; padding-top: 1.2rem; }
-    .pf-card__minis em {
-      font-style: normal; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.02em;
-      color: var(--text-2); padding: 0.28em 0.6em;
-      border: 1px solid var(--border); border-radius: var(--r-pill); background: var(--surface);
-    }
-    .pf-card__go {
-      display: inline-flex; align-items: center; gap: 0.45rem;
-      margin-top: 1.1rem; font-family: var(--font-display); font-weight: 600; font-size: 0.88rem;
-      color: var(--cyan-400);
-      opacity: 0.85; transition: opacity 0.4s var(--ease-out), gap 0.4s var(--ease-out);
-    }
-    .pf-card:hover .pf-card__go { opacity: 1; gap: 0.7rem; }
+    .pf-card__num { position: absolute; top: 1.3rem; right: 1.4rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-3); }
+    .pf-card__cat { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan-400); }
+    .pf-card__name { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 600; font-size: 1.5rem; letter-spacing: -0.01em; color: var(--text-1); }
+    .pf-card__pitch { margin-top: 0.85rem; font-size: 0.92rem; line-height: 1.55; color: var(--text-2); }
+    .pf-card__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+    .pf-card__tags em { font-style: normal; font-family: var(--font-mono); font-size: 0.64rem; color: var(--text-2); padding: 0.28em 0.6em; border: 1px solid var(--border); border-radius: 99px; background: var(--surface); }
+    .pf-card__go { display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1rem; font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; color: var(--cyan-400); transition: gap 0.4s var(--ease-out); }
+    .pf-card:hover .pf-card__go { gap: 0.75rem; }
 
-    .pf-note {
-      margin-top: 2.2rem; text-align: center;
-      font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--text-3);
+    /* preview em CSS puro dentro do card */
+    .pf-prev { display: block; margin-top: 1rem; pointer-events: none; }
+    .pf-prev__frame {
+      display: flex; gap: 6px; height: 108px; padding: 8px;
+      border: 1px solid var(--border); border-radius: 12px;
+      background: #0a0b10; overflow: hidden;
     }
+    .pv-side { display: flex; flex-direction: column; gap: 5px; width: 34px; flex: 0 0 auto; padding: 4px; border-right: 1px solid rgba(255,255,255,0.06); }
+    .pv-side b { height: 7px; border-radius: 3px; background: rgba(255,255,255,0.1); }
+    .pv-side b:first-child { background: rgba(46,107,255,0.55); }
+    .pv-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; padding: 4px; }
+    .pv-kpi { height: 13px; border-radius: 4px; background: rgba(255,255,255,0.07); }
+    .pv-main svg { flex: 1; width: 100%; }
+    .pv-row { display: flex; align-items: center; height: 15px; border-radius: 4px; background: rgba(255,255,255,0.05); position: relative; }
+    .pv-row b { position: absolute; right: 5px; width: 26px; height: 7px; border-radius: 99px; }
+    .pv-row b.ok { background: rgba(121,226,160,0.5); }
+    .pv-row b.cy { background: rgba(0,168,255,0.5); }
+    .pv-row b.wa { background: rgba(233,194,104,0.5); }
+    .pf-prev__frame--chat { flex-direction: column; justify-content: center; }
+    .pv-bub { height: 15px; border-radius: 8px; width: 62%; background: rgba(255,255,255,0.07); }
+    .pv-bub--out { align-self: flex-end; background: linear-gradient(120deg, rgba(46,107,255,0.55), rgba(0,168,255,0.55)); }
+    .pv-bub--short { width: 38%; }
+    .pv-dots { display: flex; gap: 4px; padding-left: 6px; }
+    .pv-dots b { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.35); animation: pv-tp 1.1s ease-in-out infinite; }
+    .pv-dots b:nth-child(2) { animation-delay: 0.15s; } .pv-dots b:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes pv-tp { 50% { opacity: 0.3; transform: translateY(-2px); } }
+    .pf-prev__frame--map { padding: 4px; }
+    .pf-prev__frame--map svg { width: 100%; height: 100%; }
 
-    /* ---------- overlay ---------- */
-    .pf-overlay { position: fixed; inset: 0; z-index: 250; display: flex; align-items: flex-end; justify-content: center; }
-    .pf-overlay[hidden] { display: none; } /* o display:flex acima venceria o [hidden] da UA */
-    @media (min-width: 800px) { .pf-overlay { align-items: center; padding: 2.5rem; } }
-    .pf-overlay__backdrop {
-      position: absolute; inset: 0;
-      background: rgba(5, 6, 10, 0.78); backdrop-filter: blur(10px);
-      opacity: 0; transition: opacity 0.4s var(--ease-out);
-    }
-    .pf-overlay.is-open .pf-overlay__backdrop { opacity: 1; }
-    .pf-sheet {
-      position: relative; width: min(1060px, 100%);
-      min-width: 0; /* flex min-width:auto deixaria o sheet mais largo que o viewport (SVGs largos) */
-      max-height: min(92svh, 100%);
-      overflow-y: auto; overscroll-behavior: contain;
-      background: linear-gradient(180deg, #101118, #0b0c11);
-      border: 1px solid var(--border-strong);
-      border-radius: 22px 22px 0 0;
-      padding: 0 clamp(1.2rem, 4vw, 3rem) 2.4rem;
-      transform: translateY(40px); opacity: 0;
-      transition: transform 0.5s var(--ease-out), opacity 0.5s var(--ease-out);
-    }
-    @media (min-width: 800px) { .pf-sheet { border-radius: 22px; } }
-    .pf-overlay.is-open .pf-sheet { transform: none; opacity: 1; }
+    .pf-note { margin-top: 2.2rem; text-align: center; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--text-3); }
 
-    .pf-sheet__bar {
-      position: sticky; top: 0; z-index: 5;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.1rem 0 0.9rem; margin-bottom: 1.4rem;
-      background: linear-gradient(180deg, #101118 74%, transparent);
+    /* ---------- takeover ---------- */
+    .pf-tk {
+      position: fixed; inset: 0; z-index: 250;
+      display: flex; flex-direction: column;
+      background: var(--bg-0);
+      opacity: 0; transition: opacity 0.35s var(--ease-out);
     }
-    .pf-sheet__crumb { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
-    .pf-sheet__nav { display: flex; gap: 0.5rem; }
+    .pf-tk[hidden] { display: none; }
+    .pf-tk.is-open { opacity: 1; }
+    .pf-tk__bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+      padding: 0.7rem clamp(0.8rem, 2.5vw, 1.6rem);
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 10, 14, 0.9);
+    }
+    .pf-tk__back {
+      font: inherit; font-size: 0.84rem; color: var(--text-2); cursor: pointer;
+      border: 1px solid var(--border-strong); background: var(--surface-2); border-radius: 10px;
+      padding: 0.5rem 0.9rem; transition: color 0.25s, border-color 0.25s;
+      white-space: nowrap;
+    }
+    .pf-tk__back:hover { color: var(--text-1); border-color: var(--border-brand); }
+    .pf-tk__mid { display: flex; align-items: center; gap: 0.7rem; min-width: 0; flex-wrap: wrap; justify-content: center; }
+    .pf-tk__title { font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+    .pf-tk__chip { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.06em; color: var(--text-3); border: 1px solid var(--border); border-radius: 99px; padding: 0.25em 0.7em; white-space: nowrap; }
+    .pf-tk__nav { display: flex; gap: 0.45rem; }
     .pf-navbtn {
-      width: 38px; height: 38px; border-radius: 10px;
+      width: 36px; height: 36px; border-radius: 10px;
       border: 1px solid var(--border-strong); background: var(--surface-2);
-      color: var(--text-1); font-size: 0.95rem; cursor: pointer;
-      transition: background 0.3s, border-color 0.3s, transform 0.3s var(--ease-out);
+      color: var(--text-1); font-size: 0.9rem; cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
     }
-    .pf-navbtn:hover { background: var(--surface-hover); border-color: var(--border-brand); transform: translateY(-1px); }
-
-    .pf-detail__cat { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan-400); }
-    .pf-detail__cat b { color: var(--gold-light); font-weight: 500; }
-    .pf-detail__name { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.7rem, 1.2rem + 2vw, 2.5rem); letter-spacing: -0.02em; margin-top: 0.5rem; }
-    .pf-detail__pitch { margin-top: 0.5rem; color: var(--text-2); font-size: 1.02rem; max-width: 60ch; }
-
-    /* ---------- "tela" do produto ---------- */
-    .pf-screen {
-      margin-top: 1.6rem; border: 1px solid var(--border-strong); border-radius: 16px; overflow: hidden;
-      background: #0a0b10; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-    }
-    .pf-screen__bar {
-      display: flex; align-items: center; gap: 7px;
-      padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.02);
-    }
-    .pf-screen__bar i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.14); }
-    .pf-screen__bar i:first-child { background: rgba(255, 99, 99, 0.55); }
-    .pf-screen__bar i:nth-child(2) { background: rgba(255, 205, 100, 0.55); }
-    .pf-screen__bar i:nth-child(3) { background: rgba(120, 220, 150, 0.55); }
-    .pf-screen__bar span { margin-left: 0.6rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; color: var(--text-3); }
-    .pf-screen__body { padding: clamp(1rem, 2.5vw, 1.6rem); min-height: 300px; }
-
-    /* peças genéricas dos dashboards */
-    .dz-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
-    @media (max-width: 640px) { .dz-kpis { grid-template-columns: 1fr; } }
-    .dz-kpi {
-      border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem 1rem;
-      background: rgba(255, 255, 255, 0.018);
-    }
-    .dz-kpi b {
-      display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.55rem; letter-spacing: -0.02em;
-      background: linear-gradient(180deg, #fff, #b9c6e0); -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .dz-kpi span { display: block; margin-top: 0.2rem; font-size: 0.72rem; color: var(--text-3); letter-spacing: 0.03em; }
-    .dz-kpi .up { color: #79e2a0; } .dz-kpi .down { color: #79e2a0; }
-    .dz-row { display: grid; gap: 0.9rem; margin-top: 0.9rem; grid-template-columns: 1.25fr 1fr; }
-    .dz-row--side { grid-template-columns: 200px 1fr; }
-    @media (max-width: 720px) { .dz-row, .dz-row--side { grid-template-columns: 1fr; } }
-    /* itens de grid têm min-width:auto — SVGs com viewBox largo (460–520) forçariam
-       min-content acima do viewport no phone; o par min-width:0 + max-width:100% resolve */
-    .dz-row > *, .dz-kpis > * { min-width: 0; }
-    .pf-screen__body svg { max-width: 100%; height: auto; }
-    .dz-panel { border: 1px solid var(--border); border-radius: 12px; padding: 1rem; background: rgba(255,255,255,0.014); }
-    .dz-panel h4 { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.8rem; }
-    .dz-list { display: flex; flex-direction: column; gap: 0.55rem; }
-    .dz-list li { list-style: none; display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--text-2); }
-    .dz-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue-energy); box-shadow: 0 0 8px rgba(0,168,255,0.7); animation: pulse-glow 2s ease-in-out infinite; }
-    .dz-dot--gold { background: var(--gold); box-shadow: 0 0 8px rgba(201,162,75,0.7); }
-    .dz-dot--ok { background: #79e2a0; box-shadow: 0 0 8px rgba(121,226,160,0.6); }
-    .dz-bar { height: 8px; border-radius: 6px; background: rgba(255,255,255,0.07); overflow: hidden; flex: 1; }
-    .dz-bar i { display: block; height: 100%; border-radius: 6px; background: var(--grad-brand); width: 0; }
-    .play .dz-bar i { animation: dz-fill 1.2s var(--ease-out) forwards; }
-    .dz-bar--gold i { background: var(--grad-gold); }
-    @keyframes dz-fill { to { width: var(--w, 60%); } }
-    .dz-chart path.line { fill: none; stroke: url(#pfgrad); stroke-width: 2.5; stroke-linecap: round;
-      stroke-dasharray: 600; stroke-dashoffset: 600; }
-    .play .dz-chart path.line { animation: dz-draw 1.6s var(--ease-out) 0.2s forwards; }
-    .dz-chart path.area { fill: url(#pfarea); opacity: 0; }
-    .play .dz-chart path.area { animation: dz-fade 0.8s ease 1.3s forwards; }
-    @keyframes dz-draw { to { stroke-dashoffset: 0; } }
-    @keyframes dz-fade { to { opacity: 1; } }
-    .dz-donut .track { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 12; }
-    .dz-donut .val { fill: none; stroke: url(#pfgrad); stroke-width: 12; stroke-linecap: round;
-      stroke-dasharray: 289; stroke-dashoffset: 289; transform: rotate(-90deg); transform-origin: center; }
-    .play .dz-donut .val { animation: dz-donut 1.4s var(--ease-out) 0.2s forwards; }
-    @keyframes dz-donut { to { stroke-dashoffset: var(--off, 60); } }
-    .dz-donut text { fill: #fff; font-family: var(--font-display); font-weight: 700; font-size: 22px; }
-    .dz-donut .sub { fill: var(--text-3); font-family: var(--font-mono); font-weight: 400; font-size: 8.5px; letter-spacing: 0.08em; }
-
-    /* chat (copiloto) */
-    .dz-chat { display: flex; flex-direction: column; gap: 0.6rem; max-width: 520px; }
-    .dz-msg {
-      padding: 0.65rem 0.9rem; border-radius: 14px; font-size: 0.82rem; line-height: 1.5;
-      opacity: 0; transform: translateY(8px); max-width: 88%;
-    }
-    .play .dz-msg { animation: dz-msg 0.45s var(--ease-out) forwards; animation-delay: var(--t, 0s); }
-    @keyframes dz-msg { to { opacity: 1; transform: none; } }
-    .dz-msg--in { align-self: flex-start; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-1); border-bottom-left-radius: 4px; }
-    .dz-msg--out { align-self: flex-end; background: linear-gradient(120deg, rgba(46,107,255,0.85), rgba(0,168,255,0.85)); color: #fff; border-bottom-right-radius: 4px; }
-    .dz-typing { display: inline-flex; gap: 4px; align-items: center; }
-    .dz-typing i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.5; animation: dz-tp 1s ease-in-out infinite; }
-    .dz-typing i:nth-child(2) { animation-delay: 0.15s; } .dz-typing i:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes dz-tp { 50% { opacity: 1; transform: translateY(-2px); } }
-
-    /* pergunta em linguagem natural (insightsphere) */
-    .dz-ask {
-      display: flex; align-items: center; gap: 0.7rem;
-      border: 1px solid var(--border-brand); border-radius: var(--r-pill);
-      padding: 0.75rem 1.1rem; background: rgba(46,107,255,0.06);
-      font-size: 0.88rem; color: var(--text-1);
-    }
-    .dz-ask .cursor-blink { display: inline-block; width: 1px; height: 1.05em; background: var(--cyan-400); vertical-align: text-bottom; animation: dz-blink 0.9s steps(1) infinite; }
-    @keyframes dz-blink { 50% { opacity: 0; } }
-    .dz-insight {
-      margin-top: 0.9rem; border: 1px solid rgba(201,162,75,0.35); border-radius: 12px;
-      background: rgba(201,162,75,0.06); padding: 0.85rem 1rem;
-      font-size: 0.82rem; color: var(--text-1); line-height: 1.5;
-      opacity: 0; transform: translateY(8px);
-    }
-    .play .dz-insight { animation: dz-msg 0.5s var(--ease-out) 2.4s forwards; }
-    .dz-insight b { color: var(--gold-light); }
-
-    /* fluxo de nós (cloudbridge / processflow) */
-    .dz-flow { width: 100%; height: auto; }
-    .dz-flow .node { fill: rgba(255,255,255,0.03); stroke: rgba(255,255,255,0.18); rx: 8; }
-    .dz-flow .node--hub { stroke: rgba(0,168,255,0.7); fill: rgba(46,107,255,0.1); }
-    .dz-flow .lbl { fill: #c9cfdd; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.04em; }
-    .dz-flow .lbl--dim { fill: #6e7480; }
-    .dz-flow .pipe { fill: none; stroke: rgba(120,170,255,0.4); stroke-width: 1.4; stroke-dasharray: 5 6; }
-    .play .dz-flow .pipe { animation: dz-pipe 1.4s linear infinite; }
-    @keyframes dz-pipe { to { stroke-dashoffset: -22; } }
-    .dz-flow .spark-dot { fill: var(--blue-energy); }
-
-    /* ---------- narrativa / métricas / stack ---------- */
-    .pf-cols { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.8rem; }
-    @media (min-width: 800px) { .pf-cols { grid-template-columns: repeat(3, 1fr); } }
-    .pf-col { border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.2rem; background: var(--surface); }
-    .pf-col h3 {
-      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--cyan-400); margin-bottom: 0.6rem;
-    }
-    .pf-col p { font-size: 0.88rem; line-height: 1.65; color: var(--text-2); }
-
-    .pf-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.4rem; }
-    @media (max-width: 640px) { .pf-metrics { grid-template-columns: 1fr; } }
-    .pf-metric { text-align: center; border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 0.8rem; background: rgba(46,107,255,0.04); }
-    .pf-metric__v {
-      display: block; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.7rem, 1.3rem + 1.4vw, 2.3rem); letter-spacing: -0.02em;
-      background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent;
-      filter: drop-shadow(0 0 18px rgba(0, 168, 255, 0.25));
-    }
-    .pf-metric__l { display: block; margin-top: 0.3rem; font-size: 0.75rem; color: var(--text-3); letter-spacing: 0.02em; }
-
-    .pf-stack { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.4rem; }
-    .pf-stack span {
-      font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.03em; color: var(--text-2);
-      padding: 0.35em 0.75em; border: 1px solid var(--border); border-radius: var(--r-pill); background: var(--surface);
-    }
-    .pf-detail__note { margin-top: 1.6rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; color: var(--text-3); }
+    .pf-navbtn:hover { background: var(--surface-hover); border-color: var(--border-brand); }
+    .pf-tk__stage { flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
+    .pf-tk__stage .demo { min-height: 100%; }
+    /* display das demos (grid/flex) venceria o [hidden] da UA — regra dura aqui */
+    .pf-tk__stage .demo[hidden] { display: none !important; }
 
     body.pf-locked { overflow: hidden; }
 
-    @media (prefers-reduced-motion: reduce) {
-      .play .dz-bar i { animation: none; width: var(--w, 60%); }
-      .play .dz-chart path.line { animation: none; stroke-dashoffset: 0; }
-      .play .dz-chart path.area, .play .dz-msg, .play .dz-insight { animation: none; opacity: 1; transform: none; }
-      .play .dz-donut .val { animation: none; stroke-dashoffset: var(--off, 60); }
-      .play .dz-flow .pipe { animation: none; }
+    @media (max-width: 640px) {
+      .pf-tk__chip { display: none; }
     }
   </style>
 
   <script>
-    /* ---------- telas de demonstração (uma por projeto) ---------- */
-    const GRAD = `<defs>
-      <linearGradient id="pfgrad" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#2E6BFF"/><stop offset="1" stop-color="#00A8FF"/>
-      </linearGradient>
-      <linearGradient id="pfarea" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="rgba(0,168,255,0.25)"/><stop offset="1" stop-color="rgba(0,168,255,0)"/>
-      </linearGradient>
-    </defs>`;
+    import { getDemo, replay } from '../scripts/demo-utils.js';
 
-    const SCREENS = {
-      datatrust: `
-        <div class="dz-kpis">
-          <div class="dz-kpi"><b data-count="98.4" data-decimals="1" data-suffix="%">0</b><span>completude do cadastro <em class="up">▲ +12pp</em></span></div>
-          <div class="dz-kpi"><b data-count="97.1" data-decimals="1" data-suffix="%">0</b><span>precisão dos dados <em class="up">▲ +9pp</em></span></div>
-          <div class="dz-kpi"><b data-count="100" data-suffix="%">0</b><span>conformidade LGPD <em class="up">✓ auditado</em></span></div>
-        </div>
-        <div class="dz-row">
-          <div class="dz-panel">
-            <h4>Qualidade por fonte de dados</h4>
-            <ul class="dz-list">
-              <li><span style="width:86px;font-family:var(--font-mono);font-size:.68rem;color:var(--text-3)">CRM</span><span class="dz-bar"><i style="--w:96%"></i></span><b style="font-size:.72rem">96%</b></li>
-              <li><span style="width:86px;font-family:var(--font-mono);font-size:.68rem;color:var(--text-3)">E-commerce</span><span class="dz-bar"><i style="--w:92%"></i></span><b style="font-size:.72rem">92%</b></li>
-              <li><span style="width:86px;font-family:var(--font-mono);font-size:.68rem;color:var(--text-3)">Lojas físicas</span><span class="dz-bar"><i style="--w:88%"></i></span><b style="font-size:.72rem">88%</b></li>
-              <li><span style="width:86px;font-family:var(--font-mono);font-size:.68rem;color:var(--text-3)">App</span><span class="dz-bar dz-bar--gold"><i style="--w:74%"></i></span><b style="font-size:.72rem">74%</b></li>
-            </ul>
-            <h4 style="margin-top:1rem">Correções automáticas (hoje)</h4>
-            <ul class="dz-list">
-              <li><i class="dz-dot dz-dot--ok"></i> 1.284 CPFs duplicados unificados</li>
-              <li><i class="dz-dot dz-dot--ok"></i> 3.911 endereços normalizados</li>
-              <li><i class="dz-dot dz-dot--gold"></i> 47 registros sem consentimento → quarentena</li>
-            </ul>
-          </div>
-          <div class="dz-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center">
-            <h4 style="align-self:flex-start">Saúde geral dos dados</h4>
-            <svg class="dz-donut" width="150" height="150" viewBox="0 0 120 120">
-              ${'${GRAD}'}
-              <circle class="track" cx="60" cy="60" r="46"/>
-              <circle class="val" cx="60" cy="60" r="46" style="--off:26"/>
-              <text x="60" y="58" text-anchor="middle">91%</text>
-              <text x="60" y="74" text-anchor="middle" class="sub">SAUDÁVEL</text>
-            </svg>
-          </div>
-        </div>`,
+    const slugs = ['insight', 'agente', 'atlas', 'processflow'];
+    const NAMES = { insight: 'NOVRA Insight', agente: 'Agente NOVRA', atlas: 'Atlas OS', processflow: 'ProcessFlow' };
+    // links antigos continuam abrindo a demo mais próxima
+    const ALIASES = { insightsphere: 'insight', datatrust: 'insight', copiloto: 'agente', cloudbridge: 'processflow' };
 
-      processflow: `
-        <div class="dz-kpis">
-          <div class="dz-kpi"><b data-count="96" data-suffix="%">0</b><span>entregas no prazo <em class="up">▲ +20pp</em></span></div>
-          <div class="dz-kpi"><b data-count="312">0</b><span>rotas otimizadas hoje pela IA</span></div>
-          <div class="dz-kpi"><b data-count="30" data-suffix="%">0</b><span>custo por entrega <em class="down">▼ −30%</em></span></div>
-        </div>
-        <div class="dz-row">
-          <div class="dz-panel">
-            <h4>Torre de controle — malha em tempo real</h4>
-            <svg class="dz-flow" viewBox="0 0 520 190">
-              <rect class="node node--hub" x="222" y="72" width="76" height="40" rx="9"/>
-              <text class="lbl" x="260" y="96" text-anchor="middle">CD Central</text>
-              <rect class="node" x="20" y="18" width="86" height="34" rx="8"/><text class="lbl" x="63" y="39" text-anchor="middle">Fornecedores</text>
-              <rect class="node" x="20" y="132" width="86" height="34" rx="8"/><text class="lbl" x="63" y="153" text-anchor="middle">Fábrica</text>
-              <rect class="node" x="414" y="10" width="86" height="34" rx="8"/><text class="lbl" x="457" y="31" text-anchor="middle">Zona Sul</text>
-              <rect class="node" x="414" y="78" width="86" height="34" rx="8"/><text class="lbl" x="457" y="99" text-anchor="middle">Zona Norte</text>
-              <rect class="node" x="414" y="146" width="86" height="34" rx="8"/><text class="lbl" x="457" y="167" text-anchor="middle">Interior</text>
-              <path class="pipe" d="M106 35 C 170 35, 180 82, 222 88"/>
-              <path class="pipe" d="M106 149 C 170 149, 180 102, 222 96"/>
-              <path class="pipe" d="M298 82 C 350 70, 360 30, 414 27"/>
-              <path class="pipe" d="M298 92 C 350 92, 360 95, 414 95"/>
-              <path class="pipe" d="M298 102 C 350 114, 360 158, 414 163"/>
-              <circle class="spark-dot" cx="260" cy="60" r="3"><animate attributeName="opacity" values="1;.2;1" dur="1.6s" repeatCount="indefinite"/></circle>
-            </svg>
-          </div>
-          <div class="dz-panel">
-            <h4>Alertas da IA</h4>
-            <ul class="dz-list">
-              <li><i class="dz-dot dz-dot--gold"></i> Rota SP-011: chuva forte — desvio sugerido (−38 min)</li>
-              <li><i class="dz-dot"></i> Doca 4 ociosa 14h–16h — janela realocada</li>
-              <li><i class="dz-dot dz-dot--ok"></i> 118 pedidos roteirizados automaticamente</li>
-              <li><i class="dz-dot dz-dot--ok"></i> Previsão de atraso caiu para 4% amanhã</li>
-            </ul>
-          </div>
-        </div>`,
-
-      insightsphere: `
-        <div class="dz-ask"><span style="color:var(--cyan-400)">◎</span> <span id="dz-ask-text"></span><span class="cursor-blink"></span></div>
-        <div class="dz-row" style="margin-top:1rem">
-          <div class="dz-panel">
-            <h4>Receita por região — últimos 6 meses</h4>
-            <svg class="dz-chart" viewBox="0 0 460 150" width="100%">
-              ${'${GRAD}'}
-              <path class="area" d="M10 120 C 70 112, 110 96, 160 92 C 220 87, 260 66, 320 52 C 370 40, 410 30, 450 22 L450 140 L10 140 Z"/>
-              <path class="line" d="M10 120 C 70 112, 110 96, 160 92 C 220 87, 260 66, 320 52 C 370 40, 410 30, 450 22"/>
-              <g style="font-family:var(--font-mono)" font-size="9" fill="#6e7480">
-                <text x="10" y="148">FEV</text><text x="100" y="148">MAR</text><text x="190" y="148">ABR</text>
-                <text x="280" y="148">MAI</text><text x="370" y="148">JUN</text><text x="440" y="148">JUL</text>
-              </g>
-            </svg>
-          </div>
-          <div class="dz-panel">
-            <h4>Resposta da IA</h4>
-            <div class="dz-insight">
-              <b>Sudeste</b> cresceu <b>34%</b> no trimestre — puxado pelo canal digital (+61%).
-              Recomendação: replicar a campanha do canal digital no Sul, onde o perfil de cliente é semelhante
-              (potencial estimado de <b>+R$ 2,1 mi</b>/trimestre).
-            </div>
-          </div>
-        </div>`,
-
-      cloudbridge: `
-        <div class="dz-row">
-          <div class="dz-panel">
-            <h4>Antes — infraestrutura própria</h4>
-            <svg class="dz-flow" viewBox="0 0 460 150">
-              <rect class="node" x="14" y="14" width="120" height="30" rx="7"/><text class="lbl lbl--dim" x="74" y="33" text-anchor="middle">ERP legado (2009)</text>
-              <rect class="node" x="14" y="58" width="120" height="30" rx="7"/><text class="lbl lbl--dim" x="74" y="77" text-anchor="middle">Servidor local #1</text>
-              <rect class="node" x="14" y="102" width="120" height="30" rx="7"/><text class="lbl lbl--dim" x="74" y="121" text-anchor="middle">Servidor local #2</text>
-              <rect class="node" x="176" y="36" width="110" height="30" rx="7"/><text class="lbl lbl--dim" x="231" y="55" text-anchor="middle">Planilhas</text>
-              <rect class="node" x="176" y="86" width="110" height="30" rx="7"/><text class="lbl lbl--dim" x="231" y="105" text-anchor="middle">Backups manuais</text>
-              <text class="lbl" x="380" y="60" text-anchor="middle" fill="#c9a24b">custo alto</text>
-              <text class="lbl" x="380" y="80" text-anchor="middle" fill="#c9a24b">risco de parada</text>
-              <text class="lbl" x="380" y="100" text-anchor="middle" fill="#c9a24b">sem escala</text>
-            </svg>
-          </div>
-          <div class="dz-panel">
-            <h4>Depois — nuvem NOVRA</h4>
-            <svg class="dz-flow" viewBox="0 0 460 150">
-              <rect class="node node--hub" x="150" y="14" width="160" height="34" rx="9"/><text class="lbl" x="230" y="35" text-anchor="middle">Data Lakehouse</text>
-              <rect class="node" x="30" y="98" width="110" height="30" rx="7"/><text class="lbl" x="85" y="117" text-anchor="middle">Fábrica / IoT</text>
-              <rect class="node" x="175" y="98" width="110" height="30" rx="7"/><text class="lbl" x="230" y="117" text-anchor="middle">ERP moderno</text>
-              <rect class="node" x="320" y="98" width="110" height="30" rx="7"/><text class="lbl" x="375" y="117" text-anchor="middle">Dashboards</text>
-              <path class="pipe" d="M85 98 C 85 70, 150 60, 190 48"/>
-              <path class="pipe" d="M230 98 L230 48"/>
-              <path class="pipe" d="M375 98 C 375 70, 310 60, 270 48"/>
-            </svg>
-          </div>
-        </div>
-        <div class="dz-kpis" style="margin-top:.9rem">
-          <div class="dz-kpi"><b data-count="40" data-suffix="%">0</b><span>economia de infraestrutura/ano</span></div>
-          <div class="dz-kpi"><b data-count="30" data-suffix="%">0</b><span>mais velocidade de processamento</span></div>
-          <div class="dz-kpi"><b data-count="0">0</b><span>minutos de parada na migração</span></div>
-        </div>`,
-
-      atlas: `
-        <div class="dz-row dz-row--side">
-          <div class="dz-panel">
-            <h4>Módulos</h4>
-            <ul class="dz-list">
-              <li><i class="dz-dot dz-dot--ok"></i> Comercial</li>
-              <li><i class="dz-dot dz-dot--ok"></i> Operação</li>
-              <li><i class="dz-dot dz-dot--ok"></i> Financeiro</li>
-              <li><i class="dz-dot dz-dot--ok"></i> Estoque</li>
-              <li><i class="dz-dot"></i> Relatórios</li>
-              <li><i class="dz-dot"></i> Auditoria</li>
-            </ul>
-          </div>
-          <div class="dz-panel">
-            <h4>Pedidos — hoje</h4>
-            <ul class="dz-list">
-              <li><span style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-3);width:64px">#4.812</span> Distribuidora Alfa <span style="margin-left:auto"><i class="dz-dot dz-dot--ok" style="display:inline-block"></i></span> <b style="font-size:.72rem">faturado</b></li>
-              <li><span style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-3);width:64px">#4.813</span> Grupo Horizonte <span style="margin-left:auto"><i class="dz-dot" style="display:inline-block"></i></span> <b style="font-size:.72rem">em rota</b></li>
-              <li><span style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-3);width:64px">#4.814</span> Rede Vitale <span style="margin-left:auto"><i class="dz-dot" style="display:inline-block"></i></span> <b style="font-size:.72rem">separação</b></li>
-              <li><span style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-3);width:64px">#4.815</span> Casa & Cia <span style="margin-left:auto"><i class="dz-dot dz-dot--gold" style="display:inline-block"></i></span> <b style="font-size:.72rem">aguardando</b></li>
-            </ul>
-            <h4 style="margin-top:1rem">Fluxo do mês</h4>
-            <svg class="dz-chart" viewBox="0 0 460 90" width="100%">
-              ${'${GRAD}'}
-              <path class="area" d="M10 70 C 60 62, 100 66, 150 54 C 210 40, 260 48, 320 34 C 370 24, 410 22, 450 14 L450 84 L10 84 Z"/>
-              <path class="line" d="M10 70 C 60 62, 100 66, 150 54 C 210 40, 260 48, 320 34 C 370 24, 410 22, 450 14"/>
-            </svg>
-          </div>
-        </div>
-        <div class="dz-kpis" style="margin-top:.9rem">
-          <div class="dz-kpi"><b data-count="99.9" data-decimals="1" data-suffix="%">0</b><span>disponibilidade (12 meses)</span></div>
-          <div class="dz-kpi"><b data-count="60" data-suffix="%">0</b><span>menos retrabalho da equipe</span></div>
-          <div class="dz-kpi"><b data-count="10">0</b><span>sistemas e planilhas aposentados</span></div>
-        </div>`,
-
-      copiloto: `
-        <div class="dz-row">
-          <div class="dz-panel">
-            <h4>WhatsApp — conversa real (simulação)</h4>
-            <div class="dz-chat">
-              <div class="dz-msg dz-msg--in" style="--t:.2s">Oi! Queria remarcar minha consulta de amanhã 😕</div>
-              <div class="dz-msg dz-msg--out" style="--t:.9s">Claro! Encontrei sua consulta de <b>amanhã às 14h</b> com a Dra. Helena. Tenho estes horários livres: <b>qui 10h</b> · <b>qui 16h30</b> · <b>sex 9h</b>. Qual prefere?</div>
-              <div class="dz-msg dz-msg--in" style="--t:1.7s">Quinta 16h30 fica ótimo</div>
-              <div class="dz-msg dz-msg--out" style="--t:2.4s">Remarcado ✓ Você receberá a confirmação por aqui e um lembrete 2h antes. Precisa de mais alguma coisa?</div>
-              <div class="dz-msg dz-msg--in" style="--t:3.1s"><span class="dz-typing"><i></i><i></i><i></i></span></div>
-            </div>
-          </div>
-          <div class="dz-panel">
-            <h4>Painel do gestor — este mês</h4>
-            <ul class="dz-list">
-              <li><span style="width:150px;font-size:.74rem;color:var(--text-3)">Resolvido pela IA</span><span class="dz-bar"><i style="--w:78%"></i></span><b style="font-size:.72rem">78%</b></li>
-              <li><span style="width:150px;font-size:.74rem;color:var(--text-3)">Passado p/ humano</span><span class="dz-bar"><i style="--w:22%"></i></span><b style="font-size:.72rem">22%</b></li>
-              <li><span style="width:150px;font-size:.74rem;color:var(--text-3)">Faltas em consultas</span><span class="dz-bar dz-bar--gold"><i style="--w:31%"></i></span><b style="font-size:.72rem">−31%</b></li>
-            </ul>
-            <div class="dz-kpis" style="grid-template-columns:1fr 1fr;margin-top:1rem">
-              <div class="dz-kpi"><b data-count="2841">0</b><span>conversas atendidas</span></div>
-              <div class="dz-kpi"><b data-count="4.8" data-decimals="1">0</b><span>satisfação média</span></div>
-            </div>
-          </div>
-        </div>`,
-    };
-
-    /* injeta o gradiente compartilhado nos SVGs de chart */
-    Object.keys(SCREENS).forEach((k) => {
-      SCREENS[k] = SCREENS[k].replaceAll('${GRAD}', GRAD);
-    });
-
-    /* ---------- interação: abrir / fechar / navegar ---------- */
-    const slugs = ['datatrust', 'processflow', 'insightsphere', 'cloudbridge', 'atlas', 'copiloto'];
-    const overlay = document.getElementById('pf-overlay');
-    const details = slugs.map((s) => document.getElementById('pf-' + s));
+    const tk = document.getElementById('pf-tk');
+    const stage = tk.querySelector('.pf-tk__stage');
+    const title = document.getElementById('pf-tk-title');
     let current = -1;
-    let typerT = null;
-    let hideT = null;      // timeout do fade-out: precisa ser cancelado se reabrir rápido
-    let isOpen = false;    // estado lógico (o .is-open só entra no próximo frame)
-    let lastFocus = null;  // devolve o foco a quem abriu o modal
+    let isOpen = false;
+    let hideT = null;
+    let lastFocus = null;
+    let openRaf = null;
+    // fundo fica inerte com o dialog aberto (Tab/leitor de tela não escapam)
+    const bgEls = () => [document.querySelector('.pf-top'), document.getElementById('main')].filter(Boolean);
 
-    const typeAsk = () => {
-      const el = document.getElementById('dz-ask-text');
-      if (!el) return;
-      const q = 'Qual região mais cresceu no último trimestre?';
-      el.textContent = '';
-      let i = 0;
-      clearInterval(typerT);
-      typerT = setInterval(() => {
-        el.textContent = q.slice(0, ++i);
-        if (i >= q.length) clearInterval(typerT);
-      }, 38);
-    };
+    const rootOf = (slug) => document.getElementById('demo-' + slug);
 
     function show(idx) {
-      if (!isOpen) return; // ignora setas/prev/next durante o fade-out (não recria hash)
+      if (!isOpen) return;
+      const prev = current;
       current = (idx + slugs.length) % slugs.length;
+      if (prev === current && prev !== -1) return;
+      if (prev !== -1) {
+        const api = getDemo(slugs[prev]);
+        if (api && api.unmount) api.unmount(rootOf(slugs[prev]));
+      }
+      slugs.forEach((s, i) => { rootOf(s).hidden = i !== current; });
       const slug = slugs[current];
-      details.forEach((d, i) => { d.hidden = i !== current; });
-      // desmonta as telas dos outros projetos: evita ids de gradiente duplicados
-      // (url(#pfgrad) resolve pro 1º do documento — se estiver em subtree oculto, não pinta)
-      // e não deixa animação rodando escondida
-      slugs.forEach((s) => { if (s !== slug) { const b = document.getElementById('scr-' + s); if (b) b.innerHTML = ''; } });
-      const body = document.getElementById('scr-' + slug);
-      // re-monta a tela p/ reiniciar todas as animações a cada abertura
-      body.innerHTML = SCREENS[slug];
-      const detail = details[current];
-      detail.classList.remove('play');
-      void detail.offsetWidth;
-      detail.classList.add('play');
-      // counters injetados agora: anima direto (o observer global só pegou os do build)
-      body.querySelectorAll('[data-count]').forEach((el) => {
-        const target = parseFloat(el.dataset.count || '0');
-        const dec = parseInt(el.dataset.decimals || '0', 10);
-        const suf = el.dataset.suffix || '';
-        const t0 = performance.now();
-        const tick = (now) => {
-          const p = Math.min((now - t0) / 1400, 1);
-          const eased = 1 - Math.pow(1 - p, 3);
-          el.textContent = (target * eased).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      });
-      if (slug === 'insightsphere') setTimeout(typeAsk, 350);
-      const sheet = overlay.querySelector('.pf-sheet');
-      if (sheet) sheet.scrollTop = 0;
+      const root = rootOf(slug);
+      const api = getDemo(slug);
+      if (api && api.mount) api.mount(root);
+      replay(root);
+      title.textContent = NAMES[slug];
+      stage.scrollTop = 0;
       history.replaceState(null, '', '#' + slug);
+      // se o foco estava dentro da demo que sumiu, cai pro body — devolve pro dialog
+      if (!tk.contains(document.activeElement)) tk.querySelector('.pf-tk__back').focus();
     }
 
-    function openModal(idx) {
-      clearTimeout(hideT); // reabertura rápida: cancela o esconder pendente do fechamento anterior
+    function openTk(idx) {
+      clearTimeout(hideT);
       isOpen = true;
       lastFocus = document.activeElement;
-      overlay.hidden = false;
+      tk.hidden = false;
       document.body.classList.add('pf-locked');
-      requestAnimationFrame(() => overlay.classList.add('is-open'));
+      bgEls().forEach((el) => { el.inert = true; });
+      if (openRaf) cancelAnimationFrame(openRaf);
+      openRaf = requestAnimationFrame(() => { openRaf = null; tk.classList.add('is-open'); });
+      current = -1;
       show(idx);
-      const closeBtn = overlay.querySelector('.pf-navbtn--close');
-      if (closeBtn) closeBtn.focus();
+      tk.querySelector('.pf-tk__back').focus();
     }
-    function closeModal() {
+    function closeTk() {
+      if (!isOpen) return;
       isOpen = false;
-      overlay.classList.remove('is-open');
+      if (current !== -1) {
+        const api = getDemo(slugs[current]);
+        if (api && api.unmount) api.unmount(rootOf(slugs[current]));
+      }
+      current = -1;
+      if (openRaf) { cancelAnimationFrame(openRaf); openRaf = null; }
+      tk.classList.remove('is-open');
       document.body.classList.remove('pf-locked');
-      clearInterval(typerT);
+      bgEls().forEach((el) => { el.inert = false; });
       clearTimeout(hideT);
-      hideT = setTimeout(() => { overlay.hidden = true; }, 420);
-      history.replaceState(null, '', location.pathname);
+      hideT = setTimeout(() => { tk.hidden = true; }, 380);
+      history.replaceState(null, '', location.pathname + location.search);
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     }
 
-    document.querySelectorAll('[data-open]').forEach((btn) => {
-      btn.addEventListener('click', () => openModal(slugs.indexOf(btn.dataset.open)));
+    /* clique delegado: controles do takeover + ações das demos */
+    tk.addEventListener('click', (e) => {
+      const el = e.target.closest('[data-action]');
+      if (!el) return;
+      const action = el.dataset.action;
+      if (action === 'close') { closeTk(); return; }
+      if (action === 'prev') { show(current - 1); return; }
+      if (action === 'next') { show(current + 1); return; }
+      if (current !== -1) {
+        const api = getDemo(slugs[current]);
+        if (api && api.onAction) api.onAction(action, el, rootOf(slugs[current]));
+      }
     });
-    overlay.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeModal));
-    document.getElementById('pf-prev').addEventListener('click', () => show(current - 1));
-    document.getElementById('pf-next').addEventListener('click', () => show(current + 1));
+
+    document.querySelectorAll('[data-open]').forEach((btn) => {
+      btn.addEventListener('click', () => openTk(slugs.indexOf(btn.dataset.open)));
+    });
+
     document.addEventListener('keydown', (e) => {
       if (!isOpen) return;
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') { closeTk(); return; }
+      // trap de foco: Tab circula dentro do dialog (o fundo já está inert; isto cobre browsers sem inert)
+      if (e.key === 'Tab') {
+        const focusables = [...tk.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])')]
+          .filter((el) => !el.disabled && el.offsetParent !== null);
+        if (!focusables.length) return;
+        const first = focusables[0], last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        else if (!tk.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+        return;
+      }
+      if (e.target.closest('input, textarea, select, [contenteditable="true"]')) return; // digitando: setas não trocam demo
       if (e.key === 'ArrowLeft') show(current - 1);
       if (e.key === 'ArrowRight') show(current + 1);
     });
 
-    /* deep-link: /portfolio#atlas abre direto */
-    const h = location.hash.replace('#', '');
-    if (slugs.includes(h)) openModal(slugs.indexOf(h));
+    /* deep-link (módulos das demos já executaram: modules são deferred) */
+    const boot = () => {
+      const h = location.hash.replace('#', '');
+      const slug = ALIASES[h] || h;
+      if (slugs.includes(slug)) openTk(slugs.indexOf(slug));
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
   </script>
 </Base>

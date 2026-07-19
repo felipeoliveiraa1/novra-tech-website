@@ -1,0 +1,311 @@
+---
+// Agente NOVRA — chat de IA interativo (WhatsApp) + painel "bastidores"
+// mostrando as integrações que o agente aciona em tempo real.
+---
+<section class="demo ag" id="demo-agente" data-demo="agente" hidden>
+  <div class="ag-grid">
+    <div class="ag-chatcol">
+      <div class="ag-chat">
+        <header class="ag-chat__head">
+          <span class="ag-avatar"><img src="/brand/novra-icon-ui.png" alt="" width="22" height="24" /></span>
+          <div>
+            <b>Agente NOVRA</b>
+            <span class="ag-status"><i></i> online agora</span>
+          </div>
+          <span class="ag-chat__tag">WhatsApp Business</span>
+        </header>
+        <div class="ag-msgs" aria-live="polite"></div>
+        <footer class="ag-foot">
+          <div class="ag-chips">
+            <button data-action="ag-intent" data-i="remarcar" type="button">Remarcar consulta</button>
+            <button data-action="ag-intent" data-i="preco" type="button">Quanto custa?</button>
+            <button data-action="ag-intent" data-i="humano" type="button">Falar com humano</button>
+          </div>
+          <div class="ag-inputrow">
+            <input class="ag-input" type="text" placeholder="Ou digite qualquer pergunta…" aria-label="Mensagem" />
+            <button class="ag-send" data-action="ag-send" type="button" aria-label="Enviar">➤</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <aside class="ag-side">
+      <h4 class="ag-side__t">Bastidores da IA <span>o que o agente faz por trás</span></h4>
+      <div class="ag-sys" data-sys="agenda">
+        <span class="ag-sys__dot"></span>
+        <div><b>Agenda</b><em>aguardando…</em></div>
+      </div>
+      <div class="ag-sys" data-sys="crm">
+        <span class="ag-sys__dot"></span>
+        <div><b>CRM</b><em>aguardando…</em></div>
+      </div>
+      <div class="ag-sys" data-sys="pagamento">
+        <span class="ag-sys__dot"></span>
+        <div><b>Pagamentos</b><em>aguardando…</em></div>
+      </div>
+      <div class="ag-note">
+        Cada resposta do agente pode consultar e executar ações nos sistemas da sua
+        empresa — com regras suas, trilha de auditoria e transferência para humano
+        quando fizer sentido.
+      </div>
+      <div class="ag-stats">
+        <div><b>78%</b><span>resolvido sem humano</span></div>
+        <div><b>24/7</b><span>sempre disponível</span></div>
+        <div><b>4,8</b><span>satisfação média</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style is:global>
+  .ag { padding: clamp(0.9rem, 2.5vw, 1.6rem); background: #0a0b10; min-height: 100%; }
+  .ag-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 1rem; max-width: 1080px; margin: 0 auto; }
+
+  .ag-chat {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border-strong); border-radius: 18px; overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 80% 0%, rgba(46, 107, 255, 0.05), transparent 60%),
+      #0d0f15;
+    min-height: min(74vh, 640px);
+  }
+  .ag-chat__head { display: flex; align-items: center; gap: 0.7rem; padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+  .ag-avatar { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(160deg, rgba(46,107,255,0.5), rgba(0,168,255,0.2)); border: 1px solid rgba(120,170,255,0.5); }
+  .ag-chat__head b { display: block; font-size: 0.9rem; }
+  .ag-status { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.66rem; color: var(--text-3); }
+  .ag-status i { width: 7px; height: 7px; border-radius: 50%; background: #79e2a0; box-shadow: 0 0 8px rgba(121,226,160,0.7); }
+  .ag-chat__tag { margin-left: auto; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.06em; color: var(--text-3); border: 1px solid var(--border); border-radius: 99px; padding: 0.25em 0.7em; }
+
+  .ag-msgs { flex: 1; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 0.55rem; padding: 1rem; min-height: 220px; }
+  .ag-msg {
+    max-width: 86%; padding: 0.6rem 0.85rem; border-radius: 14px;
+    font-size: 0.82rem; line-height: 1.5;
+    opacity: 0; transform: translateY(8px);
+    animation: ag-in 0.4s var(--ease-out) forwards;
+  }
+  @keyframes ag-in { to { opacity: 1; transform: none; } }
+  .ag-msg--in { align-self: flex-end; background: linear-gradient(120deg, rgba(46,107,255,0.9), rgba(0,168,255,0.9)); color: #fff; border-bottom-right-radius: 4px; }
+  .ag-msg--out { align-self: flex-start; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-1); border-bottom-left-radius: 4px; }
+  .ag-msg b { font-weight: 600; }
+  .ag-typing { display: inline-flex; gap: 4px; align-items: center; padding: 0.7rem 0.9rem; }
+  .ag-typing i { width: 5px; height: 5px; border-radius: 50%; background: var(--text-2); opacity: 0.5; animation: ag-tp 1s ease-in-out infinite; }
+  .ag-typing i:nth-child(2) { animation-delay: 0.15s; } .ag-typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes ag-tp { 50% { opacity: 1; transform: translateY(-2px); } }
+  .ag-opts { display: flex; flex-wrap: wrap; gap: 0.4rem; align-self: flex-start; animation: ag-in 0.4s var(--ease-out) forwards; opacity: 0; }
+  .ag-opts button {
+    font: inherit; font-size: 0.76rem; color: var(--cyan-300); cursor: pointer;
+    padding: 0.45rem 0.85rem; border: 1px solid rgba(0,168,255,0.45); border-radius: 99px;
+    background: rgba(0, 30, 60, 0.35); transition: background 0.25s;
+  }
+  .ag-opts button:hover { background: rgba(0, 60, 110, 0.45); }
+
+  .ag-foot { border-top: 1px solid var(--border); padding: 0.7rem 0.9rem 0.85rem; display: flex; flex-direction: column; gap: 0.6rem; background: rgba(255,255,255,0.015); }
+  .ag-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .ag-chips button {
+    font: inherit; font-size: 0.74rem; color: var(--text-1); cursor: pointer;
+    padding: 0.45rem 0.85rem; border: 1px solid var(--border-brand); border-radius: 99px;
+    background: rgba(46, 107, 255, 0.08); transition: background 0.25s, transform 0.25s var(--ease-out);
+  }
+  .ag-chips button:hover:not(:disabled) { background: rgba(46, 107, 255, 0.16); transform: translateY(-1px); }
+  .ag-chips button:disabled { opacity: 0.4; cursor: default; }
+  .ag-inputrow { display: flex; gap: 0.5rem; }
+  .ag-input {
+    flex: 1; min-width: 0; font: inherit; font-size: 0.82rem; color: var(--text-1);
+    background: var(--surface); border: 1px solid var(--border-strong); border-radius: 12px;
+    padding: 0.65rem 0.9rem; outline: none;
+  }
+  .ag-input:focus { border-color: var(--border-brand); }
+  .ag-input::placeholder { color: var(--text-3); }
+  .ag-send {
+    width: 44px; border: 0; border-radius: 12px; cursor: pointer;
+    background: var(--grad-brand); color: #fff; font-size: 0.9rem;
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s;
+  }
+  .ag-send:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(46,107,255,0.4); }
+
+  .ag-side { display: flex; flex-direction: column; gap: 0.7rem; min-width: 0; }
+  .ag-side__t { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
+  .ag-side__t span { display: block; margin-top: 0.2rem; text-transform: none; letter-spacing: 0.02em; font-family: var(--font-body); font-size: 0.72rem; color: var(--text-3); }
+  .ag-sys {
+    display: flex; align-items: center; gap: 0.75rem;
+    border: 1px solid var(--border); border-radius: 12px; padding: 0.7rem 0.9rem;
+    background: rgba(255,255,255,0.015); transition: border-color 0.3s, background 0.3s;
+  }
+  .ag-sys b { display: block; font-size: 0.82rem; }
+  .ag-sys em { display: block; font-style: normal; font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-3); margin-top: 0.15rem; }
+  .ag-sys__dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.18); flex: 0 0 auto; transition: background 0.3s, box-shadow 0.3s; }
+  .ag-sys.is-active { border-color: var(--border-brand); background: rgba(46,107,255,0.06); }
+  .ag-sys.is-active .ag-sys__dot { background: var(--blue-energy); box-shadow: 0 0 10px rgba(0,168,255,0.8); animation: ag-pulse 1s ease-in-out infinite; }
+  .ag-sys.is-done .ag-sys__dot { background: #79e2a0; box-shadow: 0 0 8px rgba(121,226,160,0.6); animation: none; }
+  .ag-sys.is-done em { color: #79e2a0; }
+  @keyframes ag-pulse { 50% { transform: scale(1.35); } }
+
+  .ag-note { font-size: 0.76rem; line-height: 1.6; color: var(--text-2); border-left: 2px solid var(--gold); padding-left: 0.8rem; }
+  .ag-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; margin-top: auto; }
+  .ag-stats > div { border: 1px solid var(--border); border-radius: 12px; padding: 0.65rem 0.5rem; text-align: center; background: rgba(46,107,255,0.04); min-width: 0; }
+  .ag-stats b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; background: linear-gradient(180deg,#fff,#b9c6e0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .ag-stats span { display: block; margin-top: 0.15rem; font-size: 0.6rem; color: var(--text-3); line-height: 1.35; }
+
+  @media (max-width: 860px) {
+    .ag-grid { grid-template-columns: 1fr; }
+    .ag-chat { min-height: 62vh; }
+  }
+</style>
+
+<script>
+  import { registerDemo, mkScheduler, prefersReduced, escapeHtml } from '../../scripts/demo-utils.js';
+
+  const INTENTS = {
+    remarcar: {
+      user: 'Preciso remarcar minha consulta de amanhã',
+      steps: [
+        { sys: 'agenda', act: 'Consultando agenda da Dra. Helena…', done: '2 horários livres ✓', ms: 1100 },
+        { bot: 'Claro! Encontrei sua consulta de <b>amanhã às 14h</b> com a Dra. Helena. Tenho estes horários livres:', opts: ['Qui 10h', 'Qui 16h30', 'Sex 9h'] },
+        { sys: 'agenda', act: 'Reagendando…', done: 'Evento atualizado ✓', ms: 900 },
+        { sys: 'crm', act: 'Registrando no histórico…', done: 'Timeline atualizada ✓', ms: 700 },
+        { bot: 'Prontinho! Remarcado para <b>{opt}</b> ✓ Você recebe a confirmação aqui e um lembrete 2h antes. Mais alguma coisa?' },
+      ],
+    },
+    preco: {
+      user: 'Quanto custa a consulta?',
+      steps: [
+        { sys: 'crm', act: 'Buscando tabela de valores…', done: 'Tabela 2026 ✓', ms: 800 },
+        { bot: 'A consulta com especialista custa <b>R$ 380</b>. Se você tem o plano Vitale, a cobertura é <b>100%</b> — quer que eu já gere o link de pagamento ou verifique seu plano?', opts: ['Gerar link de pagamento', 'Verificar meu plano'] },
+        { sys: 'pagamento', act: 'Gerando cobrança segura…', done: 'Link criado ✓', ms: 1000 },
+        { bot: 'Feito ✓ Enviei o link seguro aqui no chat (simulação). Ele expira em 24h e aceita Pix ou cartão em até 3x.' },
+      ],
+    },
+    humano: {
+      user: 'Quero falar com um humano',
+      steps: [
+        { bot: 'Claro, sem problema! Já vou te transferir. 😊' },
+        { sys: 'crm', act: 'Abrindo ticket + resumo da conversa…', done: 'Ticket #2.841 ✓', ms: 1000 },
+        { bot: 'A <b>Camila</b> assume a conversa em instantes. Ela já recebeu todo o seu contexto — você não vai precisar repetir nada.' },
+      ],
+    },
+  };
+
+  const KEYWORDS = [
+    [/remarc|mudar|adiar|hor[aá]rio|desmarcar|reagendar/i, 'remarcar'],
+    [/pre[çc]o|valor|quanto|custa|plano|conv[êe]nio|pagar/i, 'preco'],
+    [/humano|atendente|pessoa|falar com|gente de verdade/i, 'humano'],
+  ];
+
+  registerDemo('agente', {
+    sched: null, ac: null, busy: false,
+
+    el(tag, cls, html) {
+      const n = document.createElement(tag);
+      n.className = cls;
+      if (html !== undefined) n.innerHTML = html;
+      return n;
+    },
+    scrollBottom(msgs) { msgs.scrollTop = msgs.scrollHeight; },
+    addMsg(root, dir, html) {
+      const msgs = root.querySelector('.ag-msgs');
+      msgs.appendChild(this.el('div', `ag-msg ag-msg--${dir}`, html));
+      this.scrollBottom(msgs);
+    },
+    setSys(root, key, state, txt) {
+      const card = root.querySelector(`.ag-sys[data-sys="${key}"]`);
+      if (!card) return;
+      card.classList.remove('is-active', 'is-done');
+      if (state) card.classList.add(state);
+      if (txt) card.querySelector('em').textContent = txt;
+    },
+
+    run(root, key, userText) {
+      if (this.busy) return;
+      const intent = INTENTS[key];
+      const msgs = root.querySelector('.ag-msgs');
+      this.busy = true;
+      root.querySelectorAll('.ag-chips button').forEach((b) => { b.disabled = true; });
+      // texto do usuário SEMPRE escapado (os textos internos dos INTENTS usam <b> de propósito)
+      this.addMsg(root, 'in', userText ? escapeHtml(userText) : intent.user);
+
+      const steps = intent.steps;
+      const next = (i, chosen) => {
+        if (i >= steps.length) {
+          this.busy = false;
+          root.querySelectorAll('.ag-chips button').forEach((b) => { b.disabled = false; });
+          return;
+        }
+        const s = steps[i];
+        if (s.sys) {
+          this.setSys(root, s.sys, 'is-active', s.act);
+          this.sched.after(s.ms || 900, () => {
+            this.setSys(root, s.sys, 'is-done', s.done);
+            next(i + 1, chosen);
+          });
+          return;
+        }
+        // bot: typing → mensagem
+        const typing = this.el('div', 'ag-msg ag-msg--out ag-typing', '<i></i><i></i><i></i>');
+        msgs.appendChild(typing); this.scrollBottom(msgs);
+        this.sched.after(prefersReduced ? 0 : 900, () => {
+          typing.remove();
+          this.addMsg(root, 'out', s.bot.replace('{opt}', chosen || ''));
+          if (s.opts) {
+            const opts = this.el('div', 'ag-opts');
+            s.opts.forEach((o) => {
+              const b = this.el('button', '', o);
+              b.type = 'button';
+              b.addEventListener('click', () => { opts.remove(); this.addMsg(root, 'in', o); next(i + 1, o); }, { signal: this.ac.signal });
+              opts.appendChild(b);
+            });
+            msgs.appendChild(opts); this.scrollBottom(msgs);
+          } else {
+            next(i + 1, chosen);
+          }
+        });
+      };
+      next(0);
+    },
+
+    freeText(root) {
+      const input = root.querySelector('.ag-input');
+      const txt = (input.value || '').trim();
+      if (!txt || this.busy) return;
+      input.value = '';
+      const hit = KEYWORDS.find(([re]) => re.test(txt));
+      if (hit) { this.run(root, hit[1], txt); return; }
+      // fallback elegante
+      this.busy = true;
+      this.addMsg(root, 'in', escapeHtml(txt));
+      const msgs = root.querySelector('.ag-msgs');
+      const typing = this.el('div', 'ag-msg ag-msg--out ag-typing', '<i></i><i></i><i></i>');
+      msgs.appendChild(typing); this.scrollBottom(msgs);
+      this.sched.after(900, () => {
+        typing.remove();
+        this.addMsg(root, 'out', 'Boa pergunta! Na versão completa eu respondo com os dados reais da sua empresa. Aqui na demo, posso te mostrar um destes fluxos: <b>remarcar</b>, <b>preços</b> ou <b>falar com humano</b> 😉');
+        this.busy = false;
+      });
+    },
+
+    onAction(action, el, root) {
+      if (action === 'ag-intent') this.run(root, el.dataset.i);
+      if (action === 'ag-send') this.freeText(root);
+    },
+
+    mount(root) {
+      this.ac = new AbortController();
+      this.sched = mkScheduler();
+      this.busy = false;
+      // estado zero do chat (inclui chips: um fluxo interrompido no unmount os deixaria mortos)
+      root.querySelectorAll('.ag-chips button').forEach((b) => { b.disabled = false; });
+      const msgs = root.querySelector('.ag-msgs');
+      msgs.textContent = '';
+      ['agenda', 'crm', 'pagamento'].forEach((k) => this.setSys(root, k, null, 'aguardando…'));
+      this.addMsg(root, 'out', 'Olá! 👋 Sou o agente da <b>Clínica Vitale</b>. Posso agendar, remarcar, tirar dúvidas de preços e muito mais. Como posso ajudar?');
+      // Enter envia
+      const input = root.querySelector('.ag-input');
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') this.freeText(root); }, { signal: this.ac.signal });
+    },
+
+    unmount() {
+      if (this.ac) this.ac.abort();
+      if (this.sched) this.sched.clear();
+      this.busy = false;
+    },
+  });
+</script>
