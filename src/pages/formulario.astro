@@ -48,22 +48,50 @@ const steps = [
     ],
   },
   {
-    type: 'multi', key: 'solucoes', eyebrow: 'Etapa 03',
-    q: 'O que você procura na NOVRA?',
+    type: 'multi', key: 'perde_tempo', eyebrow: 'Etapa 03',
+    q: 'Onde a sua equipe mais perde tempo hoje?',
     help: 'Pode escolher mais de uma.',
     options: [
-      'Inteligência Artificial',
-      'Automação de processos',
-      'Desenvolvimento de sistemas',
-      'Cloud & Infraestrutura',
-      'Dados & Dashboards',
-      'Segurança Digital',
-      'Não sei ainda — quero orientação',
+      'Atender cliente (WhatsApp, e-mail, telefone)',
+      'Lançar pedidos e cadastros na mão',
+      'Conferir e alimentar planilhas',
+      'Emitir nota fiscal e documentos',
+      'Montar relatório para saber como foi o mês',
+      'Controlar estoque e compras',
+      'Cobrar e conciliar pagamentos',
       'Outro',
     ],
   },
   {
-    type: 'single', key: 'faturamento', eyebrow: 'Etapa 04',
+    type: 'single', key: 'ja_tentou', eyebrow: 'Etapa 04',
+    q: 'O que vocês já tentaram para resolver isso?',
+    help: 'Saber o que não funcionou nos ajuda a não repetir o caminho.',
+    options: [
+      'Ainda não tentamos nada',
+      'Tentamos resolver internamente',
+      'Contratamos alguém para fazer',
+      'Compramos um sistema pronto',
+      'Trabalhamos com outra empresa de tecnologia',
+      'Tentamos, mas o projeto não saiu do papel',
+      'Outro',
+    ],
+  },
+  {
+    type: 'single', key: 'custo_inacao', eyebrow: 'Etapa 05',
+    q: 'Se nada mudar nos próximos 6 meses, o que acontece?',
+    help: 'Seja honesto. É isso que define a prioridade.',
+    options: [
+      'Continuamos perdendo dinheiro todo mês',
+      'Perdemos espaço para o concorrente',
+      'A operação trava e não conseguimos crescer',
+      'A equipe adoece de tanto retrabalho',
+      'Corremos risco de perder clientes',
+      'Nada crítico, mas seguimos ineficientes',
+      'Outro',
+    ],
+  },
+  {
+    type: 'single', key: 'faturamento', eyebrow: 'Etapa 06',
     q: 'Qual o faturamento atual da sua empresa?',
     help: 'Ajuda a dimensionar a solução certa. Fica entre nós. 🔒',
     options: [
@@ -77,24 +105,32 @@ const steps = [
     ],
   },
   {
-    type: 'single', key: 'investimento', eyebrow: 'Etapa 05',
-    q: 'Que nível de investimento você considera viável para resolver isso?',
-    help: 'Uma estimativa já nos ajuda a desenhar o melhor caminho.',
-    options: [
-      'Até R$ 10 mil',
-      'R$ 10 mil a R$ 30 mil',
-      'R$ 30 mil a R$ 80 mil',
-      'R$ 80 mil a R$ 200 mil',
-      'Acima de R$ 200 mil',
-      'Preciso de orientação',
+    type: 'fields', key: 'decisao_grupo', eyebrow: 'Etapa 07',
+    q: 'Como funciona a decisão desse projeto?',
+    help: 'Sem compromisso nenhum. Serve para desenharmos o caminho certo.',
+    fields: [
+      {
+        name: 'investimento', label: 'Investimento que considera viável', type: 'select', required: false,
+        opts: [
+          'Até R$ 10 mil', 'R$ 10 mil a R$ 30 mil', 'R$ 30 mil a R$ 80 mil',
+          'R$ 80 mil a R$ 200 mil', 'Acima de R$ 200 mil', 'Preciso de orientação',
+        ],
+      },
+      {
+        name: 'decisao', label: 'Quem decide', type: 'select', required: false,
+        opts: [
+          'Eu decido (sou dono ou responsável)', 'Decido junto com sócios',
+          'Aprovo com a diretoria ou comitê', 'Eu pesquiso, outra pessoa decide',
+        ],
+      },
     ],
   },
   {
-    type: 'single', key: 'urgencia', eyebrow: 'Etapa 06',
+    type: 'single', key: 'urgencia', eyebrow: 'Etapa 08',
     q: 'Quando você quer ver isso resolvido?',
     help: '',
     options: [
-      'O quanto antes — é urgente',
+      'O quanto antes, é urgente',
       'Nos próximos 1 a 3 meses',
       'Em 3 a 6 meses',
       'Ainda estou pesquisando',
@@ -102,19 +138,7 @@ const steps = [
     ],
   },
   {
-    type: 'single', key: 'decisao', eyebrow: 'Etapa 07',
-    q: 'Como funciona a decisão sobre esse projeto?',
-    help: '',
-    options: [
-      'Eu decido (sou dono / responsável)',
-      'Decido junto com sócios',
-      'Aprovo com a diretoria / comitê',
-      'Eu pesquiso, outra pessoa decide',
-      'Outro',
-    ],
-  },
-  {
-    type: 'fields', key: 'perfil', eyebrow: 'Etapa 08',
+    type: 'fields', key: 'perfil', eyebrow: 'Etapa 09',
     q: 'Conta um pouco sobre você e a empresa.',
     help: '',
     fields: [
@@ -126,6 +150,11 @@ const steps = [
         name: 'funcionarios', label: 'Nº de funcionários', type: 'select', required: false,
         opts: ['1 a 10', '11 a 50', '51 a 200', '201 a 500', 'Mais de 500'],
       },
+      {
+        name: 'time_operacao', label: 'Pessoas na operação do dia a dia', type: 'select', required: false,
+        opts: ['1 a 3', '4 a 10', '11 a 30', 'Mais de 30'],
+      },
+      { name: 'sistemas', label: 'Que sistemas vocês usam hoje', type: 'text', required: false, ph: 'Ex.: Bling, Excel, Mercado Livre, CRM', max: 200 },
     ],
   },
   {
@@ -147,7 +176,7 @@ const DDIS = [
   ['+57', 'CO'], ['+52', 'MX'], ['+595', 'PY'], ['+598', 'UY'], ['+244', 'AO'],
 ];
 ---
-<Base title="NOVRA — Diagnóstico gratuito" description="Responda algumas perguntas e receba um diagnóstico inicial da NOVRA para o seu desafio de tecnologia, IA e automação.">
+<Base title="NOVRA · Diagnóstico da sua operação" description="Responda algumas perguntas e receba um diagnóstico inicial da NOVRA para o seu desafio de tecnologia, IA e automação.">
   <div class="fpage">
     <!-- barra de progresso -->
     <div class="fprogress" aria-hidden="true"><span id="fbar"></span></div>
@@ -163,11 +192,11 @@ const DDIS = [
     <main class="fmain" id="fmain">
       <!-- INTRO -->
       <section class="fstep is-active" data-type="intro">
-        <span class="eyebrow is-centered">Diagnóstico gratuito</span>
+        <span class="eyebrow is-centered">Diagnóstico executivo</span>
         <span class="signature-line head-sig" aria-hidden="true" style="margin-inline:auto"></span>
         <h1 class="fstep__q balance">Vamos entender o seu <span class="text-gradient">desafio.</span></h1>
-        <p class="fstep__help">Responda algumas perguntas rápidas — menos de 2 minutos. Com base nelas, um
-          especialista da NOVRA prepara um diagnóstico inicial e os próximos passos, sem compromisso.</p>
+        <p class="fstep__help">Responda algumas perguntas rápidas, leva menos de 2 minutos. Com base nelas, um
+          especialista da NOVRA prepara o diagnóstico e os próximos passos, sem compromisso.</p>
         <div class="fstep__nav fstep__nav--center">
           <button class="btn btn-primary btn-lg" data-action="start" data-magnetic>Começar <Icon name="arrow-right" /></button>
         </div>
@@ -591,7 +620,11 @@ const DDIS = [
         const data = {
           desafio: clean(state.desafio, 200),
           impacto: clean(state.impacto, 200),
-          solucoes: Array.isArray(state.solucoes) ? state.solucoes.filter(Boolean).slice(0, 12).map((s) => String(s).slice(0, 160)) : [],
+          perde_tempo: Array.isArray(state.perde_tempo) ? state.perde_tempo.filter(Boolean).slice(0, 12).map((s) => String(s).slice(0, 160)) : [],
+          ja_tentou: clean(state.ja_tentou, 200),
+          custo_inacao: clean(state.custo_inacao, 200),
+          sistemas: clean(state.sistemas, 200),
+          time_operacao: clean(state.time_operacao, 40),
           faturamento: clean(state.faturamento, 100),
           investimento: clean(state.investimento, 100),
           urgencia: clean(state.urgencia, 200),
@@ -625,7 +658,7 @@ const DDIS = [
         if (label) label.textContent = 'Enviando…';
         btn && btn.setAttribute('disabled', 'true');
         try {
-          const res = await fetch(`${SUPABASE_URL}/rest/v1/leads_diagnostico`, {
+          const post = (body) => fetch(`${SUPABASE_URL}/rest/v1/leads_diagnostico`, {
             method: 'POST',
             headers: {
               apikey: SUPABASE_ANON_KEY,
@@ -633,8 +666,16 @@ const DDIS = [
               'Content-Type': 'application/json',
               Prefer: 'return=minimal',
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(body),
           });
+          let res = await post(data);
+          // Se a migration das colunas novas ainda não rodou, o PostgREST devolve 400/404.
+          // Reenvia sem os campos novos: melhor gravar o lead incompleto do que perdê-lo.
+          if (!res.ok && (res.status === 400 || res.status === 404)) {
+            const legacy = { ...data };
+            ['perde_tempo', 'ja_tentou', 'custo_inacao', 'sistemas', 'time_operacao'].forEach((k) => delete legacy[k]);
+            res = await post(legacy);
+          }
           if (!res.ok) throw new Error(`Supabase respondeu ${res.status}`);
           show(steps.length - 1);
         } catch (err) {
