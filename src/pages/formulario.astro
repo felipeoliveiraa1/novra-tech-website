@@ -197,7 +197,14 @@ const DDIS = [
         <h1 class="fstep__q balance">Vamos entender o seu <span class="text-gradient">desafio.</span></h1>
         <p class="fstep__help">Responda algumas perguntas rápidas, leva menos de 2 minutos. Com base nelas, um
           especialista da NOVRA prepara o diagnóstico e os próximos passos, sem compromisso.</p>
-        <div class="fstep__nav fstep__nav--center">
+        <div class="frascunho" id="frascunho" hidden>
+          <p><strong>Você já tinha começado.</strong> Quer continuar de onde parou?</p>
+          <div class="frascunho__btns">
+            <button class="btn btn-primary" data-action="retomar" type="button">Continuar de onde parei</button>
+            <button class="btn btn-ghost" data-action="zerar" type="button">Começar do zero</button>
+          </div>
+        </div>
+        <div class="fstep__nav fstep__nav--center" id="fintroNav">
           <button class="btn btn-primary btn-lg" data-action="start" data-magnetic>Começar <Icon name="arrow-right" /></button>
         </div>
         <p class="fmeta"><Icon name="clock" size={14} /> ~2 min · <Icon name="security" size={14} /> dados confidenciais</p>
@@ -379,6 +386,15 @@ const DDIS = [
     .fstep__nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
     .fstep__nav--center { justify-content: center; }
     .btn :global(.flip) { transform: rotate(180deg); }
+    .frascunho {
+      max-width: 460px; margin: 0 auto 1.4rem; padding: 1rem 1.2rem;
+      border: 1px solid var(--border-brand); border-radius: 14px;
+      background: rgba(46, 107, 255, 0.07); text-align: center;
+    }
+    .frascunho p { font-size: 0.88rem; color: var(--text-2); margin-bottom: 0.8rem; }
+    .frascunho strong { color: var(--text-1); }
+    .frascunho__btns { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+    .frascunho__btns .btn { font-size: 0.85rem; }
     .fmeta { display: inline-flex; align-items: center; gap: 0.5em; justify-content: center; margin: 1.6rem auto 0; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-3); }
     .fmeta :global(svg) { color: var(--cyan-400); }
     .fconsent { margin-top: 1.1rem; font-size: 0.8rem; color: var(--text-3); text-align: center; }
@@ -405,6 +421,58 @@ const DDIS = [
       let idx = 0;
       let sending = false;   // trava reenvio enquanto um POST está em voo
       let autoAdv;           // timer do auto-avanço das opções single
+
+      // ---- rascunho local: quem fecha a aba no meio volta de onde parou ----
+      // Fica só no aparelho de quem respondeu (localStorage), expira em 7 dias
+      // e é apagado assim que o envio conclui.
+      const RASCUNHO = 'nvr_form_rascunho';
+      const RASCUNHO_TTL = 7 * 24 * 60 * 60 * 1000;
+      const salvarRascunho = () => {
+        try {
+          if (idx <= 0) return;   // nada a salvar na tela de abertura
+          localStorage.setItem(RASCUNHO, JSON.stringify({ t: Date.now(), idx, state }));
+        } catch (e) {}           // modo privativo / cota cheia: segue sem rascunho
+      };
+      const lerRascunho = () => {
+        try {
+          const r = JSON.parse(localStorage.getItem(RASCUNHO) || 'null');
+          if (!r || !r.state || Date.now() - r.t > RASCUNHO_TTL) { limparRascunho(); return null; }
+          return r;
+        } catch (e) { return null; }
+      };
+      function limparRascunho() { try { localStorage.removeItem(RASCUNHO); } catch (e) {} }
+
+      // devolve as respostas salvas para a tela (marcações e campos)
+      function aplicarRascunho(r) {
+        Object.assign(state, r.state);
+        main.querySelectorAll('.fstep').forEach((el) => {
+          const tipo = el.dataset.type;
+          const chave = el.dataset.key;
+          if (tipo === 'single' || tipo === 'multi') {
+            const salvo = state[chave];
+            if (salvo == null) return;
+            const valores = Array.isArray(salvo) ? salvo : [salvo];
+            el.querySelectorAll('.fopt').forEach((o) => {
+              o.setAttribute('aria-checked', valores.includes(o.dataset.value) ? 'true' : 'false');
+            });
+            // resposta digitada em "Outro": não bate com nenhum data-value
+            const livre = valores.find((v) => ![...el.querySelectorAll('.fopt')].some((o) => o.dataset.value === v));
+            const outraOpt = el.querySelector('.fopt[data-other]');
+            const outraInput = el.querySelector('.fother__input');
+            if (livre && outraOpt && outraInput) {
+              outraOpt.setAttribute('aria-checked', 'true');
+              outraInput.value = livre;
+              const wrap = el.querySelector('.fother');
+              if (wrap) wrap.hidden = false;
+            }
+          } else if (tipo === 'fields' || tipo === 'contact') {
+            el.querySelectorAll('input, select').forEach((inp) => {
+              if (state[inp.name] != null) inp.value = state[inp.name];
+            });
+          }
+        });
+        show(Math.min(r.idx, steps.length - 2));   // nunca retoma na tela de sucesso
+      }
 
       const qSteps = steps.filter((s) => ['single', 'multi', 'fields', 'contact'].includes(s.dataset.type));
 
@@ -582,6 +650,7 @@ const DDIS = [
         if (['fields', 'contact'].includes(el.dataset.type)) collectFields(el);
         if (!validate(el)) { shake(el); return; }
         show(idx + 1);
+        salvarRascunho();
       }
       function back() { show(idx - 1); }
       function shake(el) {
@@ -596,6 +665,20 @@ const DDIS = [
         if (act === 'start' || act === 'next') next();
         else if (act === 'back') back();
         else if (act === 'submit') submit(a);
+        else if (act === 'retomar') { const r = lerRascunho(); if (r) aplicarRascunho(r); }
+        else if (act === 'zerar') {
+          limparRascunho();
+          document.getElementById('frascunho').hidden = true;
+          document.getElementById('fintroNav').hidden = false;
+        }
+      });
+
+      // guarda o rascunho quando a resposta muda sem trocar de etapa
+      // (marcar opção em múltipla, digitar em "Outro" ou preencher campo)
+      main.addEventListener('input', () => salvarRascunho());
+      main.addEventListener('change', () => salvarRascunho());
+      main.addEventListener('click', (e) => {
+        if (e.target.closest('.fopt')) setTimeout(salvarRascunho, 0);  // depois do handler que grava no state
       });
 
       // Enter avança (exceto em textarea)
@@ -690,6 +773,7 @@ const DDIS = [
             res = await post(legacy);
           }
           if (!res.ok) throw new Error(`Supabase respondeu ${res.status}`);
+          limparRascunho();   // enviado: o rascunho perdeu a função
           show(steps.length - 1);
         } catch (err) {
           sending = false;
@@ -698,6 +782,22 @@ const DDIS = [
           btn && btn.removeAttribute('disabled');
         }
       }
+
+      // abertura: se existe rascunho válido, oferece retomar em vez de começar do zero
+
+      (() => {
+
+        const r = lerRascunho();
+
+        if (!r) return;
+
+        const aviso = document.getElementById('frascunho');
+
+        const nav = document.getElementById('fintroNav');
+
+        if (aviso && nav) { aviso.hidden = false; nav.hidden = true; }
+
+      })();
 
       show(0);
     })();
