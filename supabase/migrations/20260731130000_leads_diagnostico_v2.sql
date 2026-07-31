@@ -9,6 +9,12 @@ alter table public.leads_diagnostico
   add column if not exists sistemas      text,   -- sistemas que usa hoje (ERP, planilha, marketplace...)
   add column if not exists time_operacao text;   -- nº de pessoas na operação do dia a dia
 
+-- IMPRESCINDÍVEL: o grant de insert da migration original é POR COLUNA
+-- (revoke all + grant insert (col, col, ...)). Sem estender o grant, o Postgres
+-- nega o INSERT inteiro quando as colunas novas vão no payload — 42501.
+grant insert (perde_tempo, ja_tentou, custo_inacao, sistemas, time_operacao)
+  on public.leads_diagnostico to anon;
+
 comment on column public.leads_diagnostico.perde_tempo   is 'Etapa 03: onde a equipe mais perde tempo';
 comment on column public.leads_diagnostico.ja_tentou     is 'Etapa 04: tentativas anteriores de resolver';
 comment on column public.leads_diagnostico.custo_inacao  is 'Etapa 05: custo de não fazer nada em 6 meses';
