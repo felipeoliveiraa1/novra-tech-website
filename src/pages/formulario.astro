@@ -19,9 +19,9 @@ if (import.meta.env.PROD && (!SUPABASE_URL || !SUPABASE_ANON_KEY)) {
 // Perguntas estratégicas — capturam perfil, dor, faturamento, investimento, urgência e decisão.
 const steps = [
   {
-    type: 'single', key: 'desafio', eyebrow: 'Etapa 01',
-    q: 'Qual o principal desafio que trava o crescimento da sua empresa hoje?',
-    help: 'Escolha o que mais pesa na sua operação agora.',
+    type: 'multi', key: 'desafio', eyebrow: 'Etapa 01',
+    q: 'O que trava o crescimento da sua empresa hoje?',
+    help: 'Pode escolher mais de uma. Marque o que realmente pesa na operação.',
     options: [
       'Processos manuais e retrabalho',
       'Sistemas legados, lentos ou instáveis',
@@ -34,9 +34,9 @@ const steps = [
     ],
   },
   {
-    type: 'single', key: 'impacto', eyebrow: 'Etapa 02',
-    q: 'E qual o maior impacto desse problema no seu negócio?',
-    help: 'Onde dói mais hoje.',
+    type: 'multi', key: 'impacto', eyebrow: 'Etapa 02',
+    q: 'E qual o impacto disso no seu negócio?',
+    help: 'Pode escolher mais de uma. Onde dói hoje.',
     options: [
       'Perda de receita / vendas',
       'Tempo e produtividade da equipe',
@@ -63,9 +63,9 @@ const steps = [
     ],
   },
   {
-    type: 'single', key: 'ja_tentou', eyebrow: 'Etapa 04',
+    type: 'multi', key: 'ja_tentou', eyebrow: 'Etapa 04',
     q: 'O que vocês já tentaram para resolver isso?',
-    help: 'Saber o que não funcionou nos ajuda a não repetir o caminho.',
+    help: 'Pode escolher mais de uma. Saber o que não funcionou evita repetir o caminho.',
     options: [
       'Ainda não tentamos nada',
       'Tentamos resolver internamente',
@@ -77,9 +77,9 @@ const steps = [
     ],
   },
   {
-    type: 'single', key: 'custo_inacao', eyebrow: 'Etapa 05',
+    type: 'multi', key: 'custo_inacao', eyebrow: 'Etapa 05',
     q: 'Se nada mudar nos próximos 6 meses, o que acontece?',
-    help: 'Seja honesto. É isso que define a prioridade.',
+    help: 'Pode escolher mais de uma. Seja honesto, é isso que define a prioridade.',
     options: [
       'Continuamos perdendo dinheiro todo mês',
       'Perdemos espaço para o concorrente',
@@ -617,12 +617,25 @@ const DDIS = [
         // payload alinhado às colunas de public.leads_diagnostico (supabase/migrations);
         // os .slice espelham os limites do check constraint do banco
         const clean = (v, max) => (typeof v === 'string' && v.trim() !== '' ? v.trim().slice(0, max) : null);
+        // Múltipla escolha gravada em coluna text: junta com " · " e para antes de
+        // estourar o check constraint do banco (cortar no meio de uma frase mutila
+        // a resposta; estourar o limite derruba o insert e perde o lead).
+        const joinMulti = (v, max) => {
+          if (!Array.isArray(v)) return clean(v, max);
+          let out = '';
+          for (const item of v.filter(Boolean).map(String)) {
+            const next = out ? `${out} · ${item.trim()}` : item.trim();
+            if (next.length > max) break;
+            out = next;
+          }
+          return out || null;
+        };
         const data = {
-          desafio: clean(state.desafio, 200),
-          impacto: clean(state.impacto, 200),
+          desafio: joinMulti(state.desafio, 200),
+          impacto: joinMulti(state.impacto, 200),
           perde_tempo: Array.isArray(state.perde_tempo) ? state.perde_tempo.filter(Boolean).slice(0, 12).map((s) => String(s).slice(0, 160)) : [],
-          ja_tentou: clean(state.ja_tentou, 200),
-          custo_inacao: clean(state.custo_inacao, 200),
+          ja_tentou: joinMulti(state.ja_tentou, 300),
+          custo_inacao: joinMulti(state.custo_inacao, 300),
           sistemas: clean(state.sistemas, 200),
           time_operacao: clean(state.time_operacao, 40),
           faturamento: clean(state.faturamento, 100),
