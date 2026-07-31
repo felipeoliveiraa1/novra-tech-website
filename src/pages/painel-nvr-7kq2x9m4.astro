@@ -40,6 +40,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
         </div>
         <div class="pdash__actions">
           <span class="pdash__updated" id="pupdated"></span>
+          <button class="btn btn-ghost" id="pcsv" type="button">Exportar CSV</button>
           <button class="btn btn-ghost" id="prefresh" type="button">Atualizar</button>
           <button class="btn btn-ghost" id="plogout" type="button">Sair</button>
         </div>
@@ -124,6 +125,18 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
     }
     .pfield input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(46,107,255,0.2); }
     .plogin__btn { width: 100%; justify-content: center; margin-top: 0.4rem; }
+    .pdet-acoes { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+    .pacao {
+      font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.03em;
+      color: var(--text-2); text-decoration: none; cursor: pointer;
+      padding: 0.45em 0.9em; border: 1px solid var(--border); border-radius: 999px; background: var(--surface);
+      transition: border-color 0.25s, color 0.25s, background 0.25s;
+    }
+    .pacao:hover { border-color: var(--border-brand); color: var(--text-1); background: rgba(46,107,255,0.08); }
+    .pacao--wa:hover { border-color: rgba(121,226,160,0.5); color: #79e2a0; background: rgba(121,226,160,0.08); }
+    .pacao--del { margin-left: auto; color: #e2a079; border-color: rgba(226,160,121,0.3); }
+    .pacao--del:hover { border-color: #e2807f; color: #ff9a9a; background: rgba(255,120,120,0.1); }
+    .pacao--del:disabled { opacity: 0.5; cursor: default; }
     .plogin__erro { margin-top: 0.9rem; font-size: 0.85rem; color: #f06565; }
 
     /* ---------- dashboard ---------- */
@@ -462,12 +475,61 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
               <div class="pdet-item"><b>Funcionários</b><span>${esc(l.funcionarios || '—')}</span></div>
               <div class="pdet-item"><b>Origem</b><span>${esc(l.origem || '—')}</span></div>
             </div>
+            <div class="pdet-acoes">
+              <a class="pacao pacao--wa" href="https://wa.me/${esc((l.whatsapp || '').replace(/\D/g, ''))}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+              <a class="pacao" href="mailto:${esc(l.email)}">Enviar e-mail</a>
+              <button class="pacao pacao--del" data-del="${esc(l.id)}" type="button">Excluir lead</button>
+            </div>
           </td></tr>`;
         }).join('');
       }
 
+      // excluir lead (RPC valida o token; anon não tem DELETE na tabela)
+      async function excluirLead(id, btn) {
+        const alvo = leads.find((l) => l.id === id);
+        const quem = alvo ? `${alvo.nome} (${alvo.empresa})` : 'este lead';
+        if (!confirm(`Excluir ${quem}?\n\nA exclusão é permanente e não dá para desfazer.`)) return;
+        const token = getToken();
+        if (!token) return;
+        btn.disabled = true; btn.textContent = 'Excluindo…';
+        try {
+          const res = await rpc('dashboard_excluir_lead', { p_token: token, p_id: id });
+          if (!res.ok) throw new Error(`Supabase respondeu ${res.status}`);
+          leads = leads.filter((l) => l.id !== id);
+          abertos.delete(id);
+          renderTudo();
+        } catch (err) {
+          btn.disabled = false; btn.textContent = 'Excluir lead';
+          alert('Não foi possível excluir agora. Tente novamente.');
+        }
+      }
+
+      // exportar CSV do que está filtrado na tela
+      $('pcsv').addEventListener('click', () => {
+        const lista = filtrar();
+        if (!lista.length) { alert('Nada para exportar com os filtros atuais.'); return; }
+        const cols = ['created_at','nome','empresa','cargo','email','whatsapp','segmento','funcionarios',
+                      'faturamento','investimento','urgencia','decisao','desafio','impacto','perde_tempo',
+                      'ja_tentou','custo_inacao','sistemas','time_operacao','origem'];
+        const cel = (v) => {
+          const t = Array.isArray(v) ? v.join(' | ') : (v ?? '');
+          return `"${String(t).replace(/"/g, '""')}"`;   // aspas duplicadas: padrão CSV
+        };
+        const linhas = [cols.join(';'), ...lista.map((l) => cols.map((c) => cel(l[c])).join(';'))];
+        // BOM p/ o Excel abrir acentuação correta
+        const blob = new Blob(['\uFEFF' + linhas.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `novra-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      });
+
       // listener delegado único: sobrevive aos re-renders e preserva o estado
       $('pcorpo').addEventListener('click', (e) => {
+        const del = e.target.closest('[data-del]');
+        if (del) { e.stopPropagation(); excluirLead(del.dataset.del, del); return; }
+        if (e.target.closest('.pacao')) return;   // links de ação não alternam a linha
         const tr = e.target.closest('tr.plinha');
         if (!tr) return;
         const det = tr.nextElementSibling;
