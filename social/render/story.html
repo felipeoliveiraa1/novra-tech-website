@@ -25,6 +25,8 @@
   /* fundo */
   .photo{position:absolute; inset:0; z-index:0; overflow:hidden}
   .photo img{width:100%; height:100%; object-fit:cover; filter:grayscale(.68) saturate(.8) brightness(.4) contrast(1.1)}
+  /* fundo atrás de cards: desfoca p/ nenhum detalhe da foto competir com o conteúdo */
+  .photo--soft img{filter:grayscale(.75) saturate(.7) brightness(.34) contrast(1.05) blur(7px); transform:scale(1.06)}
   .photo .tint{position:absolute; inset:0; mix-blend-mode:overlay;
     background:linear-gradient(135deg, rgba(46,107,255,.6), rgba(0,70,130,.32) 55%, rgba(201,162,75,.15));}
   /* scrim forte: no story o texto tem que dominar — foto é atmosfera, não protagonista */
@@ -127,7 +129,7 @@ const svg=(n)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 const LOGO='<img class="logo" src="./novra-logo-ui.png" alt="NOVRA" />';
 const HUD='<div class="hud"><i></i><i></i><i></i><i></i></div>';
 const FOOT='<div class="foot"><span class="handle"><span class="spark">✦</span> @novratech.oficial</span><span class="site">novratech.com.br</span></div>';
-const bg=(p)=>`<div class="photo"><img src="./photos/${p}.jpg" alt=""><div class="tint"></div><div class="scrim"></div></div><div class="aurora"></div><div class="gridfx"></div>${HUD}<div class="grain"></div>`;
+const bg=(p,soft)=>`<div class="photo${soft?' photo--soft':''}"><img src="./photos/${p}.jpg" alt=""><div class="tint"></div><div class="scrim"></div></div><div class="aurora"></div><div class="gridfx"></div>${HUD}<div class="grain"></div>`;
 const eyebrow=(t)=>`<div class="eyebrow"><span class="dash"></span> ${t}</div>`;
 
 const S = [
@@ -145,8 +147,10 @@ const S = [
     </div>`},
 
   // 2 — O QUE FAZEMOS
-  {id:'story-2-servicos', photo:'dashboard', render:(s)=>`
-    <div class="frame s2">${bg(s.photo)}
+  // 'network' (abstrata) no lugar de 'dashboard': aquele print tinha números e
+  // rótulos próprios que vazavam por trás dos cards e pareciam elemento quebrado
+  {id:'story-2-servicos', photo:'network', render:(s)=>`
+    <div class="frame s2">${bg(s.photo, true)}
       ${LOGO}
       <div class="spacer"></div>
       ${eyebrow('O que a NOVRA faz')}
